@@ -1,4 +1,6 @@
-#include "distributions/rejection_sampling.h"
+#include "roulette/distributions/rejection_sampling.h"
+
+#include <cassert>
 
 namespace roulette {
   namespace distributions {
@@ -15,6 +17,9 @@ namespace roulette {
       while(true) {
         x = (*m_envelope_x_distribution)(generator);
         y = m_envelope_y_height(x) * generator.uniform();
+
+        // Verify that the envelop truly covers the pdf
+        assert(m_envelope_y_height(x) >= m_pdf(x));
 
         if (y < m_pdf(x)) return x;
       };

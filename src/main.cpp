@@ -1,7 +1,8 @@
 #include <iostream>
-#include "random_generator.h"
-#include "distributions/built_in.h"
-#include "real_function.h"
+#include "roulette/random_generator.h"
+#include "roulette/distributions/built_in.h"
+#include "roulette/real_function.h"
+#include "roulette/distributions/rejection_sampling.h"
 
 int main() {
   std::cout << "hello" << std::endl;
@@ -29,6 +30,19 @@ int main() {
   roulette::RealFunction ten = roulette::RealFunction::constant_function(10);
   std::cout << "ten: " << ten(0) << std::endl;
   std::cout << "ten: " << ten(5) << std::endl;
+
+
+  roulette::distributions::RejectionSampling rej(
+    roulette::RealFunction([](double x) { return 0.75*(1-x*x); }),
+    std::make_shared<roulette::distributions::BuiltIn<std::uniform_real_distribution<double>>>(std::uniform_real_distribution<double>(-1, 1)),
+    roulette::RealFunction::constant_function(0.75)
+  );
+
+  std::cout << "rej: " << rej(r) << std::endl;
+  std::cout << "rej: " << rej(r) << std::endl;
+  std::cout << "rej: " << rej(r) << std::endl;
+  std::cout << "rej: " << rej(r) << std::endl;
+  std::cout << "rej: " << rej(r) << std::endl;
 
   return 0;
 }

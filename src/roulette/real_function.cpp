@@ -1,4 +1,4 @@
-#include "real_function.h"
+#include "roulette/real_function.h"
 
 namespace roulette {
   RealFunction::RealFunction(std::function<double(double)> function, double xmin, double xmax) :

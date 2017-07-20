@@ -1,4 +1,4 @@
-#include "random_generator.h"
+#include "roulette/random_generator.h"
 #include <iostream>
 
 namespace roulette {

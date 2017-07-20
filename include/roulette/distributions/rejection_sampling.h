@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "random_generator.h"
-#include "real_function.h"
-#include "distribution.h"
+#include "roulette/random_generator.h"
+#include "roulette/real_function.h"
+#include "roulette/distribution.h"
 
 namespace roulette {
   namespace distributions {

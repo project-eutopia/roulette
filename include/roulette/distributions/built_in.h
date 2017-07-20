@@ -1,6 +1,6 @@
 #pragma once
 
-#include "distribution.h"
+#include "roulette/distribution.h"
 
 // Uses the built in distributions, for example normal_distribution, uniform_real_distribution
 namespace roulette {
