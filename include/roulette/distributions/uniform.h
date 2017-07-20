@@ -2,6 +2,7 @@
 
 #include "roulette/random_generator.h"
 #include "roulette/distribution.h"
+#include "roulette/histogram.h"
 
 namespace roulette {
   namespace distributions {
@@ -13,6 +14,8 @@ namespace roulette {
       public:
         Uniform(double a = 0, double b = 1);
         double operator()(RandomGenerator& generator);
+        double area_between(double x0, double x1) const;
+        void fill_in_expected_histogram(Histogram& expected, int num_samples = 1) const;
     };
   };
 };
