@@ -3,7 +3,6 @@
 #include "roulette/random_generator.h"
 #include "roulette/distribution.h"
 
-// Uses the built in distributions, for example normal_distribution, uniform_real_distribution
 namespace roulette {
   namespace distributions {
     class Uniform : public Distribution {
