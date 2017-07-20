@@ -21,6 +21,7 @@ namespace roulette {
   int Histogram::nbins() const { return m_nbins; }
   double Histogram::low() const { return m_low; }
   double Histogram::high() const { return m_high; }
+  double Histogram::total() const { return m_total; }
 
   double Histogram::bin_low_x(int i) const {
     if (i < 0) {
@@ -70,20 +71,16 @@ namespace roulette {
     return m_counts[this->count_bin(i)] / m_total;
   }
 
-  double Histogram::chi_square_vs_expected(const Histogram& expected) const {
-    assert(this->compatible_with(expected));
+  double Histogram::count_at(int i) const {
+    return m_counts[this->count_bin(i)];
+  }
 
-    double chi2 = 0;
-
-    for (int i = -1; i <= m_nbins; ++i) {
-      if (expected.bin_at(i) == 0) {
-        assert(this->bin_at(i) == 0);
-        continue;
-      }
-      chi2 += (this->bin_at(i) - expected.bin_at(i)) / expected.bin_at(i);
+  int Histogram::number_of_nonzero_bins() const {
+    int num = 0;
+    for (int i = -1; i <= this->nbins(); ++i) {
+      if (this->count_at(i) > 0) ++num;
     }
-
-    return chi2;
+    return num;
   }
 
   int Histogram::count_bin(int public_index) const {
@@ -108,12 +105,14 @@ namespace roulette {
       bin.put("i", i);
       bin.put("low", this->bin_low_x(i));
       bin.put("high", this->bin_high_x(i));
-      bin.put("value", this->bin_at(i));
+      bin.put("bin", this->bin_at(i));
+      bin.put("count", this->count_at(i));
 
       bins.push_back(std::make_pair(std::to_string(i), bin));
     }
 
     root.put("nbins", this->nbins());
+    root.put("total", this->total());
     root.put("low", this->low());
     root.put("high", this->high());
     root.push_back(std::make_pair("bins", bins));
