@@ -26,5 +26,9 @@ int main() {
   std::cout << "quad: " << quadratic(2) << std::endl;
   std::cout << "quad: " << quadratic(3) << std::endl;
 
+  roulette::RealFunction ten = roulette::RealFunction::constant_function(10);
+  std::cout << "ten: " << ten(0) << std::endl;
+  std::cout << "ten: " << ten(5) << std::endl;
+
   return 0;
 }

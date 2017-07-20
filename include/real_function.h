@@ -16,5 +16,7 @@ namespace roulette {
       double xmin() const;
       double xmax() const;
       double operator()(double x) const;
+
+      static RealFunction constant_function(double y);
   };
 };

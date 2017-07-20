@@ -14,4 +14,12 @@ namespace roulette {
   double RealFunction::operator()(double x) const {
     return m_function(x);
   };
+
+  RealFunction RealFunction::constant_function(double y) {
+    return RealFunction(
+      [y] (double x) {
+        return y;
+      }
+    );
+  };
 };
