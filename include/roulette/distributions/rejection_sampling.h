@@ -18,6 +18,8 @@ namespace roulette {
       public:
         RejectionSampling(RealFunction pdf, D envelope_x_distribution, RealFunction envelope_y_height);
         double operator()(RandomGenerator& generator);
+        // Useful for performance testing -- returns 1 + number of rejected samples
+        int sampling_attempts(RandomGenerator& generator);
     };
   };
 };

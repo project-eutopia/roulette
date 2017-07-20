@@ -26,5 +26,20 @@ namespace roulette {
         if (y < m_pdf(x)) return x;
       };
     };
+
+    template <typename D>
+    int RejectionSampling<D>::sampling_attempts(RandomGenerator& generator) {
+      double x, y;
+
+      for (int i = 1;; ++i) {
+        x = m_envelope_x_distribution(generator);
+        y = m_envelope_y_height(x) * generator.uniform();
+
+        // Verify that the envelop truly covers the pdf
+        assert(m_envelope_y_height(x) >= m_pdf(x));
+
+        if (y < m_pdf(x)) return i;
+      }
+    };
   };
 };
