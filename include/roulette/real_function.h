@@ -11,7 +11,11 @@ namespace roulette {
       std::function<double(double)> m_function;
 
     public:
-      RealFunction(std::function<double(double)> function, double xmin = -std::numeric_limits<double>::infinity(), double xmax = std::numeric_limits<double>::infinity());
+      RealFunction(
+        std::function<double(double)> function,
+        double xmin = -std::numeric_limits<double>::infinity(),
+        double xmax = std::numeric_limits<double>::infinity()
+      );
 
       double xmin() const;
       double xmax() const;

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "true_test.h"
+#include "real_function_test.h"
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
