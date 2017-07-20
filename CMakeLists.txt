@@ -15,6 +15,7 @@ set(CMAKE_CXX_STANDARD 14)
 # sudo cp *.a /usr/lib
 enable_testing()
 find_package(GTest REQUIRED)
+find_package(Boost 1.61 REQUIRED)
 
 # Include headers
 include_directories (include)
