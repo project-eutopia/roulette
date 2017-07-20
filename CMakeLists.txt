@@ -20,9 +20,14 @@ find_package(GTest REQUIRED)
 include_directories (include)
 # Source codes (except main.cpp)
 file (GLOB_RECURSE SOURCES "src/*.cpp")
+list (REMOVE_ITEM SOURCES "${CMAKE_SOURCE_DIR}/src/main.cpp")
 
-# Main compile
-add_executable (main ${SOURCES})
+# Create shared library
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
+
+# Main executable
+add_executable (main "src/main.cpp")
+target_link_libraries (main ${PROJECT_NAME})
 
 # Test command
 if (GTest_FOUND)
