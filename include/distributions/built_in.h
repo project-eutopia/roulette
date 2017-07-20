@@ -1,10 +1,12 @@
 #pragma once
 
+#include "distribution.h"
+
 // Uses the built in distributions, for example normal_distribution, uniform_real_distribution
 namespace roulette {
   namespace distributions {
     template <class D>
-    class BuiltIn {
+    class BuiltIn : public Distribution {
       private:
         D m_distribution;
 
