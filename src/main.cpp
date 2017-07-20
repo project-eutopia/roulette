@@ -1,6 +1,7 @@
 #include <iostream>
 #include "random_generator.h"
 #include "distributions/built_in.h"
+#include "real_function.h"
 
 int main() {
   std::cout << "hello" << std::endl;
@@ -18,6 +19,12 @@ int main() {
   std::cout << "norm: " << norm(r) << std::endl;
   std::cout << "norm: " << norm(r) << std::endl;
   std::cout << "norm: " << norm(r) << std::endl;
+
+  roulette::RealFunction quadratic([](double x) { return x*x; });
+  std::cout << "quad: " << quadratic(0) << std::endl;
+  std::cout << "quad: " << quadratic(1) << std::endl;
+  std::cout << "quad: " << quadratic(2) << std::endl;
+  std::cout << "quad: " << quadratic(3) << std::endl;
 
   return 0;
 }
