@@ -16,15 +16,14 @@ namespace roulette {
 
     for (int i = -1; i <= observed.nbins(); ++i) {
       // Skip bins that should have nothing
-      if (expected.count_at(i) == 0) {
-        assert(observed.count_at(i) == 0);
+      if (expected.count_at(i) == 0 && observed.count_at(i) == 0) {
         continue;
       }
       x = (observed.count_at(i) - expected.count_at(i));
       m_chi2 += x*x / expected.count_at(i);
     }
 
-    m_probability_at_worse = boost::math::cdf(m_chi_square_distribution, m_chi2);
+    m_probability_at_worse = m_chi2 < std::numeric_limits<double>::infinity() ? boost::math::cdf(m_chi_square_distribution, m_chi2) : 1;
   }
 
   double ChiSquareGoodnessOfFit::chi2_value() const { return m_chi2; }

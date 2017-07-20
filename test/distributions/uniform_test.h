@@ -44,3 +44,36 @@ TEST(UniformTest, has_uniform_distribution) {
   // 0.00003% chance of spurious failure
   test_multiple_times(trial, 5);
 }
+
+TEST(UniformTest, chi_square_test_fails_on_different_uniform_distribution) {
+  int num_samples = 1000;
+
+  RandomGenerator generator;
+
+  // Expectation
+  distributions::Uniform uniform(0, 10);
+  Histogram expected(0, 10, 100);
+  uniform.fill_in_expected_histogram(expected, num_samples);
+
+  // Observation
+  distributions::Uniform uniform1(1, 10);
+  Histogram observed1(0, 10, 100);
+  for (int i = 0; i < num_samples; ++i) {
+    observed1.add_point(uniform1(generator));
+  }
+
+  ChiSquareGoodnessOfFit chi_1(observed1, expected);
+
+  ASSERT_GE(chi_1.probability_of_bad_fit(), 0.95);
+
+  // Observation
+  distributions::Uniform uniform2(1, 10);
+  Histogram observed2(0, 10, 100);
+  for (int i = 0; i < num_samples; ++i) {
+    observed2.add_point(uniform2(generator));
+  }
+
+  ChiSquareGoodnessOfFit chi_2(observed2, expected);
+
+  ASSERT_GE(chi_2.probability_of_bad_fit(), 0.95);
+}
