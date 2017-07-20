@@ -8,15 +8,18 @@
 
 namespace roulette {
   namespace distributions {
+    template <typename D>
     class RejectionSampling : public Distribution {
       private:
         RealFunction m_pdf;
-        std::shared_ptr<Distribution> m_envelope_x_distribution;
+        D m_envelope_x_distribution;
         RealFunction m_envelope_y_height;
 
       public:
-        RejectionSampling(RealFunction pdf, std::shared_ptr<Distribution> envelope_x_distribution, RealFunction envelope_y_height);
+        RejectionSampling(RealFunction pdf, D envelope_x_distribution, RealFunction envelope_y_height);
         double operator()(RandomGenerator& generator);
     };
   };
 };
+
+#include "roulette/distributions/rejection_sampling_impl.h"
