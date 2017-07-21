@@ -1,5 +1,7 @@
 #pragma once
 
+#include "roulette/histogram.h"
+#include "roulette/real_function.h"
 #include "roulette/random_generator.h"
 #include "roulette/distribution.h"
 
@@ -14,6 +16,8 @@ namespace roulette {
       public:
         Exponential(double mu);
         double operator()(RandomGenerator& generator);
+        double area_between(double x0, double x1) const;
+        void fill_in_expected_histogram(Histogram& expected, int num_samples = 1) const;
     };
   };
 };

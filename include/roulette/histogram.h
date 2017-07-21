@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <ostream>
+#include <functional>
 
 namespace roulette {
   class Histogram {
