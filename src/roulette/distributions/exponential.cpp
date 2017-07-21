@@ -32,5 +32,8 @@ namespace roulette {
         num_samples
       );
     }
+
+    double Exponential::mu() const { return m_mu; }
+    void Exponential::set_mu(double mu) { m_mu = mu; }
   };
 };
