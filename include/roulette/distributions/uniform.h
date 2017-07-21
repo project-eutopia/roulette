@@ -16,6 +16,12 @@ namespace roulette {
         double operator()(RandomGenerator& generator);
         double area_between(double x0, double x1) const;
         void fill_in_expected_histogram(Histogram& expected, int num_samples = 1) const;
+
+        double a() const;
+        double b() const;
+
+        void set_a(double a);
+        void set_b(double b);
     };
   };
 };

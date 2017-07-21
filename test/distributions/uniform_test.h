@@ -77,3 +77,24 @@ TEST(UniformTest, chi_square_test_fails_on_different_uniform_distribution) {
 
   ASSERT_GE(chi_2.probability_of_bad_fit(), 0.95);
 }
+
+TEST(UniformTest, can_change_range_dynamically) {
+  RandomGenerator generator;
+  distributions::Uniform uniform(0, 1);
+
+  double x;
+  for (int i = 0; i < 5; ++i) {
+    x = uniform(generator);
+    ASSERT_GE(x, 0);
+    ASSERT_LT(x, 1);
+  }
+
+  uniform.set_a(100);
+  uniform.set_b(200);
+
+  for (int i = 0; i < 5; ++i) {
+    x = uniform(generator);
+    ASSERT_GE(x, 100);
+    ASSERT_LT(x, 200);
+  }
+}

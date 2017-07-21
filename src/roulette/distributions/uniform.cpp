@@ -23,6 +23,11 @@ namespace roulette {
       return (x1 > x0) ? (x1 - x0) / (m_b - m_a) : 0;
     }
 
+    double Uniform::a() const { return m_a; }
+    double Uniform::b() const { return m_b; }
+    void Uniform::set_a(double a) { m_a = a; }
+    void Uniform::set_b(double b) { m_b = b; }
+
     void Uniform::fill_in_expected_histogram(Histogram& expected, int num_samples) const {
       expected.fill_in_from_cdf(
         std::bind(&Uniform::area_between, this, std::placeholders::_1, std::placeholders::_2),
