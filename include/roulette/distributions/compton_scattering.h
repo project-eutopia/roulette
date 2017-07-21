@@ -4,6 +4,8 @@
 #include "roulette/distribution.h"
 #include "roulette/histogram.h"
 
+#include "roulette/four_momentum.h"
+
 namespace roulette {
   namespace distributions {
     // Energies are in units of m_e c^2 (electron rest energy)
@@ -36,6 +38,11 @@ namespace roulette {
 
         double area_between(double e0, double e1) const;
         void fill_in_expected_histogram(Histogram& expected, int num_samples = 1) const;
+
+        FourMomentum initial_photon_momentum() const;
+        FourMomentum final_photon_momentum() const;
+        FourMomentum initial_electron_momentum() const;
+        FourMomentum final_electron_momentum() const;
 
       private:
         double cdf(double e) const;

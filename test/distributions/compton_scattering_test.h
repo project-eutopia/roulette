@@ -38,10 +38,19 @@ TEST(ComptonScatteringTest, has_compton_scattering_distribution) {
 TEST(ComptonScatteringTest, obeys_relativistic_kinematics) {
   RandomGenerator generator;
   distributions::ComptonScattering compton;
-  compton.set_initial_photon_energy(100);
+  compton.set_initial_photon_energy(6 / 0.511);
 
   for (int i = 0; i < 100; ++i) {
     compton(generator);
+
+    FourMomentum before = compton.initial_photon_momentum() + compton.initial_electron_momentum();
+    FourMomentum after  = compton.final_photon_momentum()   + compton.final_electron_momentum();
+
+    // Four-momentum conservation
+    ASSERT_NEAR(before.e_over_c(), after.e_over_c(), before.e_over_c()*0.0000001);
+    ASSERT_NEAR(before.px(), after.px(), before.e_over_c()*0.0000001);
+    ASSERT_NEAR(before.py(), after.py(), before.e_over_c()*0.0000001);
+    ASSERT_NEAR(before.pz(), after.pz(), before.e_over_c()*0.0000001);
 
     // Energy conservation
     ASSERT_NEAR(
