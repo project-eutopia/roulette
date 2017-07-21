@@ -85,9 +85,16 @@ namespace roulette {
       m_photon_E_1 = e;
       m_photon_theta = std::acos(1 - 1.0/m_photon_E_1 + 1.0/m_photon_E_0);
 
-      // TODO
-      m_electron_E_1 = 0;
-      m_electron_theta = 0;
+      // Conservation of energy: E + 1 = E' + E_e
+      m_electron_E_1 = m_photon_E_0 + 1 - m_photon_E_1;
+
+      // Conservation of momentum:
+      // x: E' cos(theta_gamma) + sqrt(E_e^2 - 1) cos(theta_electron) = E
+      // y: E' sin(theta_gamma) + sqrt(E_e^2 - 1) sin(theta_electron) = 0
+      // Therefore electron 4-momentum p_e / mc = (E_e, px/mc, py/mc, 0)
+      // with px/mc = E - E' cos(theta_gamma)
+      //      py/mc = -E' sin(theta_gamma)
+      m_electron_theta = std::atan2(-m_photon_E_1 * std::sin(m_photon_theta), m_photon_E_0 - m_photon_E_1 * std::cos(m_photon_theta));
     }
   };
 };

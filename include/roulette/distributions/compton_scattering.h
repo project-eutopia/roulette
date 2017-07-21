@@ -6,6 +6,10 @@
 
 namespace roulette {
   namespace distributions {
+    // Energies are in units of m_e c^2 (electron rest energy)
+    //
+    // Implementation described in section 2.8 of "Monte Carlo Methods for Radiation Transport"
+    // by Oleg N. Vassiliev
     class ComptonScattering : public Distribution {
       private:
         double m_photon_E_0;
@@ -30,7 +34,7 @@ namespace roulette {
         double final_photon_theta() const;
         double final_electron_theta() const;
 
-        double area_between(double x0, double x1) const;
+        double area_between(double e0, double e1) const;
         void fill_in_expected_histogram(Histogram& expected, int num_samples = 1) const;
 
       private:
