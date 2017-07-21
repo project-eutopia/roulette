@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <functional>
 
 namespace roulette {
   namespace distributions {
@@ -23,11 +24,10 @@ namespace roulette {
     }
 
     void Uniform::fill_in_expected_histogram(Histogram& expected, int num_samples) const {
-      for (int i = -1; i <= expected.nbins(); ++i) {
-        expected.set_bin(i, num_samples * this->area_between(expected.bin_low_x(i), expected.bin_high_x(i)));
-      }
-
-      expected.set_total(num_samples);
+      expected.fill_in_from_cdf(
+        std::bind(&Uniform::area_between, this, std::placeholders::_1, std::placeholders::_2),
+        num_samples
+      );
     }
   };
 };

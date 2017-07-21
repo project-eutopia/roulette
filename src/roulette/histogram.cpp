@@ -95,6 +95,14 @@ namespace roulette {
     }
   }
 
+  void Histogram::fill_in_from_cdf(std::function<double(double,double)> cdf, int num_samples) {
+    for (int i = -1; i <= m_nbins; ++i) {
+      this->set_bin(i, num_samples * cdf(this->bin_low_x(i), this->bin_high_x(i)));
+    }
+
+    this->set_total(num_samples);
+  }
+
   void Histogram::write_json(std::ostream& stream) const {
     boost::property_tree::ptree root;
 

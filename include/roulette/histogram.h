@@ -42,6 +42,8 @@ namespace roulette {
 
       void write_json(std::ostream& stream) const;
 
+      void fill_in_from_cdf(std::function<double(double,double)> cdf, int num_samples = 1);
+
     private:
       int count_bin(int public_index) const;
   };
