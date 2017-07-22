@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include "../test_helper.h"
 
 #include "roulette/random_generator.h"
