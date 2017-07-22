@@ -31,6 +31,19 @@ namespace roulette {
     FourMomentum(momentum.m_p)
   {}
 
+  FourMomentum::FourMomentum(double energy, double mass, const ThreeVector& direction) :
+    m_p(energy)
+  {
+    // e^2 - p^2 = m^2
+    // |p| = sqrt(e^2 - m^2)
+    // So multiple direction vector by |p| / |direction|
+    double factor = std::sqrt(energy*energy - mass*mass) / direction.magnitude();
+
+    m_p(1) = factor * direction(0);
+    m_p(2) = factor * direction(1);
+    m_p(3) = factor * direction(2);
+  }
+
   const boost::numeric::ublas::vector<double>& FourMomentum::vector() const { return m_p; }
 
   double FourMomentum::operator()(int i) const {
