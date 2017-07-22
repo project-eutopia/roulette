@@ -34,8 +34,11 @@ namespace roulette {
       ThreeVector direction_unit_vector() const;
 
       bool operator==(const FourMomentum& other) const;
+
       FourMomentum& operator+=(const FourMomentum& rhs);
       friend FourMomentum operator+(FourMomentum lhs, const FourMomentum& rhs);
+
+      FourMomentum& operator=(const FourMomentum& other);
   };
 };
 

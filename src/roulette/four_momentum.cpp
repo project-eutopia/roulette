@@ -99,6 +99,11 @@ namespace roulette {
     lhs += rhs;
     return lhs;
   }
+
+  FourMomentum& FourMomentum::operator=(const FourMomentum& other) {
+    m_p = other.vector();
+    return *this;
+  }
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::FourMomentum& p) {
