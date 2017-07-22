@@ -75,6 +75,10 @@ namespace roulette {
       return FourMomentum(factor, factor, 0, 0);
     }
 
+    FourMomentum ComptonScattering::initial_electron_momentum() const {
+      return FourMomentum(ELECTRON_REST_ENERGY_IN_MEV/SPEED_OF_LIGHT, 0, 0, 0);
+    }
+
     FourMomentum ComptonScattering::final_photon_momentum() const {
       double factor = ELECTRON_REST_ENERGY_IN_MEV*m_photon_E_1/SPEED_OF_LIGHT;
       return FourMomentum(
@@ -83,10 +87,6 @@ namespace roulette {
         factor*std::sin(m_photon_theta),
         0
       );
-    }
-
-    FourMomentum ComptonScattering::initial_electron_momentum() const {
-      return FourMomentum(ELECTRON_REST_ENERGY_IN_MEV/SPEED_OF_LIGHT, 0, 0, 0);
     }
 
     FourMomentum ComptonScattering::final_electron_momentum() const {

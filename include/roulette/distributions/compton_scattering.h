@@ -40,8 +40,8 @@ namespace roulette {
         void fill_in_expected_histogram(Histogram& expected, int num_samples = 1) const;
 
         FourMomentum initial_photon_momentum() const;
-        FourMomentum final_photon_momentum() const;
         FourMomentum initial_electron_momentum() const;
+        FourMomentum final_photon_momentum() const;
         FourMomentum final_electron_momentum() const;
 
       private:
