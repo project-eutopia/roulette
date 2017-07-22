@@ -3,6 +3,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 
+#include "roulette/three_vector.h"
 #include "roulette/four_momentum.h"
 
 namespace roulette {
@@ -28,6 +29,8 @@ namespace roulette {
       static LorentzTransform rotationX(double angle);
       static LorentzTransform rotationY(double angle);
       static LorentzTransform rotationZ(double angle);
+      static LorentzTransform rotationU(double angle, const ThreeVector& u);
+      static LorentzTransform rotationUtoV(const ThreeVector& u, const ThreeVector& v);
 
       friend LorentzTransform operator*(const LorentzTransform& lhs, const LorentzTransform& rhs);
       friend FourMomentum operator*(const LorentzTransform& m, const FourMomentum& v);

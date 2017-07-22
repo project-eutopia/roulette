@@ -99,6 +99,34 @@ namespace roulette {
     );
   }
 
+  LorentzTransform LorentzTransform::rotationU(double angle, const ThreeVector& u) {
+    double s = std::sin(angle);
+    double c = std::cos(angle);
+
+    return LorentzTransform(
+      1, 0, 0, 0,
+      0, c + u(0)*u(0)*(1-c), u(1)*u(2)*(1-c) - u(2)*s, u(0)*u(2)*(1-c) + u(1)*s,
+      0, u(1)*u(2)*(1-c) + u(2)*s, c + u(1)*u(1)*(1-c), u(1)*u(2)*(1-c) - u(0)*s,
+      0, u(0)*u(2)*(1-c) - u(1)*s, u(1)*u(2)*(1-c) + u(0)*s, c + u(2)*u(2)*(1-c)
+    );
+  }
+
+  LorentzTransform LorentzTransform::rotationUtoV(const ThreeVector& u, const ThreeVector& v) {
+    ThreeVector cross = u.cross(v);
+
+    double cos = u.dot(v);
+    // Degenerate case impossible -- u and v opposite
+    assert(cos > -1);
+    double C = 1 / (1+cos);
+
+    return LorentzTransform(
+      1, 0, 0, 0,
+      0, 1 - C*(cross(2)*cross(2) + cross(1)*cross(1)), -cross(2) + C*cross(0)*cross(1), cross(1) + C*cross(0)*cross(2),
+      0, cross(2) + C*cross(0)*cross(1), 1 - C*(cross(0)*cross(0) + cross(2)*cross(2)), -cross(0) + C*cross(1)*cross(2),
+      0, -cross(1) + C*cross(0)*cross(2), cross(0) + C*cross(1)*cross(2), 1 - C*(cross(0)*cross(0) + cross(1)*cross(1))
+    );
+  }
+
   LorentzTransform operator*(const LorentzTransform& lhs, const LorentzTransform& rhs) {
     return LorentzTransform(
       boost::numeric::ublas::prod(lhs.matrix(), rhs.matrix())
