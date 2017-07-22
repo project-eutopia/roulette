@@ -1,3 +1,6 @@
+# make      #=> build library
+# make test #=> build tests executable
+# make main #=> build main executable
 cmake_minimum_required (VERSION 3.5.2)
 project (roulette CXX)
 
@@ -12,12 +15,12 @@ include_directories (include)
 file (GLOB_RECURSE SOURCES "src/*.cpp")
 list (REMOVE_ITEM SOURCES "${CMAKE_SOURCE_DIR}/src/main.cpp")
 
-# Main executable
-add_executable (main "src/main.cpp")
-target_link_libraries (main ${PROJECT_NAME})
-
 # Create shared library
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
+
+# Main executable
+add_executable (main EXCLUDE_FROM_ALL "src/main.cpp")
+target_link_libraries (main ${PROJECT_NAME})
 
 # Google test library
 # Setup on Ubuntu like (see: https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/)
@@ -33,6 +36,6 @@ find_package(GTest REQUIRED)
 # Test command
 if (GTest_FOUND)
   include_directories(${GTest_INCLUDE_DIRS})
-  add_executable(tests "test/tests.cpp")
+  add_executable(tests EXCLUDE_FROM_ALL "test/tests.cpp")
   target_link_libraries(tests ${PROJECT_NAME} ${GTEST_LIBRARIES} pthread)
 endif()
