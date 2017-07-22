@@ -27,4 +27,6 @@ namespace roulette {
 
   const FourMomentum& Particle::momentum() const { return m_momentum; }
   const ThreeVector& Particle::position() const { return m_position; }
+
+  double energy() const { return m_momentum.energy(); }
 };

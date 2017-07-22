@@ -18,6 +18,8 @@ namespace roulette {
       const FourMomentum& momentum() const;
       const ThreeVector& position() const;
 
+      double energy() const;
+
       double virtual mass() const = 0;
       int virtual charge() const = 0;
   };
