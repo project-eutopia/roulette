@@ -18,6 +18,7 @@ namespace roulette {
       FourMomentum(double energy, double mass, const ThreeVector& direction);
 
       const boost::numeric::ublas::vector<double>& vector() const;
+      boost::numeric::ublas::vector<double>& vector();
 
       double operator()(int i) const;
       double e() const;
@@ -39,6 +40,7 @@ namespace roulette {
       friend FourMomentum operator+(FourMomentum lhs, const FourMomentum& rhs);
 
       FourMomentum& operator=(const FourMomentum& other);
+      FourMomentum& operator=(FourMomentum&& other);
   };
 };
 

@@ -132,6 +132,11 @@ namespace roulette {
     );
   }
 
+  LorentzTransform& LorentzTransform::operator=(const LorentzTransform& other) {
+    m_matrix = other.matrix();
+    return *this;
+  }
+
   LorentzTransform operator*(const LorentzTransform& lhs, const LorentzTransform& rhs) {
     return LorentzTransform(
       boost::numeric::ublas::prod(lhs.matrix(), rhs.matrix())

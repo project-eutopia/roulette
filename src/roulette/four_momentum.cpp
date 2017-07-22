@@ -45,6 +45,7 @@ namespace roulette {
   }
 
   const boost::numeric::ublas::vector<double>& FourMomentum::vector() const { return m_p; }
+  boost::numeric::ublas::vector<double>& FourMomentum::vector() { return m_p; }
 
   double FourMomentum::operator()(int i) const {
     assert(i >= 0 && i < 4);
@@ -102,6 +103,11 @@ namespace roulette {
 
   FourMomentum& FourMomentum::operator=(const FourMomentum& other) {
     m_p = other.vector();
+    return *this;
+  }
+
+  FourMomentum& FourMomentum::operator=(FourMomentum&& other) {
+    m_p = std::move(other.m_p);
     return *this;
   }
 };

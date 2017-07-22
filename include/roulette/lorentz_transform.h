@@ -33,6 +33,8 @@ namespace roulette {
       static LorentzTransform rotationU(double angle, const ThreeVector& u);
       static LorentzTransform rotationUtoV(const ThreeVector& u, const ThreeVector& v);
 
+      LorentzTransform& operator=(const LorentzTransform& other);
+
       friend LorentzTransform operator*(const LorentzTransform& lhs, const LorentzTransform& rhs);
       friend FourMomentum operator*(const LorentzTransform& m, const FourMomentum& v);
   };
