@@ -5,7 +5,7 @@
 
 namespace roulette {
   class Particle {
-    private:
+    protected:
       // Stores energy not only implicitly in FourMomentum
       double m_energy;
       FourMomentum m_momentum;
