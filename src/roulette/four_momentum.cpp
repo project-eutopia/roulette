@@ -12,6 +12,21 @@ namespace roulette {
     m_p(3) = pz;
   }
 
+  FourMomentum::FourMomentum(const boost::numeric::ublas::vector<double>& p)
+    : m_p(p)
+  {
+    assert(m_p.size() == 4);
+  }
+
+  FourMomentum::FourMomentum(boost::numeric::ublas::vector<double>&& p) : m_p(std::move(p))
+  {
+    assert(m_p.size() == 4);
+  }
+
+  FourMomentum::FourMomentum(FourMomentum&& momentum) :
+    FourMomentum(momentum.m_p)
+  {}
+
   const boost::numeric::ublas::vector<double>& FourMomentum::vector() const { return m_p; }
 
   double FourMomentum::e_over_c() const { return m_p(0); }
