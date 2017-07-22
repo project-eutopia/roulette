@@ -1,10 +1,8 @@
-#include "roulette/distributions/compton_scattering.h"
-
 #include <cmath>
 
-#define EV_IN_JOULES 1.6021773E-13
-#define ELECTRON_MASS_IN_EV 510998.9461
-#define ELECTRON_REST_ENERGY_IN_EV ELECTRON_MASS_IN_EV
+#include "roulette/distributions/compton_scattering.h"
+
+#include "roulette/electron.h"
 
 namespace roulette {
   namespace distributions {
@@ -36,8 +34,8 @@ namespace roulette {
       return m_photon_E_1;
     }
 
-    void ComptonScattering::set_initial_photon(const FourMomentum& p) {
-      this->set_initial_photon_energy(p.energy() / ELECTRON_REST_ENERGY_IN_EV);
+    void ComptonScattering::set_initial_photon(const Photon& photon) {
+      this->set_initial_photon_energy(photon.energy() / ELECTRON_REST_ENERGY_IN_EV);
     }
 
     void ComptonScattering::set_initial_photon_energy(double e) {

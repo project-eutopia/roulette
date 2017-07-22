@@ -19,7 +19,7 @@ list (REMOVE_ITEM SOURCES "${CMAKE_SOURCE_DIR}/src/main.cpp")
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
 # Main executable
-add_executable (main EXCLUDE_FROM_ALL "src/main.cpp")
+add_executable (main "src/main.cpp")
 target_link_libraries (main ${PROJECT_NAME})
 
 # Google test library
@@ -36,6 +36,6 @@ find_package(GTest REQUIRED)
 # Test command
 if (GTest_FOUND)
   include_directories(${GTest_INCLUDE_DIRS})
-  add_executable(tests EXCLUDE_FROM_ALL "test/tests.cpp")
+  add_executable(tests "test/tests.cpp")
   target_link_libraries(tests ${PROJECT_NAME} ${GTEST_LIBRARIES} pthread)
 endif()

@@ -3,6 +3,7 @@
 #include "roulette/random_generator.h"
 #include "roulette/distribution.h"
 #include "roulette/histogram.h"
+#include "roulette/photon.h"
 
 #include "roulette/four_momentum.h"
 
@@ -28,6 +29,7 @@ namespace roulette {
         double operator()(RandomGenerator& generator);
 
         void set_initial_photon_energy(double e);
+        void set_initial_photon(const Photon& photon);
 
         double initial_photon_energy() const;
 
