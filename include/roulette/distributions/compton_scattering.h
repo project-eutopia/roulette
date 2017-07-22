@@ -28,7 +28,7 @@ namespace roulette {
         // Returns new E' for given E, and sets other associated variables
         double operator()(RandomGenerator& generator);
 
-        void set_initial_photon_energy(double e);
+        void set_initial_photon_energy_in_units_of_electron_mass(double e);
         void set_initial_photon(const Photon& photon);
 
         double initial_photon_energy() const;

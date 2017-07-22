@@ -14,7 +14,7 @@ TEST(ComptonScatteringTest, has_compton_scattering_distribution) {
 
   RandomGenerator generator;
   distributions::ComptonScattering compton;
-  compton.set_initial_photon_energy(100);
+  compton.set_initial_photon_energy_in_units_of_electron_mass(100);
 
   Histogram expected(0, 100, 4);
   compton.fill_in_expected_histogram(expected, num_samples);
@@ -38,7 +38,7 @@ TEST(ComptonScatteringTest, has_compton_scattering_distribution) {
 TEST(ComptonScatteringTest, obeys_relativistic_kinematics) {
   RandomGenerator generator;
   distributions::ComptonScattering compton;
-  compton.set_initial_photon_energy(6 / 0.511);
+  compton.set_initial_photon_energy_in_units_of_electron_mass(6 / 0.511);
 
   for (int i = 0; i < 100; ++i) {
     compton(generator);
@@ -78,12 +78,12 @@ TEST(ComptonScatteringTest, chi_square_test_fails_on_different_compton_distribut
 
   RandomGenerator generator;
   distributions::ComptonScattering compton;
-  compton.set_initial_photon_energy(100);
+  compton.set_initial_photon_energy_in_units_of_electron_mass(100);
 
   Histogram expected(0, 100, 4);
   compton.fill_in_expected_histogram(expected, num_samples);
 
-  compton.set_initial_photon_energy(90);
+  compton.set_initial_photon_energy_in_units_of_electron_mass(90);
   Histogram observed(0, 100, 4);
 
   for (int i = 0; i < num_samples; ++i) {

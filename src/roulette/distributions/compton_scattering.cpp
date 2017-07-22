@@ -35,10 +35,10 @@ namespace roulette {
     }
 
     void ComptonScattering::set_initial_photon(const Photon& photon) {
-      this->set_initial_photon_energy(photon.energy() / ELECTRON_REST_ENERGY_IN_EV);
+      this->set_initial_photon_energy_in_units_of_electron_mass(photon.energy() / ELECTRON_REST_ENERGY_IN_EV);
     }
 
-    void ComptonScattering::set_initial_photon_energy(double e) {
+    void ComptonScattering::set_initial_photon_energy_in_units_of_electron_mass(double e) {
       m_photon_E_0 = e;
 
       Emin = m_photon_E_0 / (1 + 2*m_photon_E_0);
