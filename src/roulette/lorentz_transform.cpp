@@ -20,6 +20,11 @@ namespace roulette {
     assert(m_matrix.size2() == 4);
   }
 
+  LorentzTransform::LorentzTransform(const LorentzTransform& lorentz) :
+    LorentzTransform(lorentz.m_matrix)
+  {
+  }
+
   LorentzTransform::LorentzTransform(LorentzTransform&& lorentz) :
     LorentzTransform(lorentz.m_matrix)
   {

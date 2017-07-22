@@ -13,6 +13,7 @@ namespace roulette {
       FourMomentum(double e = 0, double px = 0, double py = 0, double pz = 0);
       FourMomentum(const boost::numeric::ublas::vector<double>& p);
       FourMomentum(boost::numeric::ublas::vector<double>&& p);
+      FourMomentum(const FourMomentum& momentum);
       FourMomentum(FourMomentum&& momentum);
 
       const boost::numeric::ublas::vector<double>& vector() const;

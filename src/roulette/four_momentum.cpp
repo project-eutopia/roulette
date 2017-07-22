@@ -23,6 +23,10 @@ namespace roulette {
     assert(m_p.size() == 4);
   }
 
+  FourMomentum::FourMomentum(const FourMomentum& momentum) :
+    FourMomentum(momentum.m_p)
+  {}
+
   FourMomentum::FourMomentum(FourMomentum&& momentum) :
     FourMomentum(momentum.m_p)
   {}

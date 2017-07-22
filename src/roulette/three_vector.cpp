@@ -22,6 +22,10 @@ namespace roulette {
     assert(m_v.size() == 3);
   }
 
+  ThreeVector::ThreeVector(const ThreeVector& momentum) :
+    ThreeVector(momentum.m_v)
+  {}
+
   ThreeVector::ThreeVector(ThreeVector&& momentum) :
     ThreeVector(momentum.m_v)
   {}

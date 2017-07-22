@@ -11,6 +11,7 @@ namespace roulette {
       ThreeVector(double x = 0, double y = 0, double z = 0);
       ThreeVector(const boost::numeric::ublas::vector<double>& v);
       ThreeVector(boost::numeric::ublas::vector<double>&& v);
+      ThreeVector(const ThreeVector& momentum);
       ThreeVector(ThreeVector&& momentum);
 
       const boost::numeric::ublas::vector<double>& vector() const;

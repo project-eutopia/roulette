@@ -15,6 +15,7 @@ namespace roulette {
       LorentzTransform();
       LorentzTransform(const boost::numeric::ublas::matrix<double>& matrix);
       LorentzTransform(boost::numeric::ublas::matrix<double>&& matrix);
+      LorentzTransform(const LorentzTransform& lorentz);
       LorentzTransform(LorentzTransform&& lorentz);
       LorentzTransform(
         double m00, double m01, double m02, double m03,
