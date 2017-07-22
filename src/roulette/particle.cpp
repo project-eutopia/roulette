@@ -15,20 +15,6 @@ namespace roulette {
   {
   }
 
-  Particle::Particle(const Particle& particle) :
-    m_momentum(particle.m_momentum),
-    m_position(particle.m_position),
-    m_energy(m_momentum.energy())
-  {
-  }
-
-  Particle::Particle(Particle&& particle) :
-    m_momentum(std::move(particle.m_momentum)),
-    m_position(std::move(particle.m_position)),
-    m_energy(m_momentum.energy())
-  {
-  }
-
   const FourMomentum& Particle::momentum() const { return m_momentum; }
   const ThreeVector& Particle::position() const { return m_position; }
 

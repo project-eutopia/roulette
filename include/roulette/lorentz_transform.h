@@ -15,8 +15,6 @@ namespace roulette {
       LorentzTransform();
       LorentzTransform(const boost::numeric::ublas::matrix<double>& matrix);
       LorentzTransform(boost::numeric::ublas::matrix<double>&& matrix);
-      LorentzTransform(const LorentzTransform& lorentz);
-      LorentzTransform(LorentzTransform&& lorentz);
       LorentzTransform(
         double m00, double m01, double m02, double m03,
         double m10, double m11, double m12, double m13,
@@ -32,8 +30,6 @@ namespace roulette {
       static LorentzTransform rotationZ(double angle);
       static LorentzTransform rotationU(double angle, const ThreeVector& u);
       static LorentzTransform rotationUtoV(const ThreeVector& u, const ThreeVector& v);
-
-      LorentzTransform& operator=(const LorentzTransform& other);
 
       friend LorentzTransform operator*(const LorentzTransform& lhs, const LorentzTransform& rhs);
       friend FourMomentum operator*(const LorentzTransform& m, const FourMomentum& v);

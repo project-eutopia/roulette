@@ -14,8 +14,6 @@ namespace roulette {
     public:
       Particle(const FourMomentum& momentum, const ThreeVector& position);
       Particle(FourMomentum&& momentum, ThreeVector&& position);
-      Particle(const Particle& particle);
-      Particle(Particle&& particle);
 
       const FourMomentum& momentum() const;
       const ThreeVector& position() const;

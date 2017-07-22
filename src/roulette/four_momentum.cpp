@@ -23,14 +23,6 @@ namespace roulette {
     assert(m_p.size() == 4);
   }
 
-  FourMomentum::FourMomentum(const FourMomentum& momentum) :
-    FourMomentum(momentum.m_p)
-  {}
-
-  FourMomentum::FourMomentum(FourMomentum&& momentum) :
-    FourMomentum(momentum.m_p)
-  {}
-
   FourMomentum::FourMomentum(double energy, double mass, const ThreeVector& direction) :
     m_p(energy)
   {
@@ -99,16 +91,6 @@ namespace roulette {
   FourMomentum operator+(FourMomentum lhs, const FourMomentum& rhs) {
     lhs += rhs;
     return lhs;
-  }
-
-  FourMomentum& FourMomentum::operator=(const FourMomentum& other) {
-    m_p = other.vector();
-    return *this;
-  }
-
-  FourMomentum& FourMomentum::operator=(FourMomentum&& other) {
-    m_p = std::move(other.m_p);
-    return *this;
   }
 };
 

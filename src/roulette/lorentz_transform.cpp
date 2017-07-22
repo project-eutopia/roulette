@@ -20,16 +20,6 @@ namespace roulette {
     assert(m_matrix.size2() == 4);
   }
 
-  LorentzTransform::LorentzTransform(const LorentzTransform& lorentz) :
-    LorentzTransform(lorentz.m_matrix)
-  {
-  }
-
-  LorentzTransform::LorentzTransform(LorentzTransform&& lorentz) :
-    LorentzTransform(lorentz.m_matrix)
-  {
-  }
-
   LorentzTransform::LorentzTransform(
     double m00, double m01, double m02, double m03,
     double m10, double m11, double m12, double m13,
@@ -130,11 +120,6 @@ namespace roulette {
       0, cross(2) + C*cross(0)*cross(1), 1 - C*(cross(0)*cross(0) + cross(2)*cross(2)), -cross(0) + C*cross(1)*cross(2),
       0, -cross(1) + C*cross(0)*cross(2), cross(0) + C*cross(1)*cross(2), 1 - C*(cross(0)*cross(0) + cross(1)*cross(1))
     );
-  }
-
-  LorentzTransform& LorentzTransform::operator=(const LorentzTransform& other) {
-    m_matrix = other.matrix();
-    return *this;
   }
 
   LorentzTransform operator*(const LorentzTransform& lhs, const LorentzTransform& rhs) {

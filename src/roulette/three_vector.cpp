@@ -22,14 +22,6 @@ namespace roulette {
     assert(m_v.size() == 3);
   }
 
-  ThreeVector::ThreeVector(const ThreeVector& momentum) :
-    ThreeVector(momentum.m_v)
-  {}
-
-  ThreeVector::ThreeVector(ThreeVector&& momentum) :
-    ThreeVector(momentum.m_v)
-  {}
-
   const boost::numeric::ublas::vector<double>& ThreeVector::vector() const { return m_v; }
 
   double ThreeVector::operator()(int i) const {
