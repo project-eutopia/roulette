@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/numeric/ublas/vector.hpp>
+#include "roulette/three_vector.h"
 
 #define SPEED_OF_LIGHT 299792458.0
 
@@ -29,6 +30,8 @@ namespace roulette {
       double energy() const;
       double momentum_magnitude() const;
       double momentum_magnitude2() const;
+
+      ThreeVector direction_unit_vector() const;
 
       bool operator==(const FourMomentum& other) const;
       FourMomentum& operator+=(const FourMomentum& rhs);

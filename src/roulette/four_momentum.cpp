@@ -57,6 +57,15 @@ namespace roulette {
     return m_p(1)*m_p(1) + m_p(2)*m_p(2) + m_p(3)*m_p(3);
   }
 
+  ThreeVector FourMomentum::direction_unit_vector() const {
+    double f = this->momentum_magnitude();
+    return ThreeVector(
+      this->px() / f,
+      this->py() / f,
+      this->pz() / f
+    );
+  }
+
   bool FourMomentum::operator==(const FourMomentum& other) const {
     return (m_p(0) == other.e_over_c())
       && (m_p(1) == other.px())
