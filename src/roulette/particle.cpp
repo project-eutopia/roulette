@@ -14,8 +14,8 @@ namespace roulette {
   }
 
   Particle::Particle(const Particle& particle) :
-    m_momentum(std::move(particle.m_momentum)),
-    m_position(std::move(particle.m_position))
+    m_momentum(particle.m_momentum),
+    m_position(particle.m_position)
   {
   }
 
