@@ -4,6 +4,21 @@ project (roulette CXX)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 14)
 
+find_package(Boost 1.61 REQUIRED)
+
+# Include headers
+include_directories (include)
+# Source codes (except main.cpp)
+file (GLOB_RECURSE SOURCES "src/*.cpp")
+list (REMOVE_ITEM SOURCES "${CMAKE_SOURCE_DIR}/src/main.cpp")
+
+# Main executable
+add_executable (main "src/main.cpp")
+target_link_libraries (main ${PROJECT_NAME})
+
+# Create shared library
+add_library(${PROJECT_NAME} SHARED ${SOURCES})
+
 # Google test library
 # Setup on Ubuntu like (see: https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/)
 #
@@ -13,22 +28,7 @@ set(CMAKE_CXX_STANDARD 14)
 # sudo cmake CMakeLists.txt
 # sudo make
 # sudo cp *.a /usr/lib
-enable_testing()
 find_package(GTest REQUIRED)
-find_package(Boost 1.61 REQUIRED)
-
-# Include headers
-include_directories (include)
-# Source codes (except main.cpp)
-file (GLOB_RECURSE SOURCES "src/*.cpp")
-list (REMOVE_ITEM SOURCES "${CMAKE_SOURCE_DIR}/src/main.cpp")
-
-# Create shared library
-add_library(${PROJECT_NAME} SHARED ${SOURCES})
-
-# Main executable
-add_executable (main "src/main.cpp")
-target_link_libraries (main ${PROJECT_NAME})
 
 # Test command
 if (GTest_FOUND)
