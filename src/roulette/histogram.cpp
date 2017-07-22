@@ -11,9 +11,9 @@ namespace roulette {
   Histogram::Histogram(double low, double high, int nbins) :
     m_low(low),
     m_high(high),
+    m_delta((high-low) / nbins),
     m_nbins(nbins),
     m_total(0),
-    m_delta((high-low) / nbins),
     m_counts(nbins+2, 0)
   {
   }

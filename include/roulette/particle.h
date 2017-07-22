@@ -6,10 +6,10 @@
 namespace roulette {
   class Particle {
     protected:
-      // Stores energy not only implicitly in FourMomentum
-      double m_energy;
       FourMomentum m_momentum;
       ThreeVector m_position;
+      // Stores energy not only implicitly in FourMomentum
+      double m_energy;
 
     public:
       Particle(const FourMomentum& momentum, const ThreeVector& position);

@@ -7,13 +7,13 @@
 namespace roulette {
   class Histogram {
     private:
-      // Stores nbins + 2 (for before and after bins)
-      std::vector<double> m_counts;
       double m_low;
       double m_high;
       double m_delta;
       int m_nbins;
       double m_total;
+      // Stores nbins + 2 (for before and after bins)
+      std::vector<double> m_counts;
 
     public:
       Histogram(double low, double high, int nbins);
