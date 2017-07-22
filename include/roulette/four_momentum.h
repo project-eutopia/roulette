@@ -3,8 +3,6 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include "roulette/three_vector.h"
 
-#define SPEED_OF_LIGHT 299792458.0
-
 namespace roulette {
   // Uses Minkowski space-time metric diag(1,-1,-1,-1)
   class FourMomentum {
@@ -12,7 +10,7 @@ namespace roulette {
       boost::numeric::ublas::vector<double> m_p;
 
     public:
-      FourMomentum(double e_over_c = 0, double px = 0, double py = 0, double pz = 0);
+      FourMomentum(double e = 0, double px = 0, double py = 0, double pz = 0);
       FourMomentum(const boost::numeric::ublas::vector<double>& p);
       FourMomentum(boost::numeric::ublas::vector<double>&& p);
       FourMomentum(FourMomentum&& momentum);
@@ -20,7 +18,7 @@ namespace roulette {
       const boost::numeric::ublas::vector<double>& vector() const;
 
       double operator()(int i) const;
-      double e_over_c() const;
+      double e() const;
       double px() const;
       double py() const;
       double pz() const;

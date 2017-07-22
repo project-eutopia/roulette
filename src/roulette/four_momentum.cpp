@@ -3,10 +3,10 @@
 #include <cmath>
 
 namespace roulette {
-  FourMomentum::FourMomentum(double e_over_c, double px, double py, double pz) :
+  FourMomentum::FourMomentum(double e, double px, double py, double pz) :
     m_p(4)
   {
-    m_p(0) = e_over_c;
+    m_p(0) = e;
     m_p(1) = px;
     m_p(2) = py;
     m_p(3) = pz;
@@ -34,7 +34,7 @@ namespace roulette {
     return m_p(i);
   }
 
-  double FourMomentum::e_over_c() const { return m_p(0); }
+  double FourMomentum::e() const { return m_p(0); }
   double FourMomentum::px() const { return m_p(1); }
   double FourMomentum::py() const { return m_p(2); }
   double FourMomentum::pz() const { return m_p(3); }
@@ -47,7 +47,7 @@ namespace roulette {
   }
 
   double FourMomentum::energy() const {
-    return m_p(0) * SPEED_OF_LIGHT;
+    return m_p(0);
   }
 
   double FourMomentum::momentum_magnitude() const {
@@ -67,7 +67,7 @@ namespace roulette {
   }
 
   bool FourMomentum::operator==(const FourMomentum& other) const {
-    return (m_p(0) == other.e_over_c())
+    return (m_p(0) == other.e())
       && (m_p(1) == other.px())
       && (m_p(2) == other.py())
       && (m_p(3) == other.pz());
@@ -85,7 +85,7 @@ namespace roulette {
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::FourMomentum& p) {
-  os << "FourMomentum(" << p.e_over_c() << ", " << p.px() << ", " << p.py() << ", " << p.pz() << ")";
+  os << "FourMomentum(" << p.e() << ", " << p.px() << ", " << p.py() << ", " << p.pz() << ")";
   return os;
 }
 

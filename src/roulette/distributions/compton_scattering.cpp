@@ -4,7 +4,7 @@
 
 #define EV_IN_JOULES 1.6021773E-13
 #define ELECTRON_MASS_IN_EV 510998.9461
-#define ELECTRON_REST_ENERGY_IN_EV ELECTRON_MASS_IN_EV*SPEED_OF_LIGHT*SPEED_OF_LIGHT
+#define ELECTRON_REST_ENERGY_IN_EV ELECTRON_MASS_IN_EV
 
 namespace roulette {
   namespace distributions {
@@ -75,16 +75,16 @@ namespace roulette {
     }
 
     FourMomentum ComptonScattering::initial_photon_momentum() const {
-      double factor = ELECTRON_REST_ENERGY_IN_EV*m_photon_E_0/SPEED_OF_LIGHT;
+      double factor = ELECTRON_REST_ENERGY_IN_EV*m_photon_E_0;
       return FourMomentum(factor, factor, 0, 0);
     }
 
     FourMomentum ComptonScattering::initial_electron_momentum() const {
-      return FourMomentum(ELECTRON_REST_ENERGY_IN_EV/SPEED_OF_LIGHT, 0, 0, 0);
+      return FourMomentum(ELECTRON_REST_ENERGY_IN_EV, 0, 0, 0);
     }
 
     FourMomentum ComptonScattering::final_photon_momentum() const {
-      double factor = ELECTRON_REST_ENERGY_IN_EV*m_photon_E_1/SPEED_OF_LIGHT;
+      double factor = ELECTRON_REST_ENERGY_IN_EV*m_photon_E_1;
       return FourMomentum(
         factor,
         factor*std::cos(m_photon_theta),
@@ -94,9 +94,9 @@ namespace roulette {
     }
 
     FourMomentum ComptonScattering::final_electron_momentum() const {
-      double momentum_magnitude = ELECTRON_MASS_IN_EV*SPEED_OF_LIGHT*std::sqrt(m_electron_E_1*m_electron_E_1 - 1);
+      double momentum_magnitude = ELECTRON_MASS_IN_EV*std::sqrt(m_electron_E_1*m_electron_E_1 - 1);
       return FourMomentum(
-        ELECTRON_REST_ENERGY_IN_EV*m_electron_E_1/SPEED_OF_LIGHT,
+        ELECTRON_REST_ENERGY_IN_EV*m_electron_E_1,
         momentum_magnitude * std::cos(m_electron_theta),
         momentum_magnitude * std::sin(m_electron_theta),
         0
