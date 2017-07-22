@@ -13,7 +13,7 @@ namespace roulette {
     public:
       FourMomentum(double e_over_c = 0, double px = 0, double py = 0, double pz = 0);
 
-      const boost::numeric::ublas::vector<double>& p() const;
+      const boost::numeric::ublas::vector<double>& vector() const;
 
       double e_over_c() const;
       double px() const;

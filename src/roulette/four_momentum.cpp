@@ -12,7 +12,7 @@ namespace roulette {
     m_p(3) = pz;
   }
 
-  const boost::numeric::ublas::vector<double>& FourMomentum::p() const { return m_p; }
+  const boost::numeric::ublas::vector<double>& FourMomentum::vector() const { return m_p; }
 
   double FourMomentum::e_over_c() const { return m_p(0); }
   double FourMomentum::px() const { return m_p(1); }
@@ -45,7 +45,7 @@ namespace roulette {
   }
 
   FourMomentum& FourMomentum::operator+=(const FourMomentum& rhs) {
-    m_p += rhs.p();
+    m_p += rhs.vector();
     return *this;
   }
 
