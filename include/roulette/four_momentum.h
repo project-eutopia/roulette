@@ -18,6 +18,7 @@ namespace roulette {
 
       const boost::numeric::ublas::vector<double>& vector() const;
 
+      double operator()(int i) const;
       double e_over_c() const;
       double px() const;
       double py() const;

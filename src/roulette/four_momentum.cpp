@@ -29,6 +29,11 @@ namespace roulette {
 
   const boost::numeric::ublas::vector<double>& FourMomentum::vector() const { return m_p; }
 
+  double FourMomentum::operator()(int i) const {
+    assert(i >= 0 && i < 4);
+    return m_p(i);
+  }
+
   double FourMomentum::e_over_c() const { return m_p(0); }
   double FourMomentum::px() const { return m_p(1); }
   double FourMomentum::py() const { return m_p(2); }
