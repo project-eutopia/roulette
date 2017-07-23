@@ -7,7 +7,7 @@
 
 using namespace roulette;
 
-TEST(VoxelGridTest, intersection_times_for_start_on) {
+TEST(VoxelGridTest, intersection_for_start_inside) {
   VoxelGrid grid(
     ThreeVector(0, 0, 0),
     ThreeVector(10, 10, 20)
@@ -20,10 +20,11 @@ TEST(VoxelGridTest, intersection_times_for_start_on) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 5);
-    ASSERT_TRUE(std::isnan(t.second));
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_TRUE(res);
+    ASSERT_EQ(photon.position()(0), 10);
+    ASSERT_EQ(photon.position()(1), 5);
+    ASSERT_EQ(photon.position()(2), 10);
   }
 
   {
@@ -33,10 +34,11 @@ TEST(VoxelGridTest, intersection_times_for_start_on) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 2.5);
-    ASSERT_TRUE(std::isnan(t.second));
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_TRUE(res);
+    ASSERT_EQ(photon.position()(0), 10);
+    ASSERT_EQ(photon.position()(1), 10);
+    ASSERT_EQ(photon.position()(2), 10);
   }
 
   {
@@ -46,14 +48,15 @@ TEST(VoxelGridTest, intersection_times_for_start_on) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 10);
-    ASSERT_TRUE(std::isnan(t.second));
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_TRUE(res);
+    ASSERT_EQ(photon.position()(0), 10);
+    ASSERT_EQ(photon.position()(1), 10);
+    ASSERT_EQ(photon.position()(2), 0);
   }
 }
 
-TEST(VoxelGridTest, intersection_times_for_start_on_plane) {
+TEST(VoxelGridTest, intersection_for_start_on_plane) {
   VoxelGrid grid(
     ThreeVector(0, 0, 0),
     ThreeVector(10, 10, 20)
@@ -66,10 +69,11 @@ TEST(VoxelGridTest, intersection_times_for_start_on_plane) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 0);
-    ASSERT_EQ(t.second, 10);
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_TRUE(res);
+    ASSERT_EQ(photon.position()(0), 0);
+    ASSERT_EQ(photon.position()(1), 5);
+    ASSERT_EQ(photon.position()(2), 10);
   }
 
   {
@@ -79,10 +83,11 @@ TEST(VoxelGridTest, intersection_times_for_start_on_plane) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 0);
-    ASSERT_EQ(t.second, 10);
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_TRUE(res);
+    ASSERT_EQ(photon.position()(0), 0);
+    ASSERT_EQ(photon.position()(1), 0);
+    ASSERT_EQ(photon.position()(2), 10);
   }
 
   {
@@ -92,14 +97,15 @@ TEST(VoxelGridTest, intersection_times_for_start_on_plane) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 0);
-    ASSERT_EQ(t.second, 10);
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_TRUE(res);
+    ASSERT_EQ(photon.position()(0), 0);
+    ASSERT_EQ(photon.position()(1), 0);
+    ASSERT_EQ(photon.position()(2), 0);
   }
 }
 
-TEST(VoxelGridTest, intersection_times_for_outside_grid) {
+TEST(VoxelGridTest, intersection_for_outside_grid) {
   VoxelGrid grid(
     ThreeVector(0, 0, 0),
     ThreeVector(10, 10, 20)
@@ -112,10 +118,11 @@ TEST(VoxelGridTest, intersection_times_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 5);
-    ASSERT_EQ(t.second, 15);
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_TRUE(res);
+    ASSERT_EQ(photon.position()(0), 0);
+    ASSERT_EQ(photon.position()(1), 5);
+    ASSERT_EQ(photon.position()(2), 10);
   }
 
   {
@@ -125,10 +132,8 @@ TEST(VoxelGridTest, intersection_times_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 5);
-    ASSERT_EQ(t.second, 15);
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_FALSE(res);
   }
 
   {
@@ -138,10 +143,8 @@ TEST(VoxelGridTest, intersection_times_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 5);
-    ASSERT_EQ(t.second, 15);
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_FALSE(res);
   }
 
   {
@@ -151,10 +154,8 @@ TEST(VoxelGridTest, intersection_times_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_TRUE(std::isnan(t.first));
-    ASSERT_TRUE(std::isnan(t.second));
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_FALSE(res);
   }
 
   {
@@ -164,10 +165,8 @@ TEST(VoxelGridTest, intersection_times_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    std::pair<double,double> t = grid.intersection_times(photon);
-
-    ASSERT_EQ(t.first, 5);
-    ASSERT_TRUE(std::isnan(t.second));
+    bool res = grid.transport_particle_to_surface(photon);
+    ASSERT_FALSE(res);
   }
 }
 

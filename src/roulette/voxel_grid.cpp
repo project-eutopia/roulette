@@ -42,12 +42,12 @@ namespace roulette {
   /*   return m_densities[zi][yi][xi]; */
   /* } */
 
-  std::pair<double,double> VoxelGrid::intersection_times(const Particle& particle) const {
+  bool VoxelGrid::transport_particle_to_surface(Particle& particle) const {
     double u_dot_x_normal = particle.momentum()(1);
     double u_dot_y_normal = particle.momentum()(2);
     double u_dot_z_normal = particle.momentum()(3);
 
-    std::vector<double> times;
+    std::vector<std::pair<int,double>> plane_and_times;
 
     double t;
     double x, y, z;
@@ -59,7 +59,7 @@ namespace roulette {
       z = particle.position()(2) + t * particle.momentum()(3);
 
       if (y >= m_v0(1) && y <= m_vn(1) && z >= m_v0(2) && z <= m_vn(2)) {
-        times.push_back(t);
+        plane_and_times.push_back(std::make_pair(0, t));
       }
     }
 
@@ -70,7 +70,7 @@ namespace roulette {
       z = particle.position()(2) + t * particle.momentum()(3);
 
       if (y >= m_v0(1) && y <= m_vn(1) && z >= m_v0(2) && z <= m_vn(2)) {
-        times.push_back(t);
+        plane_and_times.push_back(std::make_pair(1, t));
       }
     }
 
@@ -81,7 +81,7 @@ namespace roulette {
       z = particle.position()(2) + t * particle.momentum()(3);
 
       if (x >= m_v0(0) && x <= m_vn(0) && z >= m_v0(2) && z <= m_vn(2)) {
-        times.push_back(t);
+        plane_and_times.push_back(std::make_pair(2, t));
       }
     }
 
@@ -92,7 +92,7 @@ namespace roulette {
       z = particle.position()(2) + t * particle.momentum()(3);
 
       if (x >= m_v0(0) && x <= m_vn(0) && z >= m_v0(2) && z <= m_vn(2)) {
-        times.push_back(t);
+        plane_and_times.push_back(std::make_pair(3, t));
       }
     }
 
@@ -103,7 +103,7 @@ namespace roulette {
       y = particle.position()(1) + t * particle.momentum()(2);
 
       if (x >= m_v0(0) && x <= m_vn(0) && y >= m_v0(1) && y <= m_vn(1)) {
-        times.push_back(t);
+        plane_and_times.push_back(std::make_pair(4, t));
       }
     }
 
@@ -114,45 +114,80 @@ namespace roulette {
       y = particle.position()(1) + t * particle.momentum()(2);
 
       if (x >= m_v0(0) && x <= m_vn(0) && y >= m_v0(1) && y <= m_vn(1)) {
-        times.push_back(t);
+        plane_and_times.push_back(std::make_pair(5, t));
       }
     }
 
     // Sort times in increasing order
-    std::sort(times.begin(), times.end());
+    std::sort(plane_and_times.begin(), plane_and_times.end(), [](auto &left, auto &right) {
+      return left.second < right.second;
+    });
 
-    std::vector<double> unique_times;
-    for (double t : times) {
+    std::vector<std::pair<int,double>> unique_times;
+    for (const auto& pt : plane_and_times) {
       if (unique_times.empty()) {
-        unique_times.push_back(t);
+        unique_times.push_back(pt);
       }
       else {
-        if (t != unique_times.back()) {
-          unique_times.push_back(t);
+        if (pt.second != unique_times.back().second) {
+          unique_times.push_back(pt);
         }
       }
     }
 
-    switch (unique_times.size()) {
-      case 1:
-        return std::make_pair(unique_times[0], std::numeric_limits<double>::quiet_NaN());
-      case 2:
-        return std::make_pair(unique_times[0], unique_times[1]);
-      default:
-        return std::make_pair(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+    // If do not intersect, cannot transport to surface
+    if (unique_times.size() == 0) return false;
+
+    if (this->outside(particle.position())) {
+      // Coming from outside, to pass through must hit TWO surfaces
+      if (unique_times.size() != 2) return false;
+
+      double middle_t = (unique_times[0].second + unique_times[1].second) / 2.0;
+      ThreeVector middle(
+        particle.position()(0) + middle_t * particle.momentum()(1),
+        particle.position()(1) + middle_t * particle.momentum()(2),
+        particle.position()(2) + middle_t * particle.momentum()(3)
+      );
+
+      // If a middle point of the intersecting tangent is not strictly within the bounds,
+      // then we are just skimming a surface, so skip
+      if (!this->strictly_inside(middle)) return false;
     }
-  }
 
-  bool VoxelGrid::transport_particle_to_surface(Particle& particle) const {
-    if (this->inside(particle.position())) return false;
-
-    std::pair<double,double> intersection_times = this->intersection_times(particle);
-    if (std::isnan(intersection_times.second)) return false;
-
-    particle.position()(0) += intersection_times.first * particle.momentum()(1);
-    particle.position()(1) += intersection_times.first * particle.momentum()(2);
-    particle.position()(2) += intersection_times.first * particle.momentum()(3);
-
-    return true;
+    switch(unique_times[0].first) {
+      case 0:
+        particle.position()(0) = m_v0(0);
+        particle.position()(1) += unique_times[0].second * particle.momentum()(2);
+        particle.position()(2) += unique_times[0].second * particle.momentum()(3);
+        return true;
+      case 1:
+        particle.position()(0) = m_vn(0);
+        particle.position()(1) += unique_times[0].second * particle.momentum()(2);
+        particle.position()(2) += unique_times[0].second * particle.momentum()(3);
+        return true;
+      case 2:
+        particle.position()(0) += unique_times[0].second * particle.momentum()(1);
+        particle.position()(1) = m_v0(1);
+        particle.position()(2) += unique_times[0].second * particle.momentum()(3);
+        return true;
+      case 3:
+        particle.position()(0) += unique_times[0].second * particle.momentum()(1);
+        particle.position()(1) = m_vn(1);
+        particle.position()(2) += unique_times[0].second * particle.momentum()(3);
+        return true;
+      case 4:
+        particle.position()(0) += unique_times[0].second * particle.momentum()(1);
+        particle.position()(1) += unique_times[0].second * particle.momentum()(2);
+        particle.position()(2) = m_v0(2);
+        return true;
+      case 5:
+        particle.position()(0) += unique_times[0].second * particle.momentum()(1);
+        particle.position()(1) += unique_times[0].second * particle.momentum()(2);
+        particle.position()(2) = m_vn(2);
+        return true;
+      default:
+        assert(false);
+        return false;
+    }
   }
 };
