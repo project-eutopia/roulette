@@ -65,14 +65,28 @@ namespace roulette {
     return (m_v(0) == other(0)) && (m_v(1) == other(1)) && (m_v(2) == other(2));
   }
 
-  ThreeVector& ThreeVector::operator+=(const ThreeVector& rhs) {
-    m_v += rhs.vector();
-    return *this;
+  ThreeVector operator+(const ThreeVector& lhs, const ThreeVector& rhs) {
+    return ThreeVector(lhs.m_v + rhs.m_v);
   }
 
-  ThreeVector operator+(ThreeVector lhs, const ThreeVector& rhs) {
-    lhs += rhs;
-    return lhs;
+  ThreeVector operator-(const ThreeVector& lhs, const ThreeVector& rhs) {
+    return ThreeVector(lhs.m_v - rhs.m_v);
+  }
+
+  ThreeVector operator*(const ThreeVector& lhs, double rhs) {
+    return ThreeVector(lhs.m_v * rhs);
+  }
+
+  ThreeVector operator*(double lhs, const ThreeVector& rhs) {
+    return ThreeVector(lhs * rhs.m_v);
+  }
+
+  ThreeVector operator/(const ThreeVector& lhs, double rhs) {
+    return ThreeVector(lhs.m_v / rhs);
+  }
+
+  ThreeVector operator/(double lhs, const ThreeVector& rhs) {
+    return ThreeVector(lhs / rhs.m_v);
   }
 };
 

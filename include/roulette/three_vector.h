@@ -28,8 +28,13 @@ namespace roulette {
       ThreeVector cross(const ThreeVector& other) const;
 
       bool operator==(const ThreeVector& other) const;
-      ThreeVector& operator+=(const ThreeVector& rhs);
-      friend ThreeVector operator+(ThreeVector lhs, const ThreeVector& rhs);
+
+      friend ThreeVector operator+(const ThreeVector& lhs, const ThreeVector& rhs);
+      friend ThreeVector operator-(const ThreeVector& lhs, const ThreeVector& rhs);
+      friend ThreeVector operator*(const ThreeVector& lhs, double rhs);
+      friend ThreeVector operator*(double lhs, const ThreeVector& rhs);
+      friend ThreeVector operator/(const ThreeVector& lhs, double rhs);
+      friend ThreeVector operator/(double lhs, const ThreeVector& rhs);
   };
 };
 

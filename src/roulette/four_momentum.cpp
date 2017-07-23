@@ -92,14 +92,28 @@ namespace roulette {
       && (m_p(3) == other.pz());
   }
 
-  FourMomentum& FourMomentum::operator+=(const FourMomentum& rhs) {
-    m_p += rhs.vector();
-    return *this;
+  FourMomentum operator+(const FourMomentum& lhs, const FourMomentum& rhs) {
+    return FourMomentum(lhs.m_p + rhs.m_p);
   }
 
-  FourMomentum operator+(FourMomentum lhs, const FourMomentum& rhs) {
-    lhs += rhs;
-    return lhs;
+  FourMomentum operator-(const FourMomentum& lhs, const FourMomentum& rhs) {
+    return FourMomentum(lhs.m_p - rhs.m_p);
+  }
+
+  FourMomentum operator*(const FourMomentum& lhs, double rhs) {
+    return FourMomentum(lhs.m_p * rhs);
+  }
+
+  FourMomentum operator*(double lhs, const FourMomentum& rhs) {
+    return FourMomentum(lhs * rhs.m_p);
+  }
+
+  FourMomentum operator/(const FourMomentum& lhs, double rhs) {
+    return FourMomentum(lhs.m_p / rhs);
+  }
+
+  FourMomentum operator/(double lhs, const FourMomentum& rhs) {
+    return FourMomentum(lhs / rhs.m_p);
   }
 };
 

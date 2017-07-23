@@ -38,8 +38,12 @@ namespace roulette {
 
       bool operator==(const FourMomentum& other) const;
 
-      FourMomentum& operator+=(const FourMomentum& rhs);
-      friend FourMomentum operator+(FourMomentum lhs, const FourMomentum& rhs);
+      friend FourMomentum operator+(const FourMomentum& lhs, const FourMomentum& rhs);
+      friend FourMomentum operator-(const FourMomentum& lhs, const FourMomentum& rhs);
+      friend FourMomentum operator*(double lhs, const FourMomentum& rhs);
+      friend FourMomentum operator*(const FourMomentum& lhs, double rhs);
+      friend FourMomentum operator/(double lhs, const FourMomentum& rhs);
+      friend FourMomentum operator/(const FourMomentum& lhs, double rhs);
   };
 };
 
