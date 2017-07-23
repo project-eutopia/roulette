@@ -170,3 +170,20 @@ TEST(VoxelGridTest, intersection_times_for_outside_grid) {
     ASSERT_TRUE(std::isnan(t.second));
   }
 }
+
+TEST(VoxelGridTest, transport_particle_to_surface_works) {
+  VoxelGrid grid(
+    ThreeVector(0, 0, 0),
+    ThreeVector(10, 10, 20)
+  );
+
+  Photon photon(
+    FourMomentum(1, 1, 0, 0),
+    ThreeVector(-5, 5, 10)
+  );
+
+  bool res = grid.transport_particle_to_surface(photon);
+  ASSERT_TRUE(res);
+
+  ASSERT_EQ(photon.position()(0), 0);
+}

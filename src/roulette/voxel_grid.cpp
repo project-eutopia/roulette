@@ -26,6 +26,14 @@ namespace roulette {
     );
   }
 
+  bool VoxelGrid::strictly_inside(const ThreeVector& point) const {
+    return (
+      point(0) > m_v0(0) && point(0) < m_vn(0) &&
+      point(1) > m_v0(1) && point(1) < m_vn(1) &&
+      point(2) > m_v0(2) && point(2) < m_vn(2)
+    );
+  }
+
   bool VoxelGrid::outside(const ThreeVector& point) const {
     return !this->inside(point);
   }
@@ -133,5 +141,18 @@ namespace roulette {
       default:
         return std::make_pair(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
     }
+  }
+
+  bool VoxelGrid::transport_particle_to_surface(Particle& particle) const {
+    if (this->inside(particle.position())) return false;
+
+    std::pair<double,double> intersection_times = this->intersection_times(particle);
+    if (std::isnan(intersection_times.second)) return false;
+
+    particle.position()(0) += intersection_times.first * particle.momentum()(1);
+    particle.position()(1) += intersection_times.first * particle.momentum()(2);
+    particle.position()(2) += intersection_times.first * particle.momentum()(3);
+
+    return true;
   }
 };

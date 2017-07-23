@@ -35,6 +35,7 @@ namespace roulette {
       const ThreeVector& vn() const;
 
       bool inside(const ThreeVector& point) const;
+      bool strictly_inside(const ThreeVector& point) const;
       bool outside(const ThreeVector& point) const;
 
       /* double operator()(unsigned int zi, unsigned int yi, unsigned int xi) const; */
@@ -43,5 +44,9 @@ namespace roulette {
       // One intersection (t, nan)
       // Two intersections (t1, t2)
       std::pair<double,double> intersection_times(const Particle& particle) const;
+
+      // Returns true if outside particle that intersects surface,
+      // and therefore was successfully moved up to surface
+      bool transport_particle_to_surface(Particle& particle) const;
   };
 };
