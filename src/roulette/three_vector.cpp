@@ -72,7 +72,7 @@ namespace roulette {
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::ThreeVector& v) {
-  os << "ThreeVector(" << ", " << v.x() << ", " << v.y() << ", " << v.z() << ")";
+  os << "ThreeVector(" << v.x() << ", " << v.y() << ", " << v.z() << ")";
   return os;
 }
 
