@@ -31,6 +31,7 @@ namespace roulette {
     // So multiple direction vector by |p| / |direction|
     double factor = std::sqrt(energy*energy - mass*mass) / direction.magnitude();
 
+    m_p(0) = energy;
     m_p(1) = factor * direction(0);
     m_p(2) = factor * direction(1);
     m_p(3) = factor * direction(2);
