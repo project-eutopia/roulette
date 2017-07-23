@@ -27,13 +27,11 @@ namespace roulette {
     double sin_phi = std::sin(phi);
     double cos_phi = std::cos(phi);
 
-    // theta and phi rotation
     m_momentum = rotate_to_initial * FourMomentum(photon_energy, xsign * cos_p * photon_energy, sin_p * cos_phi * photon_energy, sin_p * sin_phi * photon_energy);
 
-    // theta and -phi (to conserve momentum) rotation
     double e_momentum = std::sqrt(electron_energy*electron_energy - Electron::MASS*Electron::MASS);
     return Electron(
-      rotate_to_initial * FourMomentum(electron_energy, xsign * cos_e * e_momentum, sin_e * cos_phi * e_momentum, sin_e * (-sin_phi) * e_momentum),
+      rotate_to_initial * FourMomentum(electron_energy, xsign * cos_e * e_momentum, sin_e * cos_phi * e_momentum, sin_e * sin_phi * e_momentum),
       ThreeVector(this->position()(0), this->position()(1), this->position()(2))
     );
   }
