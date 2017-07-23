@@ -2,8 +2,11 @@
 
 #include "test_helper.h"
 
+#include "roulette/random_generator.h"
 #include "roulette/voxel_grid.h"
 #include "roulette/photon.h"
+#include "roulette/distributions/dirac_delta.h"
+#include "roulette/beamlet_particle_generator.h"
 
 using namespace roulette;
 
@@ -185,4 +188,22 @@ TEST(VoxelGridTest, transport_particle_to_surface_works) {
   ASSERT_TRUE(res);
 
   ASSERT_EQ(photon.position()(0), 0);
+}
+
+TEST(VoxelGridTest, transport_beamlet_particle_to_surface) {
+  RandomGenerator generator;
+  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(20, 10, 10));
+  Beamlet beamlet(ThreeVector(-10, 0, 0), ThreeVector(0, -1, -1), ThreeVector(0, 1, -1), ThreeVector(0, 1, 1));
+  double energy = 1000000;
+  BeamletParticleGenerator<Photon,distributions::DiracDelta> photon_generator(
+    beamlet,
+    distributions::DiracDelta(energy)
+  );
+
+  Photon initial_photon = photon_generator.generate(generator);
+  Photon current_photon = initial_photon;
+  bool res = grid.transport_particle_to_surface(current_photon);
+  std::cout << initial_photon << std::endl;
+  std::cout << current_photon << std::endl;
+  ASSERT_TRUE(res);
 }
