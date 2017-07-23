@@ -4,23 +4,35 @@
 #include <cmath>
 
 namespace roulette {
-  VoxelGrid::VoxelGrid(boost::multi_array<double,3>&& densities, const ThreeVector& v0, const ThreeVector& vn) :
-    m_densities(densities),
+  VoxelGrid::VoxelGrid(/*boost::multi_array<double,3>&& densities,*/ const ThreeVector& v0, const ThreeVector& vn) :
+    /* m_densities(densities), */
     m_v0(v0),
     m_vn(vn)
   {
   }
 
-  unsigned int VoxelGrid::nz() const { return m_densities.shape()[0]; }
-  unsigned int VoxelGrid::ny() const { return m_densities.shape()[1]; }
-  unsigned int VoxelGrid::nx() const { return m_densities.shape()[2]; }
+  /* unsigned int VoxelGrid::nz() const { return m_densities.shape()[0]; } */
+  /* unsigned int VoxelGrid::ny() const { return m_densities.shape()[1]; } */
+  /* unsigned int VoxelGrid::nx() const { return m_densities.shape()[2]; } */
 
   const ThreeVector& VoxelGrid::v0() const { return m_v0; }
   const ThreeVector& VoxelGrid::vn() const { return m_vn; }
 
-  double VoxelGrid::operator()(unsigned int zi, unsigned int yi, unsigned int xi) const {
-    return m_densities[zi][yi][xi];
+  bool VoxelGrid::inside(const ThreeVector& point) const {
+    return (
+      point(0) >= m_v0(0) && point(0) <= m_vn(0) &&
+      point(1) >= m_v0(1) && point(1) <= m_vn(1) &&
+      point(2) >= m_v0(2) && point(2) <= m_vn(2)
+    );
   }
+
+  bool VoxelGrid::outside(const ThreeVector& point) const {
+    return !this->inside(point);
+  }
+
+  /* double VoxelGrid::operator()(unsigned int zi, unsigned int yi, unsigned int xi) const { */
+  /*   return m_densities[zi][yi][xi]; */
+  /* } */
 
   std::pair<double,double> VoxelGrid::intersection_times(const Particle& particle) const {
     double u_dot_x_normal = particle.momentum()(1);
@@ -33,8 +45,8 @@ namespace roulette {
     double x, y, z;
 
     // Low x plane
-    t = (particle.position()(0) - m_v0(0)) / u_dot_x_normal;
-    if (std::isfinite(t) && t > 0) {
+    t = (m_v0(0) - particle.position()(0)) / u_dot_x_normal;
+    if (std::isfinite(t) && t >= 0) {
       y = particle.position()(1) + t * particle.momentum()(2);
       z = particle.position()(2) + t * particle.momentum()(3);
 
@@ -44,8 +56,8 @@ namespace roulette {
     }
 
     // High x plane
-    t = (particle.position()(0) - m_vn(0)) / u_dot_x_normal;
-    if (std::isfinite(t) && t > 0) {
+    t = (m_vn(0) - particle.position()(0)) / u_dot_x_normal;
+    if (std::isfinite(t) && t >= 0) {
       y = particle.position()(1) + t * particle.momentum()(2);
       z = particle.position()(2) + t * particle.momentum()(3);
 
@@ -55,8 +67,8 @@ namespace roulette {
     }
 
     // Low y plane
-    t = (particle.position()(1) - m_v0(1)) / u_dot_y_normal;
-    if (std::isfinite(t) && t > 0) {
+    t = (m_v0(1) - particle.position()(1)) / u_dot_y_normal;
+    if (std::isfinite(t) && t >= 0) {
       x = particle.position()(0) + t * particle.momentum()(1);
       z = particle.position()(2) + t * particle.momentum()(3);
 
@@ -66,8 +78,8 @@ namespace roulette {
     }
 
     // High y plane
-    t = (particle.position()(1) - m_vn(1)) / u_dot_y_normal;
-    if (std::isfinite(t) && t > 0) {
+    t = (m_vn(1) - particle.position()(1)) / u_dot_y_normal;
+    if (std::isfinite(t) && t >= 0) {
       x = particle.position()(0) + t * particle.momentum()(1);
       z = particle.position()(2) + t * particle.momentum()(3);
 
@@ -77,8 +89,8 @@ namespace roulette {
     }
 
     // Low z plane
-    t = (particle.position()(2) - m_v0(2)) / u_dot_z_normal;
-    if (std::isfinite(t) && t > 0) {
+    t = (m_v0(2) - particle.position()(2)) / u_dot_z_normal;
+    if (std::isfinite(t) && t >= 0) {
       x = particle.position()(0) + t * particle.momentum()(1);
       y = particle.position()(1) + t * particle.momentum()(2);
 
@@ -88,8 +100,8 @@ namespace roulette {
     }
 
     // High z plane
-    t = (particle.position()(2) - m_vn(2)) / u_dot_z_normal;
-    if (std::isfinite(t) && t > 0) {
+    t = (m_vn(2) - particle.position()(2)) / u_dot_z_normal;
+    if (std::isfinite(t) && t >= 0) {
       x = particle.position()(0) + t * particle.momentum()(1);
       y = particle.position()(1) + t * particle.momentum()(2);
 

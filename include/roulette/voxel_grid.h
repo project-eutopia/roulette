@@ -8,7 +8,7 @@ namespace roulette {
   class VoxelGrid {
     private:
       // Density grid
-      boost::multi_array<double,3> m_densities;
+      /* boost::multi_array<double,3> m_densities; */
 
       // Lower left point
       ThreeVector m_v0;
@@ -25,16 +25,19 @@ namespace roulette {
       double m_delta_z;
 
     public:
-      VoxelGrid(boost::multi_array<double,3>&& densities, const ThreeVector& v0, const ThreeVector& vn);
+      VoxelGrid(/*boost::multi_array<double,3>&& densities,*/ const ThreeVector& v0, const ThreeVector& vn);
 
-      unsigned int nz() const;
-      unsigned int ny() const;
-      unsigned int nx() const;
+      /* unsigned int nz() const; */
+      /* unsigned int ny() const; */
+      /* unsigned int nx() const; */
 
       const ThreeVector& v0() const;
       const ThreeVector& vn() const;
 
-      double operator()(unsigned int zi, unsigned int yi, unsigned int xi) const;
+      bool inside(const ThreeVector& point) const;
+      bool outside(const ThreeVector& point) const;
+
+      /* double operator()(unsigned int zi, unsigned int yi, unsigned int xi) const; */
 
       // Either no intersections (nan, nan)
       // One intersection (t, nan)
