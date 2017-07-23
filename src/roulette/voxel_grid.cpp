@@ -1,65 +1,125 @@
 #include "roulette/voxel_grid.h"
 
 #include <cassert>
+#include <cmath>
 
 namespace roulette {
-  VoxelGrid::VoxelGrid(unsigned int nx, double x0, double delta_x, unsigned int ny, double y0, double delta_y, unsigned int nz, double z0, double delta_z, const boost::multi_array<double,3>& densities) :
-    m_nx(nx),
-    m_x0(x0),
-    m_delta_x(delta_x),
-    m_ny(ny),
-    m_y0(y0),
-    m_delta_y(delta_y),
-    m_nz(nz),
-    m_z0(z0),
-    m_delta_z(delta_z),
-    m_densities(densities)
+  VoxelGrid::VoxelGrid(boost::multi_array<double,3>&& densities, const ThreeVector& v0, const ThreeVector& vn) :
+    m_densities(densities),
+    m_v0(v0),
+    m_vn(vn)
   {
-    assert(valid());
   }
 
-  VoxelGrid::VoxelGrid(unsigned int nx, double x0, double delta_x, unsigned int ny, double y0, double delta_y, unsigned int nz, double z0, double delta_z, boost::multi_array<double,3>&& densities) :
-    m_nx(nx),
-    m_x0(x0),
-    m_delta_x(delta_x),
-    m_ny(ny),
-    m_y0(y0),
-    m_delta_y(delta_y),
-    m_nz(nz),
-    m_z0(z0),
-    m_delta_z(delta_z),
-    m_densities(densities)
-  {
-    assert(valid());
-  }
+  unsigned int VoxelGrid::nz() const { return m_densities.shape()[0]; }
+  unsigned int VoxelGrid::ny() const { return m_densities.shape()[1]; }
+  unsigned int VoxelGrid::nx() const { return m_densities.shape()[2]; }
 
-  unsigned int VoxelGrid::nx() const { return m_nx; }
-  double VoxelGrid::x0() const { return m_x0; }
-  double VoxelGrid::xn() const { return m_x0 + m_nx*m_delta_x; }
-  double VoxelGrid::delta_x() const { return m_delta_x; }
-
-  unsigned int VoxelGrid::ny() const { return m_ny; }
-  double VoxelGrid::y0() const { return m_y0; }
-  double VoxelGrid::yn() const { return m_y0 + m_ny*m_delta_y; }
-  double VoxelGrid::delta_y() const { return m_delta_y; }
-
-  unsigned int VoxelGrid::nz() const { return m_nz; }
-  double VoxelGrid::z0() const { return m_z0; }
-  double VoxelGrid::zn() const { return m_z0 + m_nz*m_delta_z; }
-  double VoxelGrid::delta_z() const { return m_delta_z; }
+  const ThreeVector& VoxelGrid::v0() const { return m_v0; }
+  const ThreeVector& VoxelGrid::vn() const { return m_vn; }
 
   double VoxelGrid::operator()(unsigned int zi, unsigned int yi, unsigned int xi) const {
     return m_densities[zi][yi][xi];
   }
 
-  bool VoxelGrid::valid() const {
-    return (
-      (m_nz > 0) &&
-      (m_ny > 0) &&
-      (m_nx > 0) &&
-      (m_nz == m_densities.shape()[0]) &&
-      (m_ny == m_densities.shape()[1]) &&
-      (m_nx == m_densities.shape()[2])
-    );
+  std::pair<double,double> VoxelGrid::intersection_times(const Particle& particle) const {
+    double u_dot_x_normal = particle.momentum()(1);
+    double u_dot_y_normal = particle.momentum()(2);
+    double u_dot_z_normal = particle.momentum()(3);
+
+    std::vector<double> times;
+
+    double t;
+    double x, y, z;
+
+    // Low x plane
+    t = (particle.position()(0) - m_v0(0)) / u_dot_x_normal;
+    if (std::isfinite(t) && t > 0) {
+      y = particle.position()(1) + t * particle.momentum()(2);
+      z = particle.position()(2) + t * particle.momentum()(3);
+
+      if (y >= m_v0(1) && y <= m_vn(1) && z >= m_v0(2) && z <= m_vn(2)) {
+        times.push_back(t);
+      }
+    }
+
+    // High x plane
+    t = (particle.position()(0) - m_vn(0)) / u_dot_x_normal;
+    if (std::isfinite(t) && t > 0) {
+      y = particle.position()(1) + t * particle.momentum()(2);
+      z = particle.position()(2) + t * particle.momentum()(3);
+
+      if (y >= m_v0(1) && y <= m_vn(1) && z >= m_v0(2) && z <= m_vn(2)) {
+        times.push_back(t);
+      }
+    }
+
+    // Low y plane
+    t = (particle.position()(1) - m_v0(1)) / u_dot_y_normal;
+    if (std::isfinite(t) && t > 0) {
+      x = particle.position()(0) + t * particle.momentum()(1);
+      z = particle.position()(2) + t * particle.momentum()(3);
+
+      if (x >= m_v0(0) && x <= m_vn(0) && z >= m_v0(2) && z <= m_vn(2)) {
+        times.push_back(t);
+      }
+    }
+
+    // High y plane
+    t = (particle.position()(1) - m_vn(1)) / u_dot_y_normal;
+    if (std::isfinite(t) && t > 0) {
+      x = particle.position()(0) + t * particle.momentum()(1);
+      z = particle.position()(2) + t * particle.momentum()(3);
+
+      if (x >= m_v0(0) && x <= m_vn(0) && z >= m_v0(2) && z <= m_vn(2)) {
+        times.push_back(t);
+      }
+    }
+
+    // Low z plane
+    t = (particle.position()(2) - m_v0(2)) / u_dot_z_normal;
+    if (std::isfinite(t) && t > 0) {
+      x = particle.position()(0) + t * particle.momentum()(1);
+      y = particle.position()(1) + t * particle.momentum()(2);
+
+      if (x >= m_v0(0) && x <= m_vn(0) && y >= m_v0(1) && y <= m_vn(1)) {
+        times.push_back(t);
+      }
+    }
+
+    // High z plane
+    t = (particle.position()(2) - m_vn(2)) / u_dot_z_normal;
+    if (std::isfinite(t) && t > 0) {
+      x = particle.position()(0) + t * particle.momentum()(1);
+      y = particle.position()(1) + t * particle.momentum()(2);
+
+      if (x >= m_v0(0) && x <= m_vn(0) && y >= m_v0(1) && y <= m_vn(1)) {
+        times.push_back(t);
+      }
+    }
+
+    // Sort times in increasing order
+    std::sort(times.begin(), times.end());
+
+    std::vector<double> unique_times;
+    for (double t : times) {
+      if (unique_times.empty()) {
+        unique_times.push_back(t);
+      }
+      else {
+        if (t != unique_times.back()) {
+          unique_times.push_back(t);
+        }
+      }
+    }
+
+    switch (unique_times.size()) {
+      case 1:
+        return std::make_pair(unique_times[0], std::numeric_limits<double>::quiet_NaN());
+      case 2:
+        return std::make_pair(unique_times[0], unique_times[1]);
+      default:
+        return std::make_pair(std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN());
+    }
   }
 };
