@@ -18,3 +18,5 @@ namespace roulette {
       int charge() const;
   };
 };
+
+std::ostream &operator<<(std::ostream &os, const roulette::Electron& e);

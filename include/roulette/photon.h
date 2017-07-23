@@ -19,3 +19,5 @@ namespace roulette {
       Electron compton_scatter(double photon_energy, double electron_energy, double photon_theta, double electron_theta, double phi);
   };
 };
+
+std::ostream &operator<<(std::ostream &os, const roulette::Photon& p);
