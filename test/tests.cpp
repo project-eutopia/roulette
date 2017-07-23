@@ -2,6 +2,7 @@
 
 #include "real_function_test.h"
 #include "four_momentum_test.h"
+#include "photon_test.h"
 #include "distributions/uniform_test.h"
 #include "distributions/exponential_test.h"
 #include "distributions/rejection_sampling_test.h"
