@@ -30,6 +30,8 @@ namespace roulette {
       double momentum_magnitude() const;
       double momentum_magnitude2() const;
 
+      double dot(const FourMomentum& other) const;
+
       ThreeVector direction_unit_vector() const;
 
       bool operator==(const FourMomentum& other) const;

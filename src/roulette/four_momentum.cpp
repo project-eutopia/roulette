@@ -53,7 +53,7 @@ namespace roulette {
     return std::sqrt(this->mass2());
   }
   double FourMomentum::mass2() const {
-    return m_p(0)*m_p(0) - this->momentum_magnitude2();
+    return this->dot(*this);
   }
 
   double FourMomentum::energy() const {
@@ -65,6 +65,10 @@ namespace roulette {
   }
   double FourMomentum::momentum_magnitude2() const {
     return m_p(1)*m_p(1) + m_p(2)*m_p(2) + m_p(3)*m_p(3);
+  }
+
+  double FourMomentum::dot(const FourMomentum& other) const {
+    return m_p(0)*other(0) - m_p(1)*other(1) - m_p(2)*other(2) - m_p(3)*other(3);
   }
 
   ThreeVector FourMomentum::direction_unit_vector() const {
