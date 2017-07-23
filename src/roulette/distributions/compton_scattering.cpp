@@ -31,6 +31,8 @@ namespace roulette {
 
       this->set_final_photon_energy(x);
 
+      m_phi = 2*M_PI*generator.uniform();
+
       return m_photon_E_1;
     }
 
@@ -60,6 +62,7 @@ namespace roulette {
     double ComptonScattering::final_electron_energy() const { return m_electron_E_1; }
     double ComptonScattering::final_photon_theta() const { return m_photon_theta; }
     double ComptonScattering::final_electron_theta() const { return m_electron_theta; }
+    double ComptonScattering::final_phi() const { return m_phi; }
 
     double ComptonScattering::area_between(double e0, double e1) const {
       return normalized_cdf(e1) - normalized_cdf(e0);

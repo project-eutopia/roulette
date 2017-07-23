@@ -20,6 +20,7 @@ namespace roulette {
         double m_electron_E_1;
         double m_photon_theta;
         double m_electron_theta;
+        double m_phi;
 
         double Emin, Emax, A1, A2, alpha1, alpha2;
 
@@ -45,6 +46,7 @@ namespace roulette {
         FourMomentum initial_electron_momentum() const;
         FourMomentum final_photon_momentum() const;
         FourMomentum final_electron_momentum() const;
+        double final_phi() const;
 
       private:
         double cdf(double e) const;
