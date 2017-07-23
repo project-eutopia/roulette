@@ -42,7 +42,7 @@ namespace roulette {
     return std::sqrt(this->magnitude2());
   }
   double ThreeVector::magnitude2() const {
-    return m_v(1)*m_v(1) + m_v(2)*m_v(2) + m_v(3)*m_v(3);
+    return m_v(0)*m_v(0) + m_v(1)*m_v(1) + m_v(2)*m_v(2);
   }
 
   double ThreeVector::dot(const ThreeVector& other) const {
