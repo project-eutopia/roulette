@@ -44,6 +44,11 @@ namespace roulette {
     return m_p(i);
   }
 
+  double& FourMomentum::operator()(int i) {
+    assert(i >= 0 && i < 4);
+    return m_p(i);
+  }
+
   double FourMomentum::e() const { return m_p(0); }
   double FourMomentum::px() const { return m_p(1); }
   double FourMomentum::py() const { return m_p(2); }

@@ -29,6 +29,11 @@ namespace roulette {
     return m_v(i);
   }
 
+  double& ThreeVector::operator()(int i) {
+    assert(i >= 0 && i < 3);
+    return m_v(i);
+  }
+
   double ThreeVector::x() const { return m_v(0); }
   double ThreeVector::y() const { return m_v(1); }
   double ThreeVector::z() const { return m_v(2); }

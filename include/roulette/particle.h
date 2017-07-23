@@ -16,7 +16,9 @@ namespace roulette {
       Particle(FourMomentum&& momentum, ThreeVector&& position);
 
       const FourMomentum& momentum() const;
+      FourMomentum& momentum();
       const ThreeVector& position() const;
+      ThreeVector& position();
 
       double energy() const;
 
