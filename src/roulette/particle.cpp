@@ -1,19 +1,19 @@
 #include "roulette/particle.h"
 
 namespace roulette {
-  Particle::Particle(const FourMomentum& momentum, const ThreeVector& position) :
+  Particle::Particle(const FourMomentum& momentum, const ThreeVector& position, double weight) :
     m_momentum(momentum),
     m_position(position),
     m_energy(m_momentum.energy()),
-    m_weight(1)
+    m_weight(weight)
   {
   }
 
-  Particle::Particle(FourMomentum&& momentum, ThreeVector&& position) :
+  Particle::Particle(FourMomentum&& momentum, ThreeVector&& position, double weight) :
     m_momentum(std::move(momentum)),
     m_position(std::move(position)),
     m_energy(m_momentum.energy()),
-    m_weight(1)
+    m_weight(weight)
   {
   }
 

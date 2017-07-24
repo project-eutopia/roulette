@@ -13,8 +13,8 @@ namespace roulette {
       double m_weight;
 
     public:
-      Particle(const FourMomentum& momentum, const ThreeVector& position);
-      Particle(FourMomentum&& momentum, ThreeVector&& position);
+      Particle(const FourMomentum& momentum, const ThreeVector& position, double weight = 1);
+      Particle(FourMomentum&& momentum, ThreeVector&& position, double weight = 1);
 
       const FourMomentum& momentum() const;
       FourMomentum& momentum();
