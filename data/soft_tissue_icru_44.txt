@@ -1,4 +1,5 @@
 # Energy (MeV) | mass attenuation coefficient (cm^2/g)
+# See:https://www.nist.gov/pml/x-ray-mass-attenuation-coefficients
 1.00000E-03  3.712E+03
 1.03542E-03  3.386E+03
 1.07210E-03  3.087E+03
