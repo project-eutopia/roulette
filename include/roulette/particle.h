@@ -10,6 +10,7 @@ namespace roulette {
       ThreeVector m_position;
       // Stores energy not only implicitly in FourMomentum
       double m_energy;
+      double m_weight;
 
     public:
       Particle(const FourMomentum& momentum, const ThreeVector& position);
@@ -21,6 +22,9 @@ namespace roulette {
       ThreeVector& position();
 
       double energy() const;
+
+      double weight() const;
+      double& weight();
 
       double virtual mass() const = 0;
       int virtual charge() const = 0;
