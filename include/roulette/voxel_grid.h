@@ -7,29 +7,17 @@
 namespace roulette {
   class VoxelGrid {
     private:
-      // Density grid
-      /* boost::multi_array<double,3> m_densities; */
-
       // Lower left point
       ThreeVector m_v0;
       // Upper right point
       ThreeVector m_vn;
-
-      // Number of voxels, lower bound, and voxel width
-      unsigned int m_nx;
-      unsigned int m_ny;
-      unsigned int m_nz;
 
       double m_delta_x;
       double m_delta_y;
       double m_delta_z;
 
     public:
-      VoxelGrid(/*boost::multi_array<double,3>&& densities,*/ const ThreeVector& v0, const ThreeVector& vn);
-
-      /* unsigned int nz() const; */
-      /* unsigned int ny() const; */
-      /* unsigned int nx() const; */
+      VoxelGrid(const ThreeVector& v0, const ThreeVector& vn);
 
       const ThreeVector& v0() const;
       const ThreeVector& vn() const;

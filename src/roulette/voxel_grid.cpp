@@ -4,16 +4,11 @@
 #include <cmath>
 
 namespace roulette {
-  VoxelGrid::VoxelGrid(/*boost::multi_array<double,3>&& densities,*/ const ThreeVector& v0, const ThreeVector& vn) :
-    /* m_densities(densities), */
+  VoxelGrid::VoxelGrid(const ThreeVector& v0, const ThreeVector& vn) :
     m_v0(v0),
     m_vn(vn)
   {
   }
-
-  /* unsigned int VoxelGrid::nz() const { return m_densities.shape()[0]; } */
-  /* unsigned int VoxelGrid::ny() const { return m_densities.shape()[1]; } */
-  /* unsigned int VoxelGrid::nx() const { return m_densities.shape()[2]; } */
 
   const ThreeVector& VoxelGrid::v0() const { return m_v0; }
   const ThreeVector& VoxelGrid::vn() const { return m_vn; }
