@@ -24,6 +24,8 @@ namespace roulette {
       double magnitude() const;
       double magnitude2() const;
 
+      ThreeVector direction_unit_vector() const;
+
       double dot(const ThreeVector& other) const;
       ThreeVector cross(const ThreeVector& other) const;
 
@@ -39,4 +41,3 @@ namespace roulette {
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::ThreeVector& p);
-

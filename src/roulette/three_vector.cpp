@@ -45,6 +45,10 @@ namespace roulette {
     return m_v(0)*m_v(0) + m_v(1)*m_v(1) + m_v(2)*m_v(2);
   }
 
+  ThreeVector ThreeVector::direction_unit_vector() const {
+    return (*this) / this->magnitude();
+  }
+
   double ThreeVector::dot(const ThreeVector& other) const {
     return (
       m_v(0)*other(0) +
