@@ -22,6 +22,10 @@ namespace roulette {
       const ThreeVector& v0() const;
       const ThreeVector& vn() const;
 
+      double delta_x() const;
+      double delta_y() const;
+      double delta_z() const;
+
       bool inside(const ThreeVector& point) const;
       bool strictly_inside(const ThreeVector& point) const;
       bool outside(const ThreeVector& point) const;
