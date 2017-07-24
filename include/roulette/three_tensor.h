@@ -10,6 +10,7 @@ namespace roulette {
 
     public:
       ThreeTensor(const boost::multi_array<double,3>& tensor);
+      ThreeTensor(int nz, int ny, int nx, double fill_value = 0);
 
       int nz() const;
       int ny() const;
