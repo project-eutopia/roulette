@@ -32,7 +32,8 @@ namespace roulette {
     double e_momentum = std::sqrt(electron_energy*electron_energy - Electron::MASS*Electron::MASS);
     return Electron(
       rotate_to_initial * FourMomentum(electron_energy, xsign * cos_e * e_momentum, sin_e * cos_phi * e_momentum, sin_e * sin_phi * e_momentum),
-      ThreeVector(this->position()(0), this->position()(1), this->position()(2))
+      ThreeVector(this->position()(0), this->position()(1), this->position()(2)),
+      m_weight
     );
   }
 };
