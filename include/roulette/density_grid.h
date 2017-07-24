@@ -3,19 +3,19 @@
 #include <boost/multi_array.hpp>
 
 #include "roulette/voxel_grid.h"
+#include "roulette/three_tensor.h"
 #include "roulette/material.h"
 
 namespace roulette {
   class DensityGrid {
     private:
       VoxelGrid m_voxel_grid;
-      // Shape (nz, ny, nx)
-      boost::multi_array<double,3> m_densities;
+      ThreeTensor m_densities;
       // For now, use single material
       Material m_material;
 
     public:
-      DensityGrid(const VoxelGrid& voxel_grid, const boost::multi_array<double,3>& densities, const Material& material);
+      DensityGrid(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Material& material);
 
       int nz() const;
       int ny() const;
@@ -24,5 +24,8 @@ namespace roulette {
       const VoxelGrid& voxel_grid() const;
       double operator()(int zi, int yi, int xi) const;
       const Material& material() const;
+
+      // Photon must be "inside" the grid.  Returns false if transported all the way out.
+      /* bool transport_photon_unitless_depth(Photon photon, double depth) const; */
   };
 };
