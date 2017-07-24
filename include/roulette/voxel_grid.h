@@ -32,6 +32,6 @@ namespace roulette {
 
       // Returns true intersects surface,
       // and therefore was successfully moved up to surface
-      bool transport_particle_to_surface(Particle& particle) const;
+      bool transport_particle_to_surface(Particle* particle) const;
   };
 };

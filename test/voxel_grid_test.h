@@ -23,7 +23,7 @@ TEST(VoxelGridTest, intersection_for_start_inside) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_TRUE(res);
     ASSERT_EQ(photon.position()(0), 10);
     ASSERT_EQ(photon.position()(1), 5);
@@ -37,7 +37,7 @@ TEST(VoxelGridTest, intersection_for_start_inside) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_TRUE(res);
     ASSERT_EQ(photon.position()(0), 10);
     ASSERT_EQ(photon.position()(1), 10);
@@ -51,7 +51,7 @@ TEST(VoxelGridTest, intersection_for_start_inside) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_TRUE(res);
     ASSERT_EQ(photon.position()(0), 10);
     ASSERT_EQ(photon.position()(1), 10);
@@ -72,7 +72,7 @@ TEST(VoxelGridTest, intersection_for_start_on_plane) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_TRUE(res);
     ASSERT_EQ(photon.position()(0), 0);
     ASSERT_EQ(photon.position()(1), 5);
@@ -86,7 +86,7 @@ TEST(VoxelGridTest, intersection_for_start_on_plane) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_TRUE(res);
     ASSERT_EQ(photon.position()(0), 0);
     ASSERT_EQ(photon.position()(1), 0);
@@ -100,7 +100,7 @@ TEST(VoxelGridTest, intersection_for_start_on_plane) {
     );
     ASSERT_TRUE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_TRUE(res);
     ASSERT_EQ(photon.position()(0), 0);
     ASSERT_EQ(photon.position()(1), 0);
@@ -121,7 +121,7 @@ TEST(VoxelGridTest, intersection_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_TRUE(res);
     ASSERT_EQ(photon.position()(0), 0);
     ASSERT_EQ(photon.position()(1), 5);
@@ -135,7 +135,7 @@ TEST(VoxelGridTest, intersection_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_FALSE(res);
   }
 
@@ -146,7 +146,7 @@ TEST(VoxelGridTest, intersection_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_FALSE(res);
   }
 
@@ -157,7 +157,7 @@ TEST(VoxelGridTest, intersection_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_FALSE(res);
   }
 
@@ -168,7 +168,7 @@ TEST(VoxelGridTest, intersection_for_outside_grid) {
     );
     ASSERT_FALSE(grid.inside(photon.position()));
 
-    bool res = grid.transport_particle_to_surface(photon);
+    bool res = grid.transport_particle_to_surface(&photon);
     ASSERT_FALSE(res);
   }
 }
@@ -184,7 +184,7 @@ TEST(VoxelGridTest, transport_particle_to_surface_works) {
     ThreeVector(-5, 5, 10)
   );
 
-  bool res = grid.transport_particle_to_surface(photon);
+  bool res = grid.transport_particle_to_surface(&photon);
   ASSERT_TRUE(res);
 
   ASSERT_EQ(photon.position()(0), 0);
@@ -202,7 +202,7 @@ TEST(VoxelGridTest, transport_beamlet_particle_to_surface) {
 
   Photon initial_photon = photon_generator.generate(generator);
   Photon current_photon = initial_photon;
-  bool res = grid.transport_particle_to_surface(current_photon);
+  bool res = grid.transport_particle_to_surface(&current_photon);
   std::cout << initial_photon << std::endl;
   std::cout << current_photon << std::endl;
   ASSERT_TRUE(res);
