@@ -33,5 +33,8 @@ namespace roulette {
       // Returns true intersects surface,
       // and therefore was successfully moved up to surface
       bool transport_particle_to_surface(Particle* particle) const;
+
+      // Must be inside and aiming inside to begin with
+      double exit_time(const Particle& particle) const;
   };
 };

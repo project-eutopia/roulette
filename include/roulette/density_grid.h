@@ -5,6 +5,7 @@
 #include "roulette/voxel_grid.h"
 #include "roulette/three_tensor.h"
 #include "roulette/material.h"
+#include "roulette/photon.h"
 
 namespace roulette {
   class DensityGrid {
@@ -26,6 +27,6 @@ namespace roulette {
       const Material& material() const;
 
       // Photon must be "inside" the grid.  Returns false if transported all the way out.
-      /* bool transport_photon_unitless_depth(Photon photon, double depth) const; */
+      bool transport_photon_unitless_depth(Photon* photon, double depth) const;
   };
 };
