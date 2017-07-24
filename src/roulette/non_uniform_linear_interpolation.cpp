@@ -1,6 +1,10 @@
 #include "roulette/non_uniform_linear_interpolation.h"
 
 #include <cassert>
+#include <fstream>
+#include <sstream>
+#include <string>
+
 #include "roulette/math.h"
 
 namespace roulette {
@@ -21,6 +25,23 @@ namespace roulette {
     m_y(y)
   {
     assert(m_x.size() == m_y.size());
+  }
+
+  NonUniformLinearInterpolation::NonUniformLinearInterpolation(const std::string& filename) :
+    m_x(0),
+    m_y(0)
+  {
+    std::ifstream infile(filename);
+
+    std::string line;
+    while (std::getline(infile, line)) {
+      std::istringstream iss(line);
+      double x, y;
+      // Skip line if cannot process
+      if (!(iss >> x >> y)) { continue; }
+
+      this->add_point(x, y);
+    }
   }
 
   void NonUniformLinearInterpolation::add_point(double x, double y) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace roulette {
   class NonUniformLinearInterpolation {
@@ -12,6 +13,7 @@ namespace roulette {
       NonUniformLinearInterpolation();
       NonUniformLinearInterpolation(const std::vector<double>& x, const std::vector<double>& y);
       NonUniformLinearInterpolation(std::vector<double>&& x, std::vector<double>&& y);
+      NonUniformLinearInterpolation(const std::string& filename);
 
       // Must add in increasing x order!
       void add_point(double x, double y);
