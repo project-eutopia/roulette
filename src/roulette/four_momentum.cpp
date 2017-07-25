@@ -93,6 +93,11 @@ namespace roulette {
       && (m_p(3) == other.pz());
   }
 
+  FourMomentum& FourMomentum::operator+=(const FourMomentum& rhs) {
+    m_p += rhs.m_p;
+    return (*this);
+  }
+
   FourMomentum operator+(const FourMomentum& lhs, const FourMomentum& rhs) {
     return FourMomentum(lhs.m_p + rhs.m_p);
   }
@@ -122,4 +127,3 @@ std::ostream &operator<<(std::ostream &os, const roulette::FourMomentum& p) {
   os << "FourMomentum(" << p.e() << ", " << p.px() << ", " << p.py() << ", " << p.pz() << ")";
   return os;
 }
-
