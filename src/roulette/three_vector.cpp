@@ -71,6 +71,7 @@ namespace roulette {
 
   ThreeVector& ThreeVector::operator+=(const ThreeVector& rhs) {
     m_v += rhs.m_v;
+    return (*this);
   }
 
   ThreeVector operator+(const ThreeVector& lhs, const ThreeVector& rhs) {
