@@ -37,6 +37,27 @@ find_package(GTest REQUIRED)
 # Test command
 if (GTest_FOUND)
   include_directories(${GTest_INCLUDE_DIRS})
+
+  # # NOTE: This is an example of running each test as a separate executable
+  # # But we lose fine grained details about failing tests doing it this way
+  # # that are typically provided by GTest
+  # include (CTest)
+  # enable_testing()
+
+  # # Gets just filenames
+  # file (GLOB_RECURSE test_files RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/test/src/" "*_test.cpp")
+  # foreach(filename ${test_files})
+  #   get_filename_component(test_filename "${filename}" NAME)
+  #   string(REPLACE "\.cpp" "" test_name ${test_filename})
+
+  #   get_filename_component(test_directory "${filename}" DIRECTORY)
+
+  #   add_executable(${test_name} "${CMAKE_CURRENT_SOURCE_DIR}/test/src/${filename}")
+  #   set_target_properties(${test_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tests/${test_directory}")
+  #   target_link_libraries(${test_name} ${PROJECT_NAME} ${GTEST_LIBRARIES} pthread)
+  #   add_test(NAME ${test_name} COMMAND ${test_name})
+  # endforeach()
+
   add_executable(tests "test/tests.cpp")
   target_link_libraries(tests ${PROJECT_NAME} ${GTEST_LIBRARIES} pthread)
 endif()
