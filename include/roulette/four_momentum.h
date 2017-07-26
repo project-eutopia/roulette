@@ -44,7 +44,6 @@ namespace roulette {
       friend FourMomentum operator-(const FourMomentum& lhs, const FourMomentum& rhs);
       friend FourMomentum operator*(double lhs, const FourMomentum& rhs);
       friend FourMomentum operator*(const FourMomentum& lhs, double rhs);
-      friend FourMomentum operator/(double lhs, const FourMomentum& rhs);
       friend FourMomentum operator/(const FourMomentum& lhs, double rhs);
   };
 };

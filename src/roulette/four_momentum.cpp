@@ -118,10 +118,6 @@ namespace roulette {
   FourMomentum operator/(const FourMomentum& lhs, double rhs) {
     return FourMomentum(lhs.m_p / rhs);
   }
-
-  FourMomentum operator/(double lhs, const FourMomentum& rhs) {
-    return FourMomentum(lhs / rhs.m_p);
-  }
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::FourMomentum& p) {
