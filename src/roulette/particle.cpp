@@ -9,10 +9,10 @@ namespace roulette {
   {
   }
 
-  Particle::Particle(FourMomentum&& momentum, ThreeVector&& position, double weight) :
-    m_momentum(std::move(momentum)),
-    m_position(std::move(position)),
-    m_energy(m_momentum.energy()),
+  Particle::Particle(double energy, double mass, const ThreeVector& direction, const ThreeVector& position, double weight) :
+    m_momentum(energy, mass, direction),
+    m_position(position),
+    m_energy(energy),
     m_weight(weight)
   {
   }
