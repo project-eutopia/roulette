@@ -1,20 +1,21 @@
 #pragma once
 
-#include <boost/multi_array.hpp>
+#include <vector>
 
 namespace roulette {
   class ThreeTensor {
     private:
-      // Shape (nz, ny, nx)
-      boost::multi_array<double,3> m_tensor;
+      int m_nx;
+      int m_ny;
+      int m_nz;
+      std::vector<double> m_data;
 
     public:
-      ThreeTensor(const boost::multi_array<double,3>& tensor);
       ThreeTensor(int nz, int ny, int nx, double fill_value = 0);
 
-      int nz() const;
-      int ny() const;
       int nx() const;
+      int ny() const;
+      int nz() const;
 
       double operator()(int xi, int yi, int zi) const;
       double& operator()(int xi, int yi, int zi);
