@@ -4,9 +4,15 @@
 cmake_minimum_required (VERSION 3.5.2)
 project (roulette CXX)
 
-# set(CMAKE_BUILD_TYPE Debug)
+set (CMAKE_C_COMPILER "/usr/bin/clang")
+set (CMAKE_CXX_COMPILER "/usr/bin/clang++")
+
+if (NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
+  add_definitions(-DNDEBUG)
+endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast" )
 
 find_package(Boost 1.61 REQUIRED)
 
