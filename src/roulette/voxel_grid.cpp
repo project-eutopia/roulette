@@ -194,24 +194,24 @@ namespace roulette {
     double t = std::numeric_limits<double>::infinity();
 
     if (velocity(0) < 0) {
-      t = std::min(t, (particle.position()(0) - this->v0()(0)) / velocity(0));
+      t = std::min(t, (position(0) - this->v0()(0)) / velocity(0));
     }
     else if (velocity(0) > 0) {
-      t = std::min(t, (this->vn()(0) - particle.position()(0)) / velocity(0));
+      t = std::min(t, (this->vn()(0) - position(0)) / velocity(0));
     }
 
     if (velocity(1) < 0) {
-      t = std::min(t, (particle.position()(1) - this->v0()(1)) / velocity(1));
+      t = std::min(t, (position(1) - this->v0()(1)) / velocity(1));
     }
     else if (velocity(1) > 0) {
-      t = std::min(t, (this->vn()(1) - particle.position()(1)) / velocity(1));
+      t = std::min(t, (this->vn()(1) - position(1)) / velocity(1));
     }
 
     if (velocity(2) < 0) {
-      t = std::min(t, (particle.position()(2) - this->v0()(2)) / velocity(2));
+      t = std::min(t, (position(2) - this->v0()(2)) / velocity(2));
     }
     else if (velocity(2) > 0) {
-      t = std::min(t, (this->vn()(2) - particle.position()(2)) / velocity(2));
+      t = std::min(t, (this->vn()(2) - position(2)) / velocity(2));
     }
 
     return t;
