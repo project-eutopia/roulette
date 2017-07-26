@@ -93,10 +93,6 @@ namespace roulette {
   ThreeVector operator/(const ThreeVector& lhs, double rhs) {
     return ThreeVector(lhs.m_v / rhs);
   }
-
-  ThreeVector operator/(double lhs, const ThreeVector& rhs) {
-    return ThreeVector(lhs / rhs.m_v);
-  }
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::ThreeVector& v) {

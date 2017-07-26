@@ -37,7 +37,6 @@ namespace roulette {
       friend ThreeVector operator*(const ThreeVector& lhs, double rhs);
       friend ThreeVector operator*(double lhs, const ThreeVector& rhs);
       friend ThreeVector operator/(const ThreeVector& lhs, double rhs);
-      friend ThreeVector operator/(double lhs, const ThreeVector& rhs);
   };
 };
 
