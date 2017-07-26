@@ -35,6 +35,6 @@ namespace roulette {
       bool transport_particle_to_surface(Particle* particle) const;
 
       // Must be inside and aiming inside to begin with
-      double exit_time(const Particle& particle) const;
+      double exit_time(const ThreeVector& position, const ThreeVector& velocity) const;
   };
 };
