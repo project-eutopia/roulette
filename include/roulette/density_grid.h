@@ -31,7 +31,7 @@ namespace roulette {
       double delta_z() const;
 
       const VoxelGrid& voxel_grid() const;
-      double operator()(int zi, int yi, int xi) const;
+      double operator()(int xi, int yi, int zi) const;
       const Material& material() const;
 
       // Photon must be "inside" the grid.  Returns false if transported all the way out.

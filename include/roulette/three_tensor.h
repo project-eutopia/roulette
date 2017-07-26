@@ -16,7 +16,7 @@ namespace roulette {
       int ny() const;
       int nx() const;
 
-      double operator()(int zi, int yi, int xi) const;
-      double& operator()(int zi, int yi, int xi);
+      double operator()(int xi, int yi, int zi) const;
+      double& operator()(int xi, int yi, int zi);
   };
 };

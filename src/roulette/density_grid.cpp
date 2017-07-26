@@ -22,7 +22,7 @@ namespace roulette {
   double DensityGrid::delta_z() const { return m_delta_z; }
 
   const VoxelGrid& DensityGrid::voxel_grid() const { return m_voxel_grid; }
-  double DensityGrid::operator()(int zi, int yi, int xi) const { return m_densities(zi, yi, xi); }
+  double DensityGrid::operator()(int xi, int yi, int zi) const { return m_densities(xi, yi, zi); }
   const Material& DensityGrid::material() const { return m_material; }
 
   bool DensityGrid::transport_photon_unitless_depth(Photon* photon, double depth) const {

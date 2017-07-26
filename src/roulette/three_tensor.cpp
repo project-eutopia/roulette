@@ -6,7 +6,7 @@ namespace roulette {
   {
   }
 
-  ThreeTensor::ThreeTensor(int nz, int ny, int nx, double fill_value) :
+  ThreeTensor::ThreeTensor(int nx, int ny, int nz, double fill_value) :
     m_tensor(boost::extents[nz][ny][nx])
   {
     for (int zi = 0; zi < nz; ++zi) {
@@ -22,6 +22,6 @@ namespace roulette {
   int ThreeTensor::ny() const { return m_tensor.shape()[1]; }
   int ThreeTensor::nx() const { return m_tensor.shape()[2]; }
 
-  double ThreeTensor::operator()(int zi, int yi, int xi) const { return m_tensor[zi][yi][xi]; }
-  double& ThreeTensor::operator()(int zi, int yi, int xi) { return m_tensor[zi][yi][xi]; }
+  double ThreeTensor::operator()(int xi, int yi, int zi) const { return m_tensor[zi][yi][xi]; }
+  double& ThreeTensor::operator()(int xi, int yi, int zi) { return m_tensor[zi][yi][xi]; }
 };
