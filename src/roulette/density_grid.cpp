@@ -8,11 +8,18 @@ namespace roulette {
     m_densities(densities),
     m_material(material)
   {
+    m_delta_x = (m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx();
+    m_delta_y = (m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny();
+    m_delta_z = (m_voxel_grid.vn()(2) - m_voxel_grid.v0()(2)) / this->nz();
   }
 
   int DensityGrid::nz() const { return m_densities.nz(); }
   int DensityGrid::ny() const { return m_densities.ny(); }
   int DensityGrid::nx() const { return m_densities.nx(); }
+
+  double DensityGrid::delta_x() const { return m_delta_x; }
+  double DensityGrid::delta_y() const { return m_delta_y; }
+  double DensityGrid::delta_z() const { return m_delta_z; }
 
   const VoxelGrid& DensityGrid::voxel_grid() const { return m_voxel_grid; }
   double DensityGrid::operator()(int zi, int yi, int xi) const { return m_densities(zi, yi, xi); }

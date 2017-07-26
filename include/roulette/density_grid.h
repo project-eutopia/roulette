@@ -15,12 +15,20 @@ namespace roulette {
       // For now, use single material
       Material m_material;
 
+      double m_delta_x;
+      double m_delta_y;
+      double m_delta_z;
+
     public:
       DensityGrid(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Material& material);
 
       int nz() const;
       int ny() const;
       int nx() const;
+
+      double delta_x() const;
+      double delta_y() const;
+      double delta_z() const;
 
       const VoxelGrid& voxel_grid() const;
       double operator()(int zi, int yi, int xi) const;

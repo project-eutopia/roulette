@@ -12,19 +12,11 @@ namespace roulette {
       // Upper right point
       ThreeVector m_vn;
 
-      double m_delta_x;
-      double m_delta_y;
-      double m_delta_z;
-
     public:
       VoxelGrid(const ThreeVector& v0, const ThreeVector& vn);
 
       const ThreeVector& v0() const;
       const ThreeVector& vn() const;
-
-      double delta_x() const;
-      double delta_y() const;
-      double delta_z() const;
 
       bool inside(const ThreeVector& point) const;
       bool strictly_inside(const ThreeVector& point) const;

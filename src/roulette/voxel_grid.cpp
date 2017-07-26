@@ -13,10 +13,6 @@ namespace roulette {
   const ThreeVector& VoxelGrid::v0() const { return m_v0; }
   const ThreeVector& VoxelGrid::vn() const { return m_vn; }
 
-  double VoxelGrid::delta_x() const { return m_delta_x; }
-  double VoxelGrid::delta_y() const { return m_delta_y; }
-  double VoxelGrid::delta_z() const { return m_delta_z; }
-
   bool VoxelGrid::inside(const ThreeVector& point) const {
     return (
       point(0) >= m_v0(0) && point(0) <= m_vn(0) &&
