@@ -10,6 +10,7 @@ namespace roulette {
   double Material::density() const { return m_density; }
 
   double Material::photon_mass_attenuation(double energy) const {
-    return m_photon_mass_attenuation(energy);
+    // NOTE: Tables are stored in MeV
+    return m_photon_mass_attenuation(energy / 1000000);
   }
 };

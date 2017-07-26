@@ -28,17 +28,19 @@ namespace roulette {
 
   bool DensityGrid::transport_photon_unitless_depth(Photon* photon, double depth) const {
     double current_depth = 0;
+    double energy = photon->energy();
     bool exited = true;
 
     ThreeVector final_position = this->ray_trace_voxels(
       photon->position(), photon->momentum().three_momentum(),
       DensityGrid::voxel_iterator(
         [&](const DensityGrid& cur_density_grid, double distance, int xi, int yi, int zi) -> double {
-          double delta_depth = cur_density_grid(xi, yi, zi) * cur_density_grid.material().photon_mass_attenuation(photon->energy()) * distance;
-          if (delta_depth + current_depth < depth) return distance;
+          double delta_depth = cur_density_grid(xi, yi, zi) * cur_density_grid.material().photon_mass_attenuation(energy) * distance;
+          current_depth += delta_depth;
+          if (current_depth < depth) return distance;
 
           exited = false;
-          return ((delta_depth + current_depth) - depth) / cur_density_grid(xi, yi, zi) / cur_density_grid.material().photon_mass_attenuation(photon->energy());
+          return (delta_depth - current_depth + depth) / cur_density_grid(xi, yi, zi) / cur_density_grid.material().photon_mass_attenuation(energy);
         }
       )
     );

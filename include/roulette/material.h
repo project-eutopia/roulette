@@ -14,7 +14,9 @@ namespace roulette {
     public:
       Material(double density, const NonUniformLinearInterpolation& photon_mass_attenuation);
 
+      // Units: g/cm^3
       double density() const;
+      // Units cm^2/g
       double photon_mass_attenuation(double energy) const;
   };
 };

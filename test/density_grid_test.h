@@ -9,12 +9,12 @@
 
 using namespace roulette;
 
-class DensityGridTest : public ::testing::Test {
+class DensityGridRayTraceTest : public ::testing::Test {
   protected:
     std::shared_ptr<DensityGrid> density_grid;
 
-    DensityGridTest() {}
-    virtual ~DensityGridTest() {}
+    DensityGridRayTraceTest() {}
+    virtual ~DensityGridRayTraceTest() {}
     void SetUp() {
       VoxelGrid voxel_grid(
         ThreeVector(-5, -5, -5),
@@ -36,7 +36,7 @@ class DensityGridTest : public ::testing::Test {
     // virtual void TearDown() {}
 };
 
-TEST_F(DensityGridTest, ray_trace_voxels_test_x_dir) {
+TEST_F(DensityGridRayTraceTest, ray_trace_voxels_test_x_dir) {
   ThreeVector position(-10, 0, 0);
   ThreeVector velocity(1, 0, 0);
 
@@ -69,7 +69,7 @@ TEST_F(DensityGridTest, ray_trace_voxels_test_x_dir) {
   EXPECT_EQ(final_position(2), 0);
 }
 
-TEST_F(DensityGridTest, ray_trace_voxels_test_y_dir) {
+TEST_F(DensityGridRayTraceTest, ray_trace_voxels_test_y_dir) {
   ThreeVector position(0, -10, 0);
   ThreeVector velocity(0, 1, 0);
 
@@ -102,7 +102,7 @@ TEST_F(DensityGridTest, ray_trace_voxels_test_y_dir) {
   EXPECT_EQ(final_position(2), 0);
 }
 
-TEST_F(DensityGridTest, ray_trace_voxels_test_z_dir) {
+TEST_F(DensityGridRayTraceTest, ray_trace_voxels_test_z_dir) {
   ThreeVector position(0, 0, 10);
   ThreeVector velocity(0, 0, -1);
 
@@ -133,7 +133,7 @@ TEST_F(DensityGridTest, ray_trace_voxels_test_z_dir) {
   EXPECT_EQ(final_position(2),-5);
 }
 
-TEST_F(DensityGridTest, ray_trace_voxels_test_going_through_edge) {
+TEST_F(DensityGridRayTraceTest, ray_trace_voxels_test_going_through_edge) {
   ThreeVector position(10, -5, 0);
   ThreeVector velocity(-2, 1, 0);
 
@@ -166,7 +166,7 @@ TEST_F(DensityGridTest, ray_trace_voxels_test_going_through_edge) {
   EXPECT_EQ(final_position(2),   0);
 }
 
-TEST_F(DensityGridTest, ray_trace_voxels_test_going_through_corner) {
+TEST_F(DensityGridRayTraceTest, ray_trace_voxels_test_going_through_corner) {
   ThreeVector position(-3, 3, -3);
   ThreeVector velocity(1, -1, 1);
 
@@ -207,7 +207,7 @@ TEST_F(DensityGridTest, ray_trace_voxels_test_going_through_corner) {
   EXPECT_EQ(final_position(2),  5);
 }
 
-TEST(DensityGrid, ray_trace_voxels_going_through_random_directions) {
+TEST(DensityGridTest, ray_trace_voxels_going_through_random_directions) {
   VoxelGrid voxel_grid(
     ThreeVector(0, -10, -10),
     ThreeVector(10, 10, 10)
@@ -248,4 +248,27 @@ TEST(DensityGrid, ray_trace_voxels_going_through_random_directions) {
     EXPECT_EQ(count, 256);
     EXPECT_NEAR(final_position(0), 10, 0.0000001);
   }
+}
+
+TEST(DensityGridTest, transport_photon_unitless_depth_test) {
+  Material soft_tissue_icru_44(
+    1.060E+00,
+    NonUniformLinearInterpolation("../data/soft_tissue_icru_44.txt")
+  );
+
+  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100));
+
+  DensityGrid density_grid(
+    grid,
+    ThreeTensor(256, 1, 1, 1.06),
+    soft_tissue_icru_44
+  );
+
+  Photon initial_photon(FourMomentum(1000000, 1000000, 0, 0), ThreeVector(-10, 0, 0));
+  bool res = density_grid.transport_photon_unitless_depth(&initial_photon, 1.0);
+
+  EXPECT_TRUE(res);
+  EXPECT_NEAR(1.0 / 0.07006 / 1.06, initial_photon.position()(0), 0.0000001);
+  EXPECT_EQ(0, initial_photon.position()(1));
+  EXPECT_EQ(0, initial_photon.position()(2));
 }
