@@ -1,4 +1,5 @@
 #include "roulette/density_grid.h"
+#include "roulette/math.h"
 
 #include <cassert>
 
@@ -87,7 +88,6 @@ namespace roulette {
         delta_t = time_to_z;
       }
 
-      /* std::cout << xi << ", " << yi << ", " << zi << std::endl; */
       current_position += delta_t * u;
       current_time += delta_t;
 
@@ -110,38 +110,56 @@ namespace roulette {
   ThreeVector DensityGrid::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, DensityGrid::voxel_iterator it) const {
     ThreeVector u = direction / direction.magnitude();
     ThreeVector current_position = initial_position;
-    /* std::cout << "Initial position: " << initial_position << std::endl; */
     // Done if does not intersect surface
     if (m_voxel_grid.outside(current_position) && !m_voxel_grid.transport_position_to_surface(current_position, u)) return initial_position;
-    /* std::cout << "Current position: " << current_position << std::endl; */
 
     double exit_time = m_voxel_grid.exit_time(current_position, u);
-    /* std::cout << "Exit time: " << exit_time << std::endl; */
-
-    int xi = (int)((current_position(0) - m_voxel_grid.v0()(0)) / this->delta_x());
-    int yi = (int)((current_position(1) - m_voxel_grid.v0()(1)) / this->delta_y());
-    int zi = (int)((current_position(2) - m_voxel_grid.v0()(2)) / this->delta_z());
-
-    /* std::cout << "Bottom left: " << m_voxel_grid.v0() << std::endl; */
-    /* std::cout << "Top right: " << m_voxel_grid.vn() << std::endl; */
-    /* std::cout << "Deltas: " << this->delta_x() << ", " << this->delta_y() << ", " << this->delta_z() << std::endl; */
-    /* std::cout << "Initial indexes: " << xi << ", " << yi << ", " << zi << std::endl; */
 
     int xinc, yinc, zinc;
+    int xi, yi, zi;
 
-    if (u(0) < 0) xinc = -1;
-    else if (u(0) > 0) xinc = 1;
-    else xinc = 0;
+    double normal_x = (current_position(0) - m_voxel_grid.v0()(0)) / this->delta_x();
+    double normal_y = (current_position(1) - m_voxel_grid.v0()(1)) / this->delta_y();
+    double normal_z = (current_position(2) - m_voxel_grid.v0()(2)) / this->delta_z();
 
-    if (u(1) < 0) yinc = -1;
-    else if (u(1) > 0) yinc = 1;
-    else yinc = 0;
+    if (u(0) < 0) {
+      xinc = -1;
+      xi = ceili(normal_x-1);
+    }
+    else if (u(0) > 0) {
+      xinc = 1;
+      xi = floori(normal_x);
+    }
+    else {
+      xinc = 0;
+      xi = floori(normal_x);
+    }
 
-    if (u(2) < 0) zinc = -1;
-    else if (u(2) > 0) zinc = 1;
-    else zinc = 0;
+    if (u(1) < 0) {
+      yinc = -1;
+      yi = ceili(normal_y-1);
+    }
+    else if (u(1) > 0) {
+      yinc = 1;
+      yi = floori(normal_y);
+    }
+    else {
+      yinc = 0;
+      yi = floori(normal_y);
+    }
 
-    /* std::cout << "Increments: " << xinc << ", " << yinc << ", " << zinc << std::endl; */
+    if (u(2) < 0) {
+      zinc = -1;
+      zi = ceili(normal_z-1);
+    }
+    else if (u(2) > 0) {
+      zinc = 1;
+      zi = floori(normal_z);
+    }
+    else {
+      zinc = 0;
+      zi = floori(normal_z);
+    }
 
     double current_time = 0;
     double delta_t = 0;
@@ -151,19 +169,12 @@ namespace roulette {
     double time_to_z = (zinc == 0) ? std::numeric_limits<double>::infinity() : 0;
 
     while (current_time < exit_time) {
-      /* std::cout << "Current time: " << current_time << std::endl; */
-      /* std::cout << "current position: " << current_position << std::endl; */
-
       if (xinc) time_to_x = (m_voxel_grid.v0()(0) + (xi + (xinc > 0))*this->delta_x() - current_position(0)) / u(0);
       if (yinc) time_to_y = (m_voxel_grid.v0()(1) + (yi + (yinc > 0))*this->delta_y() - current_position(1)) / u(1);
       if (zinc) time_to_z = (m_voxel_grid.v0()(2) + (zi + (zinc > 0))*this->delta_z() - current_position(2)) / u(2);
 
-      /* std::cout << "Times: " << time_to_z << ", " << time_to_y << ", " << time_to_x << std::endl; */
-
       delta_t = std::min(time_to_x, std::min(time_to_y, time_to_z));
 
-      // Process this voxel before moving to next
-      /* std::cout << "Calling with: " << xi << ", " << yi << ", " << zi << std::endl; */
       double distance = it(*this, delta_t, xi, yi, zi);
       // Here we are finished, so return final position
       if (distance < delta_t) return current_position += distance * u;
