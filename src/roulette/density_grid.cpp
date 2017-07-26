@@ -108,20 +108,30 @@ namespace roulette {
   }
 
   ThreeVector DensityGrid::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, DensityGrid::voxel_iterator it) const {
-    ThreeVector u = direction / direction.magnitude();
+    double mag = direction.magnitude();
+    assert(mag > 0);
+    ThreeVector u = direction / mag;
+
     ThreeVector current_position = initial_position;
     // Done if does not intersect surface
     if (m_voxel_grid.outside(current_position) && !m_voxel_grid.transport_position_to_surface(current_position, u)) return initial_position;
 
+    // After this much distance, we leave the voxel grid
     double exit_time = m_voxel_grid.exit_time(current_position, u);
 
     int xinc, yinc, zinc;
     int xi, yi, zi;
 
+    // Coordinates in units of voxel indexes
     double normal_x = (current_position(0) - m_voxel_grid.v0()(0)) / this->delta_x();
     double normal_y = (current_position(1) - m_voxel_grid.v0()(1)) / this->delta_y();
     double normal_z = (current_position(2) - m_voxel_grid.v0()(2)) / this->delta_z();
 
+    // Set increments to +1 for moving forward, -1 for backward, and 0 for stationary
+    //
+    // Also, the initial voxel index depends on the direction of travel as follows:
+    // Moving forward, voxel i has normal coordinate range [i, i+1) (i.e. floor(x))
+    // Moving backward, voxel i has normal coordinate range (i, i+1] (i.e. ceil(x-1))
     if (u(0) < 0) {
       xinc = -1;
       xi = ceili(normal_x-1);
@@ -164,6 +174,8 @@ namespace roulette {
     double current_time = 0;
     double delta_t = 0;
 
+    // If not incrementing, permanently set time to next voxel along that coordinate to
+    // infinity so it is never considered
     double time_to_x = (xinc == 0) ? std::numeric_limits<double>::infinity() : 0;
     double time_to_y = (yinc == 0) ? std::numeric_limits<double>::infinity() : 0;
     double time_to_z = (zinc == 0) ? std::numeric_limits<double>::infinity() : 0;
@@ -179,14 +191,13 @@ namespace roulette {
       // Here we are finished, so return final position
       if (distance < delta_t) return current_position += distance * u;
 
+      // If passing through an edge or corner, will increment multiple indexes here (happens when, e.g., tx = ty < tz)
       if (time_to_x <= std::min(time_to_y, time_to_z)) {
         xi += xinc;
       }
-
       if (time_to_y <= std::min(time_to_x, time_to_z)) {
         yi += yinc;
       }
-
       if (time_to_z <= std::min(time_to_x, time_to_y)) {
         zi += zinc;
       }
