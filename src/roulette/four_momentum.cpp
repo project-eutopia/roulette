@@ -54,6 +54,7 @@ namespace roulette {
   double FourMomentum::px() const { return m_p(1); }
   double FourMomentum::py() const { return m_p(2); }
   double FourMomentum::pz() const { return m_p(3); }
+  ThreeVector FourMomentum::three_momentum() const { return ThreeVector(m_p(1), m_p(2), m_p(3)); }
 
   double FourMomentum::mass() const {
     return std::sqrt(this->mass2());

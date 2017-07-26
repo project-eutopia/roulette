@@ -25,6 +25,7 @@ namespace roulette {
       double px() const;
       double py() const;
       double pz() const;
+      ThreeVector three_momentum() const;
 
       double mass() const;
       double mass2() const;
