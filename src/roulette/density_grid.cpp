@@ -108,17 +108,17 @@ namespace roulette {
       zi = floori(normal_z);
     }
 
-    double x_offset = m_voxel_grid.v0()(0) + (xinc > 0) * m_delta_x;
-    double y_offset = m_voxel_grid.v0()(1) + (yinc > 0) * m_delta_y;
-    double z_offset = m_voxel_grid.v0()(2) + (zinc > 0) * m_delta_z;
-
     double delta_t = 0;
+
+    double time_between_x_planes = m_delta_x / std::abs(u(0));
+    double time_between_y_planes = m_delta_y / std::abs(u(1));
+    double time_between_z_planes = m_delta_z / std::abs(u(2));
 
     // If not incrementing, permanently set time to next voxel along that coordinate to
     // infinity so it is never considered
-    double time_to_x = (xinc == 0) ? std::numeric_limits<double>::infinity() : 0;
-    double time_to_y = (yinc == 0) ? std::numeric_limits<double>::infinity() : 0;
-    double time_to_z = (zinc == 0) ? std::numeric_limits<double>::infinity() : 0;
+    double time_to_x = (xinc == 0) ? std::numeric_limits<double>::infinity() : (m_voxel_grid.v0()(0) + (xi + (xinc > 0)) * m_delta_x - current_position(0)) / u(0);
+    double time_to_y = (yinc == 0) ? std::numeric_limits<double>::infinity() : (m_voxel_grid.v0()(1) + (yi + (yinc > 0)) * m_delta_y - current_position(1)) / u(1);
+    double time_to_z = (zinc == 0) ? std::numeric_limits<double>::infinity() : (m_voxel_grid.v0()(2) + (zi + (zinc > 0)) * m_delta_z - current_position(2)) / u(2);
 
     // We know the direction of motion, so only need to check one side:
     // Moving left:   xi >= 0
@@ -139,32 +139,41 @@ namespace roulette {
     int zi_factor = (zinc > 0) ? -1 : 1;
     int zi_offset = (zinc > 0) ? this->nz() - 1 : 0;
 
-    while (xi_factor*xi + xi_offset >= 0 && yi_factor*yi + yi_offset >= 0 && zi_factor*zi + zi_offset >= 0) {
-      if (xinc) time_to_x = (x_offset + xi*m_delta_x - current_position(0)) / u(0);
-      if (yinc) time_to_y = (y_offset + yi*m_delta_y - current_position(1)) / u(1);
-      if (zinc) time_to_z = (z_offset + zi*m_delta_z - current_position(2)) / u(2);
+    double total_time = 0;
 
+    while (xi_factor*xi + xi_offset >= 0 && yi_factor*yi + yi_offset >= 0 && zi_factor*zi + zi_offset >= 0) {
       delta_t = std::min(time_to_x, std::min(time_to_y, time_to_z));
 
       // Iterator callback
       double distance = it(*this, delta_t, xi, yi, zi);
       // Here we are finished, so return final position
-      if (distance < delta_t) return current_position += distance * u;
+      if (distance < delta_t) return current_position + (total_time + distance) * u;
 
       // If passing through an edge or corner, will increment multiple indexes here (happens when, e.g., tx = ty < tz)
-      if (time_to_x <= std::min(time_to_y, time_to_z)) {
+      if (time_to_x <= time_to_y && time_to_x <= time_to_z) {
+        time_to_x += time_between_x_planes - delta_t;
         xi += xinc;
-      }
-      if (time_to_y <= std::min(time_to_x, time_to_z)) {
-        yi += yinc;
-      }
-      if (time_to_z <= std::min(time_to_x, time_to_y)) {
-        zi += zinc;
+      } else {
+        time_to_x -= delta_t;
       }
 
-      current_position += delta_t * u;
+      if (time_to_y <= time_to_x && time_to_y <= time_to_z) {
+        time_to_y += time_between_y_planes - delta_t;
+        yi += yinc;
+      } else {
+        time_to_y -= delta_t;
+      }
+
+      if (time_to_z <= time_to_x && time_to_z <= time_to_y) {
+        time_to_z += time_between_z_planes - delta_t;
+        zi += zinc;
+      } else {
+        time_to_z -= delta_t;
+      }
+
+      total_time += delta_t;
     }
 
-    return current_position;
+    return current_position + total_time * u;
   }
 };
