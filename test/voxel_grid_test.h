@@ -203,7 +203,5 @@ TEST(VoxelGridTest, transport_beamlet_particle_to_surface) {
   Photon initial_photon = photon_generator.generate(generator);
   Photon current_photon = initial_photon;
   bool res = grid.transport_particle_to_surface(&current_photon);
-  std::cout << initial_photon << std::endl;
-  std::cout << current_photon << std::endl;
   ASSERT_TRUE(res);
 }
