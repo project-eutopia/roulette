@@ -29,13 +29,13 @@ namespace roulette {
     double current_depth = 0;
 
     ThreeVector u = photon->position().direction_unit_vector();
-    double exit_time = m_voxel_grid.exit_time(*photon);
+    double exit_time = m_voxel_grid.exit_time(photon->position(), photon->momentum().three_momentum());
     // Convert to distance since we using unit vector to move forward
     exit_time *= photon->momentum().momentum_magnitude();
 
-    int xi = (int)((photon->position()(0) - m_voxel_grid.v0()(0)) / m_voxel_grid.delta_x());
-    int yi = (int)((photon->position()(1) - m_voxel_grid.v0()(1)) / m_voxel_grid.delta_y());
-    int zi = (int)((photon->position()(2) - m_voxel_grid.v0()(2)) / m_voxel_grid.delta_z());
+    int xi = (int)((photon->position()(0) - m_voxel_grid.v0()(0)) / this->delta_x());
+    int yi = (int)((photon->position()(1) - m_voxel_grid.v0()(1)) / this->delta_y());
+    int zi = (int)((photon->position()(2) - m_voxel_grid.v0()(2)) / this->delta_z());
 
     int xinc, yinc, zinc;
 
@@ -63,14 +63,14 @@ namespace roulette {
       current_density = m_densities(zi, yi, xi);
       current_attenuation = this->material().photon_mass_attenuation(photon->energy());
 
-      if (xinc != 0) time_to_x = std::numeric_limits<double>::infinity();
-      else time_to_x = (m_voxel_grid.v0()(0) + (xi + (xinc > 0))*m_voxel_grid.delta_x() - current_position(0)) / u(0);
+      if (xinc == 0) time_to_x = std::numeric_limits<double>::infinity();
+      else time_to_x = (m_voxel_grid.v0()(0) + (xi + (xinc > 0))*this->delta_x() - current_position(0)) / u(0);
 
-      if (yinc != 0) time_to_y = std::numeric_limits<double>::infinity();
-      else time_to_y = (m_voxel_grid.v0()(1) + (yi + (yinc > 0))*m_voxel_grid.delta_y() - current_position(1)) / u(1);
+      if (yinc == 0) time_to_y = std::numeric_limits<double>::infinity();
+      else time_to_y = (m_voxel_grid.v0()(1) + (yi + (yinc > 0))*this->delta_y() - current_position(1)) / u(1);
 
-      if (zinc != 0) time_to_z = std::numeric_limits<double>::infinity();
-      else time_to_z = (m_voxel_grid.v0()(2) + (zi + (zinc > 0))*m_voxel_grid.delta_z() - current_position(2)) / u(2);
+      if (zinc == 0) time_to_z = std::numeric_limits<double>::infinity();
+      else time_to_z = (m_voxel_grid.v0()(2) + (zi + (zinc > 0))*this->delta_z() - current_position(2)) / u(2);
 
       if (time_to_x <= std::min(time_to_y, time_to_z)) {
         xi += xinc;
@@ -105,5 +105,85 @@ namespace roulette {
     photon->position() = current_position;
 
     return (current_time < exit_time);
+  }
+
+  ThreeVector DensityGrid::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, DensityGrid::voxel_iterator it) const {
+    ThreeVector u = direction / direction.magnitude();
+    ThreeVector current_position = initial_position;
+    /* std::cout << "Initial position: " << initial_position << std::endl; */
+    // Done if does not intersect surface
+    if (m_voxel_grid.outside(current_position) && !m_voxel_grid.transport_position_to_surface(current_position, u)) return initial_position;
+    /* std::cout << "Current position: " << current_position << std::endl; */
+
+    double exit_time = m_voxel_grid.exit_time(current_position, u);
+    /* std::cout << "Exit time: " << exit_time << std::endl; */
+
+    int xi = (int)((current_position(0) - m_voxel_grid.v0()(0)) / this->delta_x());
+    int yi = (int)((current_position(1) - m_voxel_grid.v0()(1)) / this->delta_y());
+    int zi = (int)((current_position(2) - m_voxel_grid.v0()(2)) / this->delta_z());
+
+    /* std::cout << "Bottom left: " << m_voxel_grid.v0() << std::endl; */
+    /* std::cout << "Top right: " << m_voxel_grid.vn() << std::endl; */
+    /* std::cout << "Deltas: " << this->delta_x() << ", " << this->delta_y() << ", " << this->delta_z() << std::endl; */
+    /* std::cout << "Initial indexes: " << xi << ", " << yi << ", " << zi << std::endl; */
+
+    int xinc, yinc, zinc;
+
+    if (u(0) < 0) xinc = -1;
+    else if (u(0) > 0) xinc = 1;
+    else xinc = 0;
+
+    if (u(1) < 0) yinc = -1;
+    else if (u(1) > 0) yinc = 1;
+    else yinc = 0;
+
+    if (u(2) < 0) zinc = -1;
+    else if (u(2) > 0) zinc = 1;
+    else zinc = 0;
+
+    /* std::cout << "Increments: " << xinc << ", " << yinc << ", " << zinc << std::endl; */
+
+    double current_time = 0;
+    double delta_t = 0;
+
+    double time_to_x = (xinc == 0) ? std::numeric_limits<double>::infinity() : 0;
+    double time_to_y = (yinc == 0) ? std::numeric_limits<double>::infinity() : 0;
+    double time_to_z = (zinc == 0) ? std::numeric_limits<double>::infinity() : 0;
+
+    while (current_time < exit_time) {
+      /* std::cout << "Current time: " << current_time << std::endl; */
+      /* std::cout << "current position: " << current_position << std::endl; */
+
+      if (xinc) time_to_x = (m_voxel_grid.v0()(0) + (xi + (xinc > 0))*this->delta_x() - current_position(0)) / u(0);
+      if (yinc) time_to_y = (m_voxel_grid.v0()(1) + (yi + (yinc > 0))*this->delta_y() - current_position(1)) / u(1);
+      if (zinc) time_to_z = (m_voxel_grid.v0()(2) + (zi + (zinc > 0))*this->delta_z() - current_position(2)) / u(2);
+
+      /* std::cout << "Times: " << time_to_z << ", " << time_to_y << ", " << time_to_x << std::endl; */
+
+      delta_t = std::min(time_to_x, std::min(time_to_y, time_to_z));
+
+      // Process this voxel before moving to next
+      /* std::cout << "Calling with: " << xi << ", " << yi << ", " << zi << std::endl; */
+      double distance = it(*this, delta_t, xi, yi, zi);
+      // Here we are finished, so return final position
+      if (distance < delta_t) return current_position += distance * u;
+
+      if (time_to_x <= std::min(time_to_y, time_to_z)) {
+        xi += xinc;
+      }
+
+      if (time_to_y <= std::min(time_to_x, time_to_z)) {
+        yi += yinc;
+      }
+
+      if (time_to_z <= std::min(time_to_x, time_to_y)) {
+        zi += zinc;
+      }
+
+      current_position += delta_t * u;
+      current_time += delta_t;
+    }
+
+    return current_position;
   }
 };
