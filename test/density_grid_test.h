@@ -4,6 +4,7 @@
 
 #include "test_helper.h"
 
+#include "roulette/random_generator.h"
 #include "roulette/density_grid.h"
 
 using namespace roulette;
@@ -204,4 +205,47 @@ TEST_F(DensityGridTest, ray_trace_voxels_test_going_through_corner) {
   EXPECT_EQ(final_position(0),  5);
   EXPECT_EQ(final_position(1), -5);
   EXPECT_EQ(final_position(2),  5);
+}
+
+TEST(DensityGrid, ray_trace_voxels_going_through_random_directions) {
+  VoxelGrid voxel_grid(
+    ThreeVector(0, -10, -10),
+    ThreeVector(10, 10, 10)
+  );
+
+  Material soft_tissue_icru_44(
+    1.060E+00,
+    NonUniformLinearInterpolation("../data/soft_tissue_icru_44.txt")
+  );
+
+  DensityGrid density_grid(
+    voxel_grid,
+    ThreeTensor(256, 1, 1, 1.0),
+    soft_tissue_icru_44
+  );
+
+  ThreeVector start_position(-5, 0, 0);
+  RandomGenerator generator;
+
+  for (int i = 0; i < 5; ++i) {
+    double theta = M_PI/4 * (generator.uniform()-0.5);
+    double phi = 4*M_PI * (generator.uniform()-0.5);
+    ThreeVector velocity(std::cos(theta), std::sin(theta)*std::cos(phi), std::sin(theta)*std::cos(phi));
+
+    int count = 0;
+    ThreeVector final_position = density_grid.ray_trace_voxels(
+      start_position, velocity,
+      DensityGrid::voxel_iterator(
+        [&](const DensityGrid& cur_density_grid, double distance, int xi, int yi, int zi) -> double {
+          EXPECT_EQ(xi, count);
+          ++count;
+
+          return distance;
+        }
+      )
+    );
+
+    EXPECT_EQ(count, 256);
+    EXPECT_NEAR(final_position(0), 10, 0.0000001);
+  }
 }

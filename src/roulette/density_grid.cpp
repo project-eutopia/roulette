@@ -56,9 +56,6 @@ namespace roulette {
     // Done if does not intersect surface
     if (m_voxel_grid.outside(current_position) && !m_voxel_grid.transport_position_to_surface(current_position, u)) return initial_position;
 
-    // After this much distance, we leave the voxel grid
-    double exit_time = m_voxel_grid.exit_time(current_position, u);
-
     int xinc, yinc, zinc;
     int xi, yi, zi;
 
@@ -111,7 +108,6 @@ namespace roulette {
       zi = floori(normal_z);
     }
 
-    double current_time = 0;
     double delta_t = 0;
 
     // If not incrementing, permanently set time to next voxel along that coordinate to
@@ -120,13 +116,14 @@ namespace roulette {
     double time_to_y = (yinc == 0) ? std::numeric_limits<double>::infinity() : 0;
     double time_to_z = (zinc == 0) ? std::numeric_limits<double>::infinity() : 0;
 
-    while (current_time < exit_time) {
+    while (xi >= 0 && xi < this->nx() && yi >= 0 && yi < this->ny() && zi >= 0 && zi < this->nz()) {
       if (xinc) time_to_x = (m_voxel_grid.v0()(0) + (xi + (xinc > 0))*this->delta_x() - current_position(0)) / u(0);
       if (yinc) time_to_y = (m_voxel_grid.v0()(1) + (yi + (yinc > 0))*this->delta_y() - current_position(1)) / u(1);
       if (zinc) time_to_z = (m_voxel_grid.v0()(2) + (zi + (zinc > 0))*this->delta_z() - current_position(2)) / u(2);
 
       delta_t = std::min(time_to_x, std::min(time_to_y, time_to_z));
 
+      // Iterator callback
       double distance = it(*this, delta_t, xi, yi, zi);
       // Here we are finished, so return final position
       if (distance < delta_t) return current_position += distance * u;
@@ -143,7 +140,6 @@ namespace roulette {
       }
 
       current_position += delta_t * u;
-      current_time += delta_t;
     }
 
     return current_position;
