@@ -22,6 +22,7 @@ namespace roulette {
       ThreeVector& position();
 
       double energy() const;
+      double kinetic_energy() const;
 
       double weight() const;
       double& weight();

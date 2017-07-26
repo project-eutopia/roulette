@@ -23,6 +23,7 @@ namespace roulette {
   ThreeVector& Particle::position() { return m_position; }
 
   double Particle::energy() const { return m_energy; }
+  double Particle::kinetic_energy() const { return m_energy - this->mass(); }
 
   double Particle::weight() const { return m_weight; }
   double& Particle::weight() { return m_weight; }

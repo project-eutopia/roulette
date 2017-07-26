@@ -3,6 +3,7 @@
 #include "real_function_test.h"
 #include "four_momentum_test.h"
 #include "photon_test.h"
+#include "electron_test.h"
 #include "voxel_grid_test.h"
 #include "density_grid_test.h"
 #include "beamlet_test.h"
