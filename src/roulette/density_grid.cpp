@@ -60,9 +60,9 @@ namespace roulette {
     int xi, yi, zi;
 
     // Coordinates in units of voxel indexes
-    double normal_x = (current_position(0) - m_voxel_grid.v0()(0)) / this->delta_x();
-    double normal_y = (current_position(1) - m_voxel_grid.v0()(1)) / this->delta_y();
-    double normal_z = (current_position(2) - m_voxel_grid.v0()(2)) / this->delta_z();
+    double normal_x = (current_position(0) - m_voxel_grid.v0()(0)) / m_delta_x;
+    double normal_y = (current_position(1) - m_voxel_grid.v0()(1)) / m_delta_y;
+    double normal_z = (current_position(2) - m_voxel_grid.v0()(2)) / m_delta_z;
 
     // Set increments to +1 for moving forward, -1 for backward, and 0 for stationary
     //
@@ -108,6 +108,10 @@ namespace roulette {
       zi = floori(normal_z);
     }
 
+    double x_offset = m_voxel_grid.v0()(0) + (xinc > 0) * m_delta_x;
+    double y_offset = m_voxel_grid.v0()(1) + (yinc > 0) * m_delta_y;
+    double z_offset = m_voxel_grid.v0()(2) + (zinc > 0) * m_delta_z;
+
     double delta_t = 0;
 
     // If not incrementing, permanently set time to next voxel along that coordinate to
@@ -116,10 +120,29 @@ namespace roulette {
     double time_to_y = (yinc == 0) ? std::numeric_limits<double>::infinity() : 0;
     double time_to_z = (zinc == 0) ? std::numeric_limits<double>::infinity() : 0;
 
-    while (xi >= 0 && xi < this->nx() && yi >= 0 && yi < this->ny() && zi >= 0 && zi < this->nz()) {
-      if (xinc) time_to_x = (m_voxel_grid.v0()(0) + (xi + (xinc > 0))*this->delta_x() - current_position(0)) / u(0);
-      if (yinc) time_to_y = (m_voxel_grid.v0()(1) + (yi + (yinc > 0))*this->delta_y() - current_position(1)) / u(1);
-      if (zinc) time_to_z = (m_voxel_grid.v0()(2) + (zi + (zinc > 0))*this->delta_z() - current_position(2)) / u(2);
+    // We know the direction of motion, so only need to check one side:
+    // Moving left:   xi >= 0
+    //
+    // Moving right:  xi < nx
+    //                xi - nx < 0
+    //                xi - nx + 1 <= 0
+    //                nx - xi - 1 >= 0
+    //
+    // Combine into single:
+    // xi_factor * xi + xi_offset >= 0
+    int xi_factor = (xinc > 0) ? -1 : 1;
+    int xi_offset = (xinc > 0) ? this->nx() - 1 : 0;
+
+    int yi_factor = (yinc > 0) ? -1 : 1;
+    int yi_offset = (yinc > 0) ? this->ny() - 1 : 0;
+
+    int zi_factor = (zinc > 0) ? -1 : 1;
+    int zi_offset = (zinc > 0) ? this->nz() - 1 : 0;
+
+    while (xi_factor*xi + xi_offset >= 0 && yi_factor*yi + yi_offset >= 0 && zi_factor*zi + zi_offset >= 0) {
+      if (xinc) time_to_x = (x_offset + xi*m_delta_x - current_position(0)) / u(0);
+      if (yinc) time_to_y = (y_offset + yi*m_delta_y - current_position(1)) / u(1);
+      if (zinc) time_to_z = (z_offset + zi*m_delta_z - current_position(2)) / u(2);
 
       delta_t = std::min(time_to_x, std::min(time_to_y, time_to_z));
 
