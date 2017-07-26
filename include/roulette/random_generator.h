@@ -5,8 +5,6 @@
 namespace roulette {
   class RandomGenerator {
     private:
-      unsigned int m_seed;
-
       // Random number generator
       std::mt19937 m_generator;
 

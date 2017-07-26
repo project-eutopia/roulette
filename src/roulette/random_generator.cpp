@@ -6,7 +6,6 @@ namespace roulette {
   };
 
   RandomGenerator::RandomGenerator(unsigned int seed) :
-    m_seed{seed},
     m_generator{seed},
     m_uniform{}
   {
