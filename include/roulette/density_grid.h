@@ -46,7 +46,7 @@ namespace roulette {
       double operator()(int xi, int yi, int zi) const;
       const Material& material() const;
 
-      // Photon must be "inside" the grid.  Returns false if transported all the way out.
+      // Returns false if transported all the way out.
       bool transport_photon_unitless_depth(Photon* photon, double depth) const;
 
       // Returns final position
