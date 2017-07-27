@@ -47,6 +47,35 @@ namespace roulette {
   }
 
   void DoseCalculation::process_electron(Electron& electron) {
-    // TODO
+    double kinetic_energy = electron.kinetic_energy();
+
+    ThreeVector final_position = m_density_grid->ray_trace_voxels(
+      electron.position(), electron.momentum().three_momentum(),
+      DensityGrid::voxel_iterator(
+        [&](const DensityGrid& cur_density_grid, double distance, int xi, int yi, int zi) -> double {
+          double delta_energy = cur_density_grid(xi, yi, zi) * cur_density_grid.material().electron_stopping_power(kinetic_energy) * distance;
+
+          double energy_drop = (delta_energy < kinetic_energy) ? delta_energy : kinetic_energy;
+
+          m_dose(xi, yi, zi) += electron.weight() * energy_drop;
+          kinetic_energy -= energy_drop;
+
+          // Roulette to decide if we keep going
+          if (kinetic_energy < 100000) {
+            // 1 in 3 chance of skipping
+            if (m_generator->uniform() > 2.0/3.0) {
+              return 0;
+            }
+            electron.weight() *= 3.0/2.0;
+          }
+
+          if (energy_drop < kinetic_energy) {
+            return distance;
+          }
+
+          return energy_drop / cur_density_grid(xi, yi, zi) / cur_density_grid.material().electron_stopping_power(kinetic_energy);
+        }
+      )
+    );
   }
 };
