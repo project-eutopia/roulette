@@ -4,7 +4,7 @@ namespace roulette {
   DoseCalculation::DoseCalculation(std::shared_ptr<RandomGenerator> generator, std::shared_ptr<DensityGrid> density_grid) :
     m_generator(generator),
     m_density_grid(density_grid),
-    m_dose(m_density_grid->nz(), m_density_grid->ny(), m_density_grid->nx(), 0.0),
+    m_dose(m_density_grid->nx(), m_density_grid->ny(), m_density_grid->nz(), 0.0),
     m_exponential_distribution(1),
     m_compton_scattering()
   {
