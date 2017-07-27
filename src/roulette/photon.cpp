@@ -39,6 +39,6 @@ namespace roulette {
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::Photon& p) {
-  os << "Photon(" << p.momentum() << ", " << p.position() << ")";
+  os << "Photon(" << p.momentum() << ", " << p.position() << ", weight=" << p.weight() << ")";
   return os;
 }

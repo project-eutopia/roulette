@@ -6,6 +6,6 @@ namespace roulette {
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::Electron& e) {
-  os << "Electron(" << e.momentum() << ", " << e.position() << ")";
+  os << "Electron(" << e.momentum() << ", " << e.position() << ", weight=" << e.weight() << ")";
   return os;
 }
