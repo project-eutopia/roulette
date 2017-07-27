@@ -41,7 +41,7 @@ namespace roulette {
       assert(stopping_power.IsObject());
       assert(stopping_power.HasMember("data"));
 
-      const auto& stopping_power_data = stopping_power["stopping_power"];
+      const auto& stopping_power_data = stopping_power["data"];
 
       for (auto it = stopping_power_data.Begin(); it != stopping_power_data.End(); ++it) {
         m_electron_stopping_power.add_point(
