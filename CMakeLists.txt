@@ -9,7 +9,7 @@ set (CMAKE_CXX_COMPILER "/usr/bin/clang++")
 
 if (NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
   add_definitions(-DNDEBUG)
-endif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+endif()
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast" )
