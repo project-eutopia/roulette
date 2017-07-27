@@ -54,20 +54,20 @@ TEST(ComptonScatteringTest, obeys_relativistic_kinematics) {
 
     // Energy conservation
     ASSERT_NEAR(
-      compton.initial_photon_energy() + 1,
+      compton.initial_photon_energy() + ELECTRON_REST_ENERGY_IN_EV,
       compton.final_photon_energy() + compton.final_electron_energy(),
       0.0000001
     );
     // x momentum conservation
     ASSERT_NEAR(
       compton.initial_photon_energy(),
-      compton.final_photon_energy()*std::cos(compton.final_photon_theta()) + std::sqrt(compton.final_electron_energy()*compton.final_electron_energy() - 1)*std::cos(compton.final_electron_theta()),
+      compton.final_photon_energy()*std::cos(compton.final_photon_theta()) + std::sqrt(compton.final_electron_energy()*compton.final_electron_energy() - Electron::MASS*Electron::MASS)*std::cos(compton.final_electron_theta()),
       0.0000001
     );
     // y momentum conservation
     ASSERT_NEAR(
       0.0,
-      compton.final_photon_energy()*std::sin(compton.final_photon_theta()) + std::sqrt(compton.final_electron_energy()*compton.final_electron_energy() - 1)*std::sin(compton.final_electron_theta()),
+      compton.final_photon_energy()*std::sin(compton.final_photon_theta()) + std::sqrt(compton.final_electron_energy()*compton.final_electron_energy() - Electron::MASS*Electron::MASS)*std::sin(compton.final_electron_theta()),
       0.0000001
     );
   }

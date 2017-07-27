@@ -28,8 +28,8 @@ TEST(PhotonTest, compton_scatters) {
     compton(generator);
 
     Electron current_electron = current_photon.compton_scatter(
-      ELECTRON_REST_ENERGY_IN_EV * compton.final_photon_energy(),
-      ELECTRON_REST_ENERGY_IN_EV * compton.final_electron_energy(),
+      compton.final_photon_energy(),
+      compton.final_electron_energy(),
       compton.final_photon_theta(),
       compton.final_electron_theta(),
       compton.final_phi()

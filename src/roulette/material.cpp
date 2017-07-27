@@ -61,6 +61,6 @@ namespace roulette {
 
   // Units eV cm^2/g
   double Material::electron_stopping_power(double kinetic_energy) const {
-    return m_electron_stopping_power(kinetic_energy / 1000000);
+    return 1000000*m_electron_stopping_power(kinetic_energy / 1000000);
   }
 };

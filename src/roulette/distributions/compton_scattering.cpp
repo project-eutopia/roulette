@@ -56,10 +56,10 @@ namespace roulette {
       alpha2 = m_photon_E_0 / A2;
     }
 
-    double ComptonScattering::initial_photon_energy() const { return m_photon_E_0; }
+    double ComptonScattering::initial_photon_energy() const { return ELECTRON_REST_ENERGY_IN_EV*m_photon_E_0; }
 
-    double ComptonScattering::final_photon_energy() const { return m_photon_E_1; }
-    double ComptonScattering::final_electron_energy() const { return m_electron_E_1; }
+    double ComptonScattering::final_photon_energy() const { return ELECTRON_REST_ENERGY_IN_EV*m_photon_E_1; }
+    double ComptonScattering::final_electron_energy() const { return ELECTRON_REST_ENERGY_IN_EV*m_electron_E_1; }
     double ComptonScattering::final_photon_theta() const { return m_photon_theta; }
     double ComptonScattering::final_electron_theta() const { return m_electron_theta; }
     double ComptonScattering::final_phi() const { return m_phi; }
@@ -76,7 +76,7 @@ namespace roulette {
     }
 
     FourMomentum ComptonScattering::initial_photon_momentum() const {
-      double factor = ELECTRON_REST_ENERGY_IN_EV*m_photon_E_0;
+      double factor = this->initial_photon_energy();
       return FourMomentum(factor, factor, 0, 0);
     }
 
@@ -85,7 +85,7 @@ namespace roulette {
     }
 
     FourMomentum ComptonScattering::final_photon_momentum() const {
-      double factor = ELECTRON_REST_ENERGY_IN_EV*m_photon_E_1;
+      double factor = this->final_photon_energy();
       return FourMomentum(
         factor,
         factor*std::cos(m_photon_theta),
@@ -95,9 +95,9 @@ namespace roulette {
     }
 
     FourMomentum ComptonScattering::final_electron_momentum() const {
-      double momentum_magnitude = ELECTRON_MASS_IN_EV*std::sqrt(m_electron_E_1*m_electron_E_1 - 1);
+      double momentum_magnitude = std::sqrt(this->final_electron_energy()*this->final_electron_energy() - Electron::MASS*Electron::MASS);
       return FourMomentum(
-        ELECTRON_REST_ENERGY_IN_EV*m_electron_E_1,
+        this->final_electron_energy(),
         momentum_magnitude * std::cos(m_electron_theta),
         momentum_magnitude * std::sin(m_electron_theta),
         0
