@@ -18,6 +18,8 @@ find_package(Boost 1.61 REQUIRED)
 
 # Include headers
 include_directories (include)
+include_directories ("vendor/rapidjson/include")
+
 # Source codes (except main.cpp)
 file (GLOB_RECURSE SOURCES "src/*.cpp")
 list (REMOVE_ITEM SOURCES "${CMAKE_SOURCE_DIR}/src/main.cpp")

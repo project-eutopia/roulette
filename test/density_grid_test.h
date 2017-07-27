@@ -21,10 +21,7 @@ class DensityGridRayTraceTest : public ::testing::Test {
         ThreeVector( 5,  5,  5)
       );
 
-      Material soft_tissue_icru_44(
-        1.060E+00,
-        NonUniformLinearInterpolation("../data/soft_tissue_icru_44.txt")
-      );
+      Material soft_tissue_icru_44("../data/soft_tissue_icru_44.json");
 
       density_grid = std::make_shared<DensityGrid>(
         voxel_grid,
@@ -213,10 +210,7 @@ TEST(DensityGridTest, ray_trace_voxels_going_through_random_directions) {
     ThreeVector(10, 10, 10)
   );
 
-  Material soft_tissue_icru_44(
-    1.060E+00,
-    NonUniformLinearInterpolation("../data/soft_tissue_icru_44.txt")
-  );
+  Material soft_tissue_icru_44("../data/soft_tissue_icru_44.json");
 
   DensityGrid density_grid(
     voxel_grid,
@@ -251,10 +245,7 @@ TEST(DensityGridTest, ray_trace_voxels_going_through_random_directions) {
 }
 
 TEST(DensityGridTest, transport_photon_unitless_depth_test) {
-  Material soft_tissue_icru_44(
-    1.060E+00,
-    NonUniformLinearInterpolation("../data/soft_tissue_icru_44.txt")
-  );
+  Material soft_tissue_icru_44("../data/soft_tissue_icru_44.json");
 
   VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100));
 
