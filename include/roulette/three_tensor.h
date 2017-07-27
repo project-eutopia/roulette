@@ -11,7 +11,7 @@ namespace roulette {
       std::vector<double> m_data;
 
     public:
-      ThreeTensor(int nz, int ny, int nx, double fill_value = 0);
+      ThreeTensor(int nx, int ny, int nz, double fill_value = 0);
 
       int nx() const;
       int ny() const;
