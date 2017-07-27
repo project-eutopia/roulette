@@ -14,7 +14,6 @@ namespace roulette {
 
     public:
       Material(std::string filename);
-      Material(double density, const NonUniformLinearInterpolation& photon_mass_attenuation, const NonUniformLinearInterpolation& electron_stopping_power);
 
       // Units: g/cm^3
       double density() const;

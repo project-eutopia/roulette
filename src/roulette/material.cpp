@@ -52,13 +52,6 @@ namespace roulette {
     }
   }
 
-  Material::Material(double density, const NonUniformLinearInterpolation& photon_mass_attenuation, const NonUniformLinearInterpolation& electron_stopping_power) :
-    m_density(density),
-    m_photon_mass_attenuation(photon_mass_attenuation),
-    m_electron_stopping_power(electron_stopping_power)
-  {
-  }
-
   double Material::density() const { return m_density; }
 
   double Material::photon_mass_attenuation(double energy) const {
