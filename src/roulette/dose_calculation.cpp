@@ -40,9 +40,10 @@ namespace roulette {
     m_compton_scattering.set_initial_photon(photon);
     m_compton_scattering(*m_generator);
     Electron electron = photon.compton_scatter(m_compton_scattering.final_photon_energy(), m_compton_scattering.final_electron_energy(), m_compton_scattering.final_photon_theta(), m_compton_scattering.final_electron_theta(), m_compton_scattering.final_phi());
+    electron.weight() = photon.weight();
 
-    this->process_photon(photon);
     this->process_electron(electron);
+    this->process_photon(photon);
   }
 
   void DoseCalculation::process_electron(Electron& electron) {
