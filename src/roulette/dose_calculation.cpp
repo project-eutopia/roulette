@@ -10,6 +10,8 @@ namespace roulette {
   {
   }
 
+  const ThreeTensor& DoseCalculation::dose() const { return m_dose; }
+
   void DoseCalculation::process_initial_photon(Photon photon) {
     if (m_density_grid->voxel_grid().outside(photon.position())) {
       m_density_grid->voxel_grid().transport_particle_to_surface(&photon);

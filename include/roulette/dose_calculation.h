@@ -23,6 +23,8 @@ namespace roulette {
     public:
       DoseCalculation(std::shared_ptr<RandomGenerator> generator, std::shared_ptr<DensityGrid> density_grid);
 
+      const ThreeTensor& dose() const;
+
       void process_initial_photon(Photon photon);
 
       void process_photon(Photon& photon);
