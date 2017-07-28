@@ -6,7 +6,8 @@ namespace roulette {
     m_density_grid(density_grid),
     m_dose(m_density_grid->nx(), m_density_grid->ny(), m_density_grid->nz(), 0.0),
     m_exponential_distribution(1),
-    m_compton_scattering()
+    m_compton_scattering(),
+    m_interaction_function()
   {
   }
 
@@ -22,7 +23,7 @@ namespace roulette {
 
   void DoseCalculation::process_photon(Photon& photon) {
     // Roulette to eliminate low energy photons (below 100 keV)
-    if (photon.energy() < 100000) {
+    if (photon.energy() < 10000) {
       // 1 in 3 chance of skipping
       if (m_generator->uniform() > 2.0/3.0) {
         return;
@@ -30,20 +31,44 @@ namespace roulette {
       photon.weight() *= 3.0/2.0;
     }
 
-    // Get random unitless depth
-    double depth = m_exponential_distribution(*m_generator);
-    bool still_inside = m_density_grid->transport_photon_unitless_depth(&photon, depth);
+    double energy = photon.energy();
 
-    if (!still_inside) return;
+    InteractionType interaction = InteractionType::NONE;
 
-    // Compton scatter
-    m_compton_scattering.set_initial_photon(photon);
-    m_compton_scattering(*m_generator);
-    Electron electron = photon.compton_scatter(m_compton_scattering.final_photon_energy(), m_compton_scattering.final_electron_energy(), m_compton_scattering.final_photon_theta(), m_compton_scattering.final_electron_theta(), m_compton_scattering.final_phi());
-    electron.weight() = photon.weight();
+    ThreeVector final_position = m_density_grid->ray_trace_voxels(
+      photon.position(), photon.momentum().three_momentum(),
+      DensityGrid::voxel_iterator(
+        [&](const DensityGrid& cur_density_grid, double distance, int xi, int yi, int zi) -> double {
+          // Check for scatter
+          if (m_generator->uniform() < m_interaction_function(cur_density_grid(xi, yi, zi) * cur_density_grid.compound().photon_scattering_cross_section(energy) * distance)) {
+            interaction = InteractionType::PHOTON_SCATTER;
+            return distance / 2.0;
+          }
+          // Check for absorption
+          else if (m_generator->uniform() < m_interaction_function(cur_density_grid(xi, yi, zi) * cur_density_grid.compound().photon_absorption_cross_section(energy) * distance)) {
+            interaction = InteractionType::PHOTON_ABSORB;
+            // Photoelectric absorption
+            m_dose(xi, yi, zi) += photon.weight() * energy;
+            return distance / 2.0;
+          }
 
-    this->process_electron(electron);
-    this->process_photon(photon);
+          return distance;
+        }
+      )
+    );
+
+    // Absorption already handled in ray tracer
+    if (interaction == InteractionType::PHOTON_SCATTER) {
+      photon.position() = final_position;
+
+      m_compton_scattering.set_initial_photon(photon);
+      m_compton_scattering(*m_generator);
+      Electron electron = photon.compton_scatter(m_compton_scattering.final_photon_energy(), m_compton_scattering.final_electron_energy(), m_compton_scattering.final_photon_theta(), m_compton_scattering.final_electron_theta(), m_compton_scattering.final_phi());
+      electron.weight() = photon.weight();
+
+      this->process_electron(electron);
+      this->process_photon(photon);
+    }
   }
 
   void DoseCalculation::process_electron(Electron& electron) {
@@ -61,7 +86,7 @@ namespace roulette {
           kinetic_energy -= energy_drop;
 
           // Roulette to decide if we keep going
-          if (kinetic_energy < 100000) {
+          if (kinetic_energy < 10000) {
             // 1 in 3 chance of skipping
             if (m_generator->uniform() > 2.0/3.0) {
               return 0;
