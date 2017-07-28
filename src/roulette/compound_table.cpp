@@ -11,6 +11,10 @@ namespace roulette {
       std::string name = (*it)["name"].GetString();
       m_compounds.emplace(name, Compound(*it, m_periodic_table));
     }
+
+    for (const auto& atomic_number_element : m_periodic_table.elements()) {
+      m_compounds.emplace(atomic_number_element.second.name(), atomic_number_element.second);
+    }
   }
 
   CompoundTable::CompoundTable(std::string json_filename) :

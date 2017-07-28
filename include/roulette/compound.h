@@ -25,6 +25,7 @@ namespace roulette {
 
     public:
       Compound(const rapidjson::Value& data, const PeriodicTable& periodic_table);
+      Compound(const Element& element);
 
       const std::string& name() const;
       double z_over_a_ratio() const;

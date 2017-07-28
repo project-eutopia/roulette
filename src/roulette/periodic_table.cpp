@@ -10,5 +10,6 @@ namespace roulette {
     }
   }
 
+  const std::map<int,Element>& PeriodicTable::elements() const { return m_elements; }
   const Element& PeriodicTable::element(int atomic_number) const { return m_elements.at(atomic_number); }
 };

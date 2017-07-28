@@ -46,6 +46,31 @@ namespace roulette {
     );
   }
 
+  Compound::Compound(const Element& element) :
+    m_name(element.name()),
+    m_z_over_a_ratio(element.z_over_a_ratio()),
+    m_excitation_energy(element.excitation_energy()),
+    m_density(element.density()),
+    m_photon_scattering_cross_sections(
+      element.photon_scattering_cross_sections().xs(),
+      element.photon_scattering_cross_sections().ys()
+    ),
+    m_photon_absorption_cross_sections(
+      element.photon_absorption_cross_sections().xs(),
+      element.photon_absorption_cross_sections().ys()
+    ),
+    m_photon_pair_production_cross_sections(
+      element.photon_pair_production_cross_sections().xs(),
+      element.photon_pair_production_cross_sections().ys()
+    ),
+    m_electron_stopping_powers(
+      element.electron_stopping_powers().xs(),
+      element.electron_stopping_powers().ys()
+    )
+  {
+    m_composition[element.atomic_number()] = 1.0;
+  }
+
   const std::string& Compound::name() const { return m_name; }
   double Compound::z_over_a_ratio() const { return m_z_over_a_ratio; }
   double Compound::excitation_energy() const { return m_excitation_energy; }

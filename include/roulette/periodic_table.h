@@ -13,6 +13,7 @@ namespace roulette {
     public:
       PeriodicTable(const rapidjson::Value& data);
 
+      const std::map<int,Element>& elements() const;
       const Element& element(int atomic_number) const;
   };
 };
