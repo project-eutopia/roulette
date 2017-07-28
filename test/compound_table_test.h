@@ -7,8 +7,6 @@
 using namespace roulette;
 
 TEST(CompoundTableTest, reads_in_from_json_file) {
-  CompoundTable compound_table("../data/compounds.json");
-
   const Element& hydrogen = compound_table.periodic_table().element(1);
   const Element& oxygen = compound_table.periodic_table().element(8);
   const Compound& water = compound_table.compound("Water, Liquid");

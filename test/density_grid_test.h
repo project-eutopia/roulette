@@ -21,7 +21,7 @@ class DensityGridRayTraceTest : public ::testing::Test {
         ThreeVector( 5,  5,  5)
       );
 
-      Material soft_tissue_icru_44("../data/soft_tissue_icru_44.json");
+      const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
 
       density_grid = std::make_shared<DensityGrid>(
         voxel_grid,
@@ -210,7 +210,7 @@ TEST(DensityGridTest, ray_trace_voxels_going_through_random_directions) {
     ThreeVector(10, 10, 10)
   );
 
-  Material soft_tissue_icru_44("../data/soft_tissue_icru_44.json");
+  const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
 
   DensityGrid density_grid(
     voxel_grid,
@@ -245,7 +245,7 @@ TEST(DensityGridTest, ray_trace_voxels_going_through_random_directions) {
 }
 
 TEST(DensityGridTest, transport_photon_unitless_depth_test) {
-  Material soft_tissue_icru_44("../data/soft_tissue_icru_44.json");
+  const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
 
   VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100));
 
@@ -259,7 +259,7 @@ TEST(DensityGridTest, transport_photon_unitless_depth_test) {
   bool res = density_grid.transport_photon_unitless_depth(&initial_photon, 1.0);
 
   EXPECT_TRUE(res);
-  EXPECT_NEAR(1.0 / 0.07006 / 1.06, initial_photon.position()(0), 0.0000001);
+  EXPECT_NEAR(1.0 / 0.07006 / 1.06, initial_photon.position()(0), 0.0001);
   EXPECT_EQ(0, initial_photon.position()(1));
   EXPECT_EQ(0, initial_photon.position()(2));
 }
