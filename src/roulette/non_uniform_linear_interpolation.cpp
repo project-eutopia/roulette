@@ -44,6 +44,11 @@ namespace roulette {
     }
   }
 
+  void NonUniformLinearInterpolation::reserve(int n) {
+    m_x.reserve(n);
+    m_y.reserve(n);
+  }
+
   void NonUniformLinearInterpolation::add_point(double x, double y) {
     if (m_x.size() > 0) {
       assert(m_x.back() < x);

@@ -15,6 +15,8 @@ namespace roulette {
       NonUniformLinearInterpolation(std::vector<double>&& x, std::vector<double>&& y);
       NonUniformLinearInterpolation(const std::string& filename);
 
+      void reserve(int n);
+
       // Must add in increasing x order!
       void add_point(double x, double y);
 
