@@ -91,4 +91,28 @@ namespace roulette {
 
     return m_y[m] + (x - m_x[m]) * (m_y[m+1] - m_y[m]) / (m_x[m+1] - m_x[m]);
   }
+
+  NonUniformLinearInterpolation NonUniformLinearInterpolation::linear_combination(const std::vector<const NonUniformLinearInterpolation*>& interpolations, const std::vector<double>& weights) {
+    assert(interpolations[0].size() > 0);
+
+    std::vector<double> xs;
+    std::vector<double> ys;
+
+    xs.reserve(interpolations[0]->xs().size());
+    ys.reserve(interpolations[0]->ys().size());
+
+    double y;
+    int i, w;
+    for (i = 0; i < interpolations[0]->xs().size(); ++i) {
+      xs.push_back(interpolations[0]->xs()[i]);
+
+      y = 0;
+      for (w = 0; w < interpolations.size(); ++w) {
+        y += weights[w] * (*interpolations[w])(xs.back());
+      }
+      ys.push_back(y);
+    }
+
+    return NonUniformLinearInterpolation(xs, ys);
+  }
 };

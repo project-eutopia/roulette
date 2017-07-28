@@ -24,5 +24,8 @@ namespace roulette {
       const std::vector<double>& ys() const;
 
       double operator()(double x) const;
+
+      // Uses first interpolation x values as arbitrary base of x's to evaluate at
+      static NonUniformLinearInterpolation linear_combination(const std::vector<const NonUniformLinearInterpolation*>& interpolations, const std::vector<double>& weights);
   };
 };
