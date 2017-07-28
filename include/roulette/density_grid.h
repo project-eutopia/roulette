@@ -5,7 +5,7 @@
 
 #include "roulette/voxel_grid.h"
 #include "roulette/three_tensor.h"
-#include "roulette/material.h"
+#include "roulette/compound.h"
 #include "roulette/photon.h"
 
 namespace roulette {
@@ -13,8 +13,8 @@ namespace roulette {
     private:
       VoxelGrid m_voxel_grid;
       ThreeTensor m_densities;
-      // For now, use single material
-      Material m_material;
+      // For now, use single compound
+      Compound m_compound;
 
       double m_delta_x;
       double m_delta_y;
@@ -32,7 +32,7 @@ namespace roulette {
       // zi, yi, xi are the indexes of this voxel
       typedef std::function<double(const DensityGrid& density_grid, double distance, int xi, int yi, int zi)> voxel_iterator;
 
-      DensityGrid(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Material& material);
+      DensityGrid(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Compound& compound);
 
       int nz() const;
       int ny() const;
@@ -44,7 +44,7 @@ namespace roulette {
 
       const VoxelGrid& voxel_grid() const;
       double operator()(int xi, int yi, int zi) const;
-      const Material& material() const;
+      const Compound& compound() const;
 
       // Returns false if transported all the way out.
       bool transport_photon_unitless_depth(Photon* photon, double depth) const;

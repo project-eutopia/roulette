@@ -4,10 +4,10 @@
 #include <cassert>
 
 namespace roulette {
-  DensityGrid::DensityGrid(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Material& material) :
+  DensityGrid::DensityGrid(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Compound& compound) :
     m_voxel_grid(voxel_grid),
     m_densities(densities),
-    m_material(material)
+    m_compound(compound)
   {
     m_delta_x = (m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx();
     m_delta_y = (m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny();
@@ -24,7 +24,7 @@ namespace roulette {
 
   const VoxelGrid& DensityGrid::voxel_grid() const { return m_voxel_grid; }
   double DensityGrid::operator()(int xi, int yi, int zi) const { return m_densities(xi, yi, zi); }
-  const Material& DensityGrid::material() const { return m_material; }
+  const Compound& DensityGrid::compound() const { return m_compound; }
 
   bool DensityGrid::transport_photon_unitless_depth(Photon* photon, double depth) const {
     double current_depth = 0;
@@ -35,12 +35,12 @@ namespace roulette {
       photon->position(), photon->momentum().three_momentum(),
       DensityGrid::voxel_iterator(
         [&](const DensityGrid& cur_density_grid, double distance, int xi, int yi, int zi) -> double {
-          double delta_depth = cur_density_grid(xi, yi, zi) * cur_density_grid.material().photon_mass_attenuation(energy) * distance;
+          double delta_depth = cur_density_grid(xi, yi, zi) * cur_density_grid.compound().photon_scattering_cross_section(energy) * distance;
           current_depth += delta_depth;
           if (current_depth < depth) return distance;
 
           exited = false;
-          return (delta_depth - current_depth + depth) / cur_density_grid(xi, yi, zi) / cur_density_grid.material().photon_mass_attenuation(energy);
+          return (delta_depth - current_depth + depth) / cur_density_grid(xi, yi, zi) / cur_density_grid.compound().photon_scattering_cross_section(energy);
         }
       )
     );

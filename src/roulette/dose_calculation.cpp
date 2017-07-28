@@ -53,7 +53,7 @@ namespace roulette {
       electron.position(), electron.momentum().three_momentum(),
       DensityGrid::voxel_iterator(
         [&](const DensityGrid& cur_density_grid, double distance, int xi, int yi, int zi) -> double {
-          double delta_energy = cur_density_grid(xi, yi, zi) * cur_density_grid.material().electron_stopping_power(kinetic_energy) * distance;
+          double delta_energy = cur_density_grid(xi, yi, zi) * cur_density_grid.compound().electron_stopping_power(kinetic_energy) * distance;
 
           double energy_drop = (delta_energy < kinetic_energy) ? delta_energy : kinetic_energy;
 
@@ -73,7 +73,7 @@ namespace roulette {
             return distance;
           }
 
-          return energy_drop / cur_density_grid(xi, yi, zi) / cur_density_grid.material().electron_stopping_power(kinetic_energy);
+          return energy_drop / cur_density_grid(xi, yi, zi) / cur_density_grid.compound().electron_stopping_power(kinetic_energy);
         }
       )
     );
