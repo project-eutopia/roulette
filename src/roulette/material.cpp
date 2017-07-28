@@ -20,12 +20,12 @@ namespace roulette {
     }
 
     if (data.HasMember("photon_mass_attenuation")) {
-      const auto& attenuation = data["photon_mass_attenuation"];
+      const rapidjson::Value& attenuation = data["photon_mass_attenuation"];
 
       assert(attenuation.IsObject());
       assert(attenuation.HasMember("data"));
 
-      const auto& attenuation_data = attenuation["data"];
+      const rapidjson::Value& attenuation_data = attenuation["data"];
 
       for (auto it = attenuation_data.Begin(); it != attenuation_data.End(); ++it) {
         m_photon_mass_attenuation.add_point(
@@ -36,12 +36,12 @@ namespace roulette {
     }
 
     if (data.HasMember("electron_stopping_power")) {
-      const auto& stopping_power = data["electron_stopping_power"];
+      const rapidjson::Value& stopping_power = data["electron_stopping_power"];
 
       assert(stopping_power.IsObject());
       assert(stopping_power.HasMember("data"));
 
-      const auto& stopping_power_data = stopping_power["data"];
+      const rapidjson::Value& stopping_power_data = stopping_power["data"];
 
       for (auto it = stopping_power_data.Begin(); it != stopping_power_data.End(); ++it) {
         m_electron_stopping_power.add_point(
