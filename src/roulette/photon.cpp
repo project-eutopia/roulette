@@ -28,6 +28,7 @@ namespace roulette {
     double cos_phi = std::cos(phi);
 
     m_momentum = rotate_to_initial * FourMomentum(photon_energy, xsign * cos_p * photon_energy, sin_p * cos_phi * photon_energy, sin_p * sin_phi * photon_energy);
+    m_energy = photon_energy;
 
     double e_momentum = std::sqrt(electron_energy*electron_energy - Electron::MASS*Electron::MASS);
     return Electron(
