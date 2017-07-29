@@ -7,6 +7,7 @@ namespace roulette {
     m_dose(m_density_grid->nx(), m_density_grid->ny(), m_density_grid->nz(), 0.0),
     m_exponential_distribution(1),
     m_compton_scattering(),
+    m_spherical(),
     m_interaction_function()
   {
   }
@@ -44,11 +45,9 @@ namespace roulette {
             interaction = InteractionType::PHOTON_SCATTER;
             return distance / 2.0;
           }
-          // Check for absorption
+          // Check for photoelectric effect
           else if (m_generator->uniform() < m_interaction_function(cur_density_grid(xi, yi, zi) * cur_density_grid.compound().photon_absorption_cross_section(energy) * distance)) {
-            interaction = InteractionType::PHOTON_ABSORB;
-            // Photoelectric absorption
-            m_dose(xi, yi, zi) += photon.weight() * energy;
+            interaction = InteractionType::PHOTON_PHOTOELECTRIC;
             return distance / 2.0;
           }
 
@@ -59,6 +58,7 @@ namespace roulette {
 
     // Absorption already handled in ray tracer
     if (interaction == InteractionType::PHOTON_SCATTER) {
+      /* interactions.push_back(std::make_tuple(InteractionType::PHOTON_SCATTER, photon.energy(), photon.weight())); */
       photon.position() = final_position;
 
       m_compton_scattering.set_initial_photon(photon);
@@ -67,6 +67,11 @@ namespace roulette {
 
       this->process_electron(electron);
       this->process_photon(photon);
+    }
+    else if (interaction == InteractionType::PHOTON_PHOTOELECTRIC) {
+      /* interactions.push_back(std::make_tuple(InteractionType::PHOTON_PHOTOELECTRIC, photon.energy(), photon.weight())); */
+      Electron electron(photon.energy() + Electron::MASS, Electron::MASS, m_spherical(*m_generator), final_position, photon.weight());
+      this->process_electron(electron);
     }
   }
 
@@ -82,6 +87,7 @@ namespace roulette {
           double energy_drop = (delta_energy < kinetic_energy) ? delta_energy : kinetic_energy;
 
           m_dose(xi, yi, zi) += electron.weight() * energy_drop;
+          /* interactions.push_back(std::make_tuple(InteractionType::ELECTRON_ABSORB, energy_drop, electron.weight())); */
           kinetic_energy -= energy_drop;
 
           // Roulette to decide if we keep going
