@@ -15,7 +15,7 @@ namespace roulette {
 
       for (auto it = array.Begin(); it != array.End(); ++it) {
         m_pdf.add_point(
-            (*it)[0].GetDouble(),
+            (*it)[0].GetDouble() * 1000000, // Convert from MeV to eV
             (*it)[1].GetDouble()
         );
       }
