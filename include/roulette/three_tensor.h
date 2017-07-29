@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace roulette {
   class ThreeTensor {
@@ -19,5 +20,7 @@ namespace roulette {
 
       double operator()(int xi, int yi, int zi) const;
       double& operator()(int xi, int yi, int zi);
+
+      void write_to_file(std::string filename) const;
   };
 };
