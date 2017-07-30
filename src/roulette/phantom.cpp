@@ -1,5 +1,6 @@
 #include "roulette/phantom.h"
 #include "roulette/math.h"
+#include "roulette/photon.h"
 
 #include <fstream>
 
@@ -40,6 +41,29 @@ namespace roulette {
   const VoxelGrid& Phantom::voxel_grid() const { return m_voxel_grid; }
   double Phantom::operator()(int xi, int yi, int zi) const { return m_densities(xi, yi, zi); }
   const Compound& Phantom::compound(int xi, int yi, int zi) const { return m_compound; }
+
+  bool Phantom::transport_photon_unitless_depth(Photon* photon, double depth) const {
+    double current_depth = 0;
+    double energy = photon->energy();
+    bool exited = true;
+
+    ThreeVector final_position = this->ray_trace_voxels(
+      photon->position(), photon->momentum().three_momentum(),
+      Phantom::voxel_iterator(
+        [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
+          double delta_depth = cur_phantom(xi, yi, zi) * cur_phantom.compound(xi, yi, zi).photon_scattering_cross_section(energy) * distance;
+          current_depth += delta_depth;
+          if (current_depth < depth) return distance;
+
+          exited = false;
+          return (delta_depth - current_depth + depth) / cur_phantom(xi, yi, zi) / cur_phantom.compound(xi, yi, zi).photon_scattering_cross_section(energy);
+        }
+      )
+    );
+
+    photon->position() = final_position;
+    return !exited;
+  }
 
   ThreeVector Phantom::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, Phantom::voxel_iterator it) const {
     double mag = direction.magnitude();
