@@ -5,11 +5,11 @@
 
 namespace roulette {
   VoxelGrid::VoxelGrid(const ThreeVector& v0, const ThreeVector& vn, int nx, int ny, int nz) :
-    m_v0(v0),
-    m_vn(vn),
     m_nx(nx),
     m_ny(ny),
     m_nz(nz),
+    m_v0(v0),
+    m_vn(vn),
     m_delta_x((m_vn(0) - m_v0(0)) / m_nx),
     m_delta_y((m_vn(1) - m_v0(1)) / m_ny),
     m_delta_z((m_vn(2) - m_v0(2)) / m_nz)
@@ -232,20 +232,20 @@ namespace roulette {
   }
 
   std::ofstream& VoxelGrid::write(std::ofstream& os) const {
-    m_v0.write(os);
-    m_vn.write(os);
     os.write(reinterpret_cast<const char*>(&m_nx), sizeof(m_nx));
     os.write(reinterpret_cast<const char*>(&m_ny), sizeof(m_ny));
     os.write(reinterpret_cast<const char*>(&m_nz), sizeof(m_nz));
+    m_v0.write(os);
+    m_vn.write(os);
     return os;
   }
 
   std::ifstream& VoxelGrid::read(std::ifstream& is) {
-    m_v0.read(is);
-    m_vn.read(is);
     is.read(reinterpret_cast<char*>(&m_nx), sizeof(m_nx));
     is.read(reinterpret_cast<char*>(&m_ny), sizeof(m_ny));
     is.read(reinterpret_cast<char*>(&m_nz), sizeof(m_nz));
+    m_v0.read(is);
+    m_vn.read(is);
     m_delta_x = (m_vn(0) - m_v0(0)) / m_nx;
     m_delta_y = (m_vn(1) - m_v0(1)) / m_ny;
     m_delta_z = (m_vn(2) - m_v0(2)) / m_nz;

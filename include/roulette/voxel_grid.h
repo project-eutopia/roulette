@@ -7,14 +7,14 @@
 namespace roulette {
   class VoxelGrid {
     private:
+      int m_nx;
+      int m_ny;
+      int m_nz;
+
       // Lower left point
       ThreeVector m_v0;
       // Upper right point
       ThreeVector m_vn;
-
-      int m_nx;
-      int m_ny;
-      int m_nz;
 
       double m_delta_x;
       double m_delta_y;
