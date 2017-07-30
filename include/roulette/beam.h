@@ -16,6 +16,7 @@ namespace roulette {
       int m_ny;
 
     public:
+      Beam();
       // p0, p1, p2 are cyclic corners of square
       Beam(const ThreeVector& source, const ThreeVector& p0, const ThreeVector& p1, const ThreeVector& p2, int nx, int ny);
 

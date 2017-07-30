@@ -17,6 +17,7 @@ namespace roulette {
 
     public:
       Phantom();
+      Phantom(std::string filename);
       Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities);
 
       int nx() const;

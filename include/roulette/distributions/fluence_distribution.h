@@ -15,6 +15,7 @@ namespace roulette {
         std::vector<std::pair<int,int>> m_indexes;
 
       public:
+        FluenceDistribution();
         FluenceDistribution(const TwoTensor& fluence);
 
         int nx() const;

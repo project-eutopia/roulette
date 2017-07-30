@@ -6,6 +6,8 @@
 
 namespace roulette {
   namespace distributions {
+    Spectrum::Spectrum() {}
+
     Spectrum::Spectrum(std::string json_filename) :
       m_inv_cdf()
     {

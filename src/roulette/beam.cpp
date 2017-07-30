@@ -1,6 +1,8 @@
 #include "roulette/beam.h"
 
 namespace roulette {
+  Beam::Beam() {}
+
   // p3 - p0 = p2 - p1
   Beam::Beam(const ThreeVector& source, const ThreeVector& p0, const ThreeVector& p1, const ThreeVector& p2, int nx, int ny) :
     m_source(source),

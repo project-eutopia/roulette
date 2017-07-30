@@ -15,6 +15,7 @@ namespace roulette {
         NonUniformLinearInterpolation m_inv_cdf;
 
       public:
+        Spectrum();
         Spectrum(std::string json_filename);
         double operator()(RandomGenerator& generator);
     };

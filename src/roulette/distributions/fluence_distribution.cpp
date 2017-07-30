@@ -2,6 +2,8 @@
 
 namespace roulette {
   namespace distributions {
+    FluenceDistribution::FluenceDistribution() {}
+
     FluenceDistribution::FluenceDistribution(const TwoTensor& fluence) :
       m_nx(fluence.nx()),
       m_ny(fluence.ny())

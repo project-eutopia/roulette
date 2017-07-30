@@ -9,6 +9,14 @@ namespace roulette {
   {
   }
 
+  Phantom::Phantom(std::string filename)
+  {
+    std::ifstream data_file;
+    data_file.open(filename, std::ios::in | std::ios::binary);
+    this->read(data_file);
+    data_file.close();
+  }
+
   Phantom::Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities) :
     m_voxel_grid(voxel_grid),
     m_densities(densities)
