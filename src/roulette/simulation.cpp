@@ -7,13 +7,13 @@ namespace roulette {
     m_description = data.HasMember("description") ? data["description"].GetString() : "";
 
     assert(data.HasMember("phantom"));
-    m_phantom = Phantom(data["phantom"].GetString());
+    m_phantom = std::make_shared<const Phantom>(data["phantom"].GetString());
 
     m_generator = data.HasMember("seed") ? RandomGenerator(data["seed"].GetInt()) : RandomGenerator();
 
     const rapidjson::Value& sources = data["sources"];
     for (auto it = sources.Begin(); it != sources.End(); ++it) {
-      m_source_simulations.emplace_back(m_generator.random_seed(), *it);
+      m_source_simulations.emplace_back(m_generator.random_seed(), m_phantom, *it);
     }
   }
 

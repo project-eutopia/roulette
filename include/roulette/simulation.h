@@ -13,7 +13,7 @@ namespace roulette {
   class Simulation {
     private:
       std::string m_description;
-      Phantom m_phantom;
+      std::shared_ptr<const Phantom> m_phantom;
       RandomGenerator m_generator;
 
       std::vector<int> m_number_of_particles;
