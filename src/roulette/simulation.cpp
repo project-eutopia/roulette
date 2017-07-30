@@ -21,4 +21,11 @@ namespace roulette {
     Simulation(Json::json_document_from_file(json_filename))
   {
   }
+
+  void Simulation::run() {
+    // TODO multi-thread
+    for (auto& source_simulation : m_source_simulations) {
+      source_simulation.run();
+    }
+  }
 };

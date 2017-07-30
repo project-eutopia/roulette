@@ -23,5 +23,7 @@ namespace roulette {
     public:
       Simulation(const rapidjson::Value& data);
       Simulation(std::string config_filename);
+
+      void run();
   };
 };
