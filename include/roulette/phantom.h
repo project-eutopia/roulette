@@ -47,6 +47,8 @@ namespace roulette {
       double delta_y() const;
       double delta_z() const;
 
+      std::tuple<int,int,int> index_at(const ThreeVector& position) const;
+
       const VoxelGrid& voxel_grid() const;
       double operator()(int xi, int yi, int zi) const;
       const Compound& compound(int xi, int yi, int zi) const;

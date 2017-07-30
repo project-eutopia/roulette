@@ -38,6 +38,14 @@ namespace roulette {
   double Phantom::delta_y() const { return m_delta_y; }
   double Phantom::delta_z() const { return m_delta_z; }
 
+  std::tuple<int,int,int> Phantom::index_at(const ThreeVector& position) const {
+    double normal_x = (position(0) - m_voxel_grid.v0()(0)) / m_delta_x;
+    double normal_y = (position(1) - m_voxel_grid.v0()(1)) / m_delta_y;
+    double normal_z = (position(2) - m_voxel_grid.v0()(2)) / m_delta_z;
+
+    return std::make_tuple((int)normal_x, (int)normal_y, (int)normal_z);
+  }
+
   const VoxelGrid& Phantom::voxel_grid() const { return m_voxel_grid; }
   double Phantom::operator()(int xi, int yi, int zi) const { return m_densities(xi, yi, zi); }
   const Compound& Phantom::compound(int xi, int yi, int zi) const { return m_compound; }
