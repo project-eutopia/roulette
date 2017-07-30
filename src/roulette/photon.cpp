@@ -2,6 +2,8 @@
 #include "roulette/lorentz_transform.h"
 
 namespace roulette {
+  const distributions::Exponential Photon::exponential = distributions::Exponential(1);
+
   double Photon::mass() const { return Photon::MASS; }
   int Photon::charge() const { return Photon::CHARGE; }
 

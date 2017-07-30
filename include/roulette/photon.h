@@ -3,11 +3,15 @@
 #include "roulette/particle.h"
 #include "roulette/electron.h"
 #include "roulette/source_simulation.h"
+#include "roulette/distributions/exponential.h"
 
 namespace roulette {
   class Photon : public Particle {
     // Inherit constructors
     using Particle::Particle;
+
+    private:
+      const static distributions::Exponential exponential;
 
     public:
       constexpr static double MASS = 0;
