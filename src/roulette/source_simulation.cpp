@@ -32,6 +32,13 @@ namespace roulette {
       particle->deposit_energy(*this);
     }
 
-    // TODO: re-weight by m_weight, and scale from energy to dose
+    // Re-weight by m_weight, and scale from energy to dose
+    for (int zi = 0; zi < m_dose.nz(); zi++) {
+      for (int yi = 0; yi < m_dose.ny(); yi++) {
+        for (int xi = 0; xi < m_dose.nx(); xi++) {
+          m_dose(xi, yi, zi) *= m_weight / (*m_phantom)(xi, yi, zi);
+        }
+      }
+    }
   }
 };
