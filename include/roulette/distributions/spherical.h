@@ -8,7 +8,7 @@ namespace roulette {
     class Spherical {
       public:
         Spherical();
-        ThreeVector operator()(RandomGenerator& generator);
+        ThreeVector operator()(RandomGenerator& generator) const;
     };
   };
 };

@@ -9,13 +9,13 @@ namespace roulette {
   namespace distributions {
     // PDF:  mu exp(-mu * x) for x in [0,inf)
     // mu must be positive
-    class Exponential : public Distribution {
+    class Exponential {
       private:
         double m_mu;
 
       public:
         Exponential(double mu);
-        double operator()(RandomGenerator& generator);
+        double operator()(RandomGenerator& generator) const;
         double area_between(double x0, double x1) const;
         void fill_in_expected_histogram(Histogram& expected, int num_samples = 1) const;
 

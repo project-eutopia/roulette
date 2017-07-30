@@ -14,7 +14,7 @@ namespace roulette {
     };
 
     // Inverse CDF is -log(1-x)/mu
-    double Exponential::operator()(RandomGenerator& generator) {
+    double Exponential::operator()(RandomGenerator& generator) const {
       return -std::log(1 - generator.uniform()) / m_mu;
     };
 
