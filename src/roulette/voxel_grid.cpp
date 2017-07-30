@@ -237,9 +237,6 @@ namespace roulette {
     os.write(reinterpret_cast<const char*>(&m_nx), sizeof(int));
     os.write(reinterpret_cast<const char*>(&m_ny), sizeof(int));
     os.write(reinterpret_cast<const char*>(&m_nz), sizeof(int));
-    os.write(reinterpret_cast<const char*>(&m_delta_x), sizeof(double));
-    os.write(reinterpret_cast<const char*>(&m_delta_y), sizeof(double));
-    os.write(reinterpret_cast<const char*>(&m_delta_z), sizeof(double));
     return os;
   }
 
@@ -249,9 +246,9 @@ namespace roulette {
     is.read(reinterpret_cast<char*>(&m_nx), sizeof(int));
     is.read(reinterpret_cast<char*>(&m_ny), sizeof(int));
     is.read(reinterpret_cast<char*>(&m_nz), sizeof(int));
-    is.read(reinterpret_cast<char*>(&m_delta_x), sizeof(double));
-    is.read(reinterpret_cast<char*>(&m_delta_y), sizeof(double));
-    is.read(reinterpret_cast<char*>(&m_delta_z), sizeof(double));
+    m_delta_x = (m_vn(0) - m_v0(0)) / m_nx;
+    m_delta_y = (m_vn(1) - m_v0(1)) / m_ny;
+    m_delta_z = (m_vn(2) - m_v0(2)) / m_nz;
     return is;
   }
 };
