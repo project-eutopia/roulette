@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/numeric/ublas/vector.hpp>
+#include <fstream>
 
 namespace roulette {
   class ThreeVector {
@@ -37,6 +38,9 @@ namespace roulette {
       friend ThreeVector operator*(const ThreeVector& lhs, double rhs);
       friend ThreeVector operator*(double lhs, const ThreeVector& rhs);
       friend ThreeVector operator/(const ThreeVector& lhs, double rhs);
+
+      std::ofstream& write(std::ofstream& os) const;
+      std::ifstream& read(std::ifstream& is);
   };
 };
 

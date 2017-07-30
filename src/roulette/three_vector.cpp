@@ -93,6 +93,17 @@ namespace roulette {
   ThreeVector operator/(const ThreeVector& lhs, double rhs) {
     return ThreeVector(lhs.m_v / rhs);
   }
+
+  std::ofstream& ThreeVector::write(std::ofstream& os) const {
+    os.write(reinterpret_cast<const char*>(&m_v[0]), 3*sizeof(decltype(m_v)::value_type));
+    return os;
+  }
+
+  std::ifstream& ThreeVector::read(std::ifstream& is) {
+    m_v = boost::numeric::ublas::vector<double>(3);
+    is.read(reinterpret_cast<char*>(&m_v[0]), 3*sizeof(decltype(m_v)::value_type));
+    return is;
+  }
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::ThreeVector& v) {
