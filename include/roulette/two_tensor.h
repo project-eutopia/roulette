@@ -19,6 +19,7 @@ namespace roulette {
       double operator()(int xi, int yi) const;
       double& operator()(int xi, int yi);
 
-      void write_to_file(std::string filename) const;
+      std::ofstream& write(std::ofstream& os) const;
+      std::ifstream& read(std::ifstream& is);
   };
 };

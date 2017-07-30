@@ -13,6 +13,7 @@ namespace roulette {
 
     public:
       ThreeTensor(int nx, int ny, int nz, double fill_value = 0);
+      ThreeTensor(std::string filename);
 
       int nx() const;
       int ny() const;
@@ -21,6 +22,7 @@ namespace roulette {
       double operator()(int xi, int yi, int zi) const;
       double& operator()(int xi, int yi, int zi);
 
-      void write_to_file(std::string filename) const;
+      std::ofstream& write(std::ofstream& os) const;
+      std::ifstream& read(std::ifstream& is);
   };
 };

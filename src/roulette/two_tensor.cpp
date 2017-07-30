@@ -16,23 +16,19 @@ namespace roulette {
   double TwoTensor::operator()(int xi, int yi) const { return m_data[xi + m_nx*yi]; }
   double& TwoTensor::operator()(int xi, int yi) { return m_data[xi + m_nx*yi]; }
 
-  void TwoTensor::write_to_file(std::string filename) const {
-    std::ofstream data_file;
-    data_file.open(filename, std::ios::out | std::ios::binary);
+  std::ofstream& TwoTensor::write(std::ofstream& os) const {
+    os.write(reinterpret_cast<const char*>(&m_nx), sizeof(int));
+    os.write(reinterpret_cast<const char*>(&m_ny), sizeof(int));
+    os.write(reinterpret_cast<const char*>(m_data.data()), m_data.size() * sizeof(double));
+    return os;
+  }
 
-    // nx, ny
-    int32_t n = m_nx;
-    data_file.write(reinterpret_cast<char*>(&n), sizeof(int32_t));
-    n = m_ny;
-    data_file.write(reinterpret_cast<char*>(&n), sizeof(int32_t));
+  std::ifstream& TwoTensor::read(std::ifstream& is) {
+    is.read(reinterpret_cast<char*>(&m_nx), sizeof(int));
+    is.read(reinterpret_cast<char*>(&m_ny), sizeof(int));
 
-    float val;
-
-    for (int i = 0; i < m_data.size(); ++i) {
-      val = (float)m_data[i];
-      data_file.write(reinterpret_cast<char*>(&val), sizeof(float));
-    }
-
-    data_file.close();
+    m_data = std::vector<double>(m_nx*m_ny);
+    is.read(reinterpret_cast<char*>(m_data.data()), m_data.size() * sizeof(double));
+    return is;
   }
 };
