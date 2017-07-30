@@ -1,9 +1,24 @@
 #include "roulette/simulation.h"
-
-#include "rapidjson/document.h"
+#include "roulette/json.h"
 
 namespace roulette {
-  Simulation::Simulation(std::string config_filename)
+  Simulation::Simulation(const rapidjson::Value& data)
+  {
+    m_description = data.HasMember("description") ? data["description"].GetString() : "";
+
+    assert(data.HasMember("phantom"));
+    m_phantom = Phantom(data["phantom"].GetString());
+
+    m_generator = data.HasMember("seed") ? RandomGenerator(data["seed"].GetInt()) : RandomGenerator();
+
+    const rapidjson::Value& sources = data["sources"];
+    for (auto it = sources.Begin(); it != sources.End(); ++it) {
+      m_source_simulations.emplace_back(m_generator.random_seed(), *it);
+    }
+  }
+
+  Simulation::Simulation(std::string json_filename) :
+    Simulation(Json::json_document_from_file(json_filename))
   {
   }
 };

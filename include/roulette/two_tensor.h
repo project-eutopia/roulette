@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include "rapidjson/document.h"
 
 namespace roulette {
   class TwoTensor {
@@ -12,6 +13,7 @@ namespace roulette {
 
     public:
       TwoTensor();
+      TwoTensor(const rapidjson::Value& matrix);
       TwoTensor(int nx, int ny, double fill_value = 0);
 
       int nx() const;
