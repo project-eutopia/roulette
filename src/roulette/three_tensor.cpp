@@ -15,24 +15,8 @@ namespace roulette {
   {
     std::ifstream data_file;
     data_file.open(filename, std::ios::in | std::ios::binary);
-
-    int32_t n;
-    data_file.read(reinterpret_cast<char*>(&n), sizeof(int32_t));
-    m_nx = (int)n;
-    data_file.read(reinterpret_cast<char*>(&n), sizeof(int32_t));
-    m_ny = (int)n;
-    data_file.read(reinterpret_cast<char*>(&n), sizeof(int32_t));
-    m_nz = (int)n;
-
-    int N = m_nx * m_ny * m_nz;
-
-    float val;
-    m_data.reserve(N);
-
-    for (int i = 0; i < N; ++i) {
-      data_file.read(reinterpret_cast<char*>(&val), sizeof(float));
-      m_data.push_back((double)val);
-    }
+    this->read(data_file);
+    data_file.close();
   }
 
   int ThreeTensor::nx() const { return m_nx; }
@@ -43,20 +27,20 @@ namespace roulette {
   double& ThreeTensor::operator()(int xi, int yi, int zi) { return m_data[xi + m_nx*yi + (m_nx*m_ny)*zi]; }
 
   std::ofstream& ThreeTensor::write(std::ofstream& os) const {
-    os.write(reinterpret_cast<const char*>(&m_nx), sizeof(int));
-    os.write(reinterpret_cast<const char*>(&m_ny), sizeof(int));
-    os.write(reinterpret_cast<const char*>(&m_nz), sizeof(int));
-    os.write(reinterpret_cast<const char*>(m_data.data()), m_data.size() * sizeof(double));
+    os.write(reinterpret_cast<const char*>(&m_nx), sizeof(m_nx));
+    os.write(reinterpret_cast<const char*>(&m_ny), sizeof(m_ny));
+    os.write(reinterpret_cast<const char*>(&m_nz), sizeof(m_nz));
+    os.write(reinterpret_cast<const char*>(m_data.data()), m_data.size() * sizeof(decltype(m_data)::value_type));
     return os;
   }
 
   std::ifstream& ThreeTensor::read(std::ifstream& is) {
-    is.read(reinterpret_cast<char*>(&m_nx), sizeof(int));
-    is.read(reinterpret_cast<char*>(&m_ny), sizeof(int));
-    is.read(reinterpret_cast<char*>(&m_nz), sizeof(int));
+    is.read(reinterpret_cast<char*>(&m_nx), sizeof(m_nx));
+    is.read(reinterpret_cast<char*>(&m_ny), sizeof(m_ny));
+    is.read(reinterpret_cast<char*>(&m_nz), sizeof(m_nz));
 
     m_data = std::vector<double>(m_nx*m_ny*m_nz);
-    is.read(reinterpret_cast<char*>(m_data.data()), m_data.size() * sizeof(double));
+    is.read(reinterpret_cast<char*>(m_data.data()), m_data.size() * sizeof(decltype(m_data)::value_type));
     return is;
   }
 };

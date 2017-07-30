@@ -17,18 +17,18 @@ namespace roulette {
   double& TwoTensor::operator()(int xi, int yi) { return m_data[xi + m_nx*yi]; }
 
   std::ofstream& TwoTensor::write(std::ofstream& os) const {
-    os.write(reinterpret_cast<const char*>(&m_nx), sizeof(int));
-    os.write(reinterpret_cast<const char*>(&m_ny), sizeof(int));
-    os.write(reinterpret_cast<const char*>(m_data.data()), m_data.size() * sizeof(double));
+    os.write(reinterpret_cast<const char*>(&m_nx), sizeof(m_nx));
+    os.write(reinterpret_cast<const char*>(&m_ny), sizeof(m_ny));
+    os.write(reinterpret_cast<const char*>(m_data.data()), m_data.size() * sizeof(decltype(m_data)::value_type));
     return os;
   }
 
   std::ifstream& TwoTensor::read(std::ifstream& is) {
-    is.read(reinterpret_cast<char*>(&m_nx), sizeof(int));
-    is.read(reinterpret_cast<char*>(&m_ny), sizeof(int));
+    is.read(reinterpret_cast<char*>(&m_nx), sizeof(m_nx));
+    is.read(reinterpret_cast<char*>(&m_ny), sizeof(m_ny));
 
     m_data = std::vector<double>(m_nx*m_ny);
-    is.read(reinterpret_cast<char*>(m_data.data()), m_data.size() * sizeof(double));
+    is.read(reinterpret_cast<char*>(m_data.data()), m_data.size() * sizeof(decltype(m_data)::value_type));
     return is;
   }
 };
