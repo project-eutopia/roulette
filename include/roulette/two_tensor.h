@@ -11,6 +11,7 @@ namespace roulette {
       std::vector<double> m_data;
 
     public:
+      TwoTensor();
       TwoTensor(int nx, int ny, double fill_value = 0);
 
       int nx() const;

@@ -12,6 +12,7 @@ namespace roulette {
       std::vector<double> m_data;
 
     public:
+      ThreeTensor();
       ThreeTensor(int nx, int ny, int nz, double fill_value = 0);
       ThreeTensor(std::string filename);
 

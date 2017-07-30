@@ -3,6 +3,14 @@
 #include <fstream>
 
 namespace roulette {
+  ThreeTensor::ThreeTensor() :
+    m_nx(0),
+    m_ny(0),
+    m_nz(0),
+    m_data()
+  {
+  }
+
   ThreeTensor::ThreeTensor(int nx, int ny, int nz, double fill_value) :
     m_nx(nx),
     m_ny(ny),

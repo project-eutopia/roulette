@@ -3,6 +3,12 @@
 #include <fstream>
 
 namespace roulette {
+  Phantom::Phantom() :
+    m_voxel_grid(),
+    m_densities()
+  {
+  }
+
   Phantom::Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities) :
     m_voxel_grid(voxel_grid),
     m_densities(densities)

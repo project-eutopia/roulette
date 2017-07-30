@@ -3,6 +3,13 @@
 #include <fstream>
 
 namespace roulette {
+  TwoTensor::TwoTensor() :
+    m_nx(0),
+    m_ny(0),
+    m_data()
+  {
+  }
+
   TwoTensor::TwoTensor(int nx, int ny, double fill_value) :
     m_nx(nx),
     m_ny(ny),

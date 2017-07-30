@@ -16,6 +16,7 @@ namespace roulette {
       double m_delta_z;
 
     public:
+      Phantom();
       Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities);
 
       int nx() const;

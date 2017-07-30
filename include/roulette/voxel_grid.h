@@ -21,6 +21,7 @@ namespace roulette {
       double m_delta_z;
 
     public:
+      VoxelGrid();
       VoxelGrid(const ThreeVector& v0, const ThreeVector& vn, int nx, int ny, int nz);
 
       const ThreeVector& v0() const;

@@ -4,6 +4,18 @@
 #include <cmath>
 
 namespace roulette {
+  VoxelGrid::VoxelGrid() :
+    m_nx(0),
+    m_ny(0),
+    m_nz(0),
+    m_v0(),
+    m_vn(),
+    m_delta_x(0),
+    m_delta_y(0),
+    m_delta_z(0)
+  {
+  }
+
   VoxelGrid::VoxelGrid(const ThreeVector& v0, const ThreeVector& vn, int nx, int ny, int nz) :
     m_nx(nx),
     m_ny(ny),
