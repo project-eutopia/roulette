@@ -1,10 +1,11 @@
 #pragma once
 
 #include <boost/multi_array.hpp>
-
-#include "roulette/particle.h"
+#include "roulette/three_vector.h"
 
 namespace roulette {
+  class Particle;
+
   class VoxelGrid {
     private:
       int m_nx;

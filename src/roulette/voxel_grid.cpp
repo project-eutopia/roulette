@@ -1,5 +1,7 @@
 #include "roulette/voxel_grid.h"
 
+#include "roulette/particle.h"
+
 #include <cassert>
 #include <cmath>
 

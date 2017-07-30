@@ -2,6 +2,8 @@
 
 #include "roulette/three_vector.h"
 #include "roulette/four_momentum.h"
+#include "roulette/random_generator.h"
+#include "roulette/source_simulation.h"
 
 namespace roulette {
   class Particle {
@@ -13,6 +15,8 @@ namespace roulette {
       double m_weight;
 
     public:
+      enum InteractionType { NONE, PHOTON_SCATTER, PHOTON_PHOTOELECTRIC, ELECTRON_ABSORB };
+
       Particle(const FourMomentum& momentum, const ThreeVector& position, double weight = 1);
       Particle(double energy, double mass, const ThreeVector& direction, const ThreeVector& position, double weight = 1);
 
@@ -29,6 +33,8 @@ namespace roulette {
 
       double virtual mass() const = 0;
       int virtual charge() const = 0;
+
+      virtual void deposit_energy(SourceSimulation& source_simulation) = 0;
   };
 };
 

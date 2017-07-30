@@ -3,17 +3,20 @@
 #include <memory>
 #include <string>
 
-#include "roulette/phantom.h"
 #include "roulette/random_generator.h"
-#include "roulette/source_simulation.h"
 
 #include "rapidjson/document.h"
 
 namespace roulette {
+  class CompoundTable;
+  class Phantom;
+  class SourceSimulation;
+
   class Simulation {
     private:
       std::string m_description;
-      std::shared_ptr<const Phantom> m_phantom;
+      std::shared_ptr<const CompoundTable> m_compound_table;
+      std::shared_ptr<Phantom> m_phantom;
       RandomGenerator m_generator;
 
       std::vector<int> m_number_of_particles;

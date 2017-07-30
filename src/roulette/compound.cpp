@@ -1,6 +1,8 @@
 #include "roulette/compound.h"
 
 namespace roulette {
+  Compound::Compound() {}
+
   Compound::Compound(const rapidjson::Value& data, const PeriodicTable& periodic_table) :
     m_name(data["name"].GetString()),
     m_z_over_a_ratio(data["z_over_a"].GetDouble()),

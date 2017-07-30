@@ -3,6 +3,8 @@
 
 namespace roulette {
   namespace sources {
+    class Source;
+
     std::shared_ptr<Source> SourceFactory::source(const rapidjson::Value& data) {
       assert(data.HasMember("type"));
 

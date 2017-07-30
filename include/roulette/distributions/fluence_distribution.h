@@ -1,7 +1,8 @@
 #pragma once
 
-#include "roulette/random_generator.h"
+#include <vector>
 #include "roulette/non_uniform_linear_interpolation.h"
+#include "roulette/random_generator.h"
 #include "roulette/two_tensor.h"
 
 namespace roulette {

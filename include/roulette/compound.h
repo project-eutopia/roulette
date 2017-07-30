@@ -24,6 +24,7 @@ namespace roulette {
       NonUniformLinearInterpolation m_electron_stopping_powers;
 
     public:
+      Compound();
       Compound(const rapidjson::Value& data, const PeriodicTable& periodic_table);
       Compound(const Element& element);
 

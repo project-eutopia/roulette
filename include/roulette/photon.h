@@ -2,6 +2,7 @@
 
 #include "roulette/particle.h"
 #include "roulette/electron.h"
+#include "roulette/source_simulation.h"
 
 namespace roulette {
   class Photon : public Particle {
@@ -17,6 +18,8 @@ namespace roulette {
 
       // Updates self with new values, and returns the compton scattered electron
       Electron compton_scatter(double photon_energy, double electron_energy, double photon_theta, double electron_theta, double phi);
+
+      void deposit_energy(SourceSimulation& source_simulation);
   };
 };
 

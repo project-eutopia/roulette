@@ -37,6 +37,57 @@ namespace roulette {
       m_weight
     );
   }
+
+  void Photon::deposit_energy(SourceSimulation& source_simulation) {
+    // TODO
+    /* // Roulette to eliminate low energy photons (below 100 keV) */
+    /* if (this->energy() < 10000) { */
+    /*   // 1 in 3 chance of skipping */
+    /*   if (source_simulation.generator().uniform() > 2.0/3.0) { */
+    /*     return; */
+    /*   } */
+    /*   this->weight() *= 3.0/2.0; */
+    /* } */
+
+    /* double energy = this->energy(); */
+
+    /* Particle::InteractionType interaction = Particle::InteractionType::NONE; */
+
+    /* ThreeVector final_position = source_simulation.phantom().ray_trace_voxels( */
+    /*   this->position(), this->momentum().three_momentum(), */
+    /*   Phantom::voxel_iterator( */
+    /*     [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double { */
+    /*       // Check for scatter */
+    /*       if (source_simulation.generator().uniform() < m_interaction_function(cur_phantom(xi, yi, zi) * cur_phantom.compound(xi, yi, zi).photon_scattering_cross_section(energy) * distance)) { */
+    /*         interaction = Particle::InteractionType::PHOTON_SCATTER; */
+    /*         return distance / 2.0; */
+    /*       } */
+    /*       // Check for photoelectric effect */
+    /*       else if (source_simulation.generator().uniform() < m_interaction_function(cur_phantom(xi, yi, zi) * cur_phantom.compound(xi, yi, zi).photon_absorption_cross_section(energy) * distance)) { */
+    /*         interaction = Particle::InteractionType::PHOTON_PHOTOELECTRIC; */
+    /*         return distance / 2.0; */
+    /*       } */
+
+    /*       return distance; */
+    /*     } */
+    /*   ) */
+    /* ); */
+
+    /* if (interaction == Particle::InteractionType::PHOTON_SCATTER) { */
+    /*   this->position() = final_position; */
+
+    /*   m_compton_scattering.set_initial_photon(*this); */
+    /*   m_compton_scattering(source_simulation.generator()); */
+    /*   Electron electron = this->compton_scatter(m_compton_scattering.final_photon_energy(), m_compton_scattering.final_electron_energy(), m_compton_scattering.final_photon_theta(), m_compton_scattering.final_electron_theta(), m_compton_scattering.final_phi()); */
+
+    /*   electron.deposit_energy(source_simulation.generator(), phantom, dose); */
+    /*   this->deposit_energy(source_simulation.generator(), phantom, dose); */
+    /* } */
+    /* else if (interaction == Particle::InteractionType::PHOTON_PHOTOELECTRIC) { */
+    /*   Electron electron(this->energy() + Electron::MASS, Electron::MASS, m_spherical(*m_generator), final_position, this->weight()); */
+    /*   electron.deposit_energy(source_simulation.generator(), phantom, dose); */
+    /* } */
+  }
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::Photon& p) {
