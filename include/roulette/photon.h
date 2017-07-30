@@ -3,7 +3,9 @@
 #include "roulette/particle.h"
 #include "roulette/electron.h"
 #include "roulette/source_simulation.h"
+
 #include "roulette/distributions/exponential.h"
+#include "roulette/distributions/spherical.h"
 
 namespace roulette {
   class Photon : public Particle {
@@ -12,6 +14,7 @@ namespace roulette {
 
     private:
       const static distributions::Exponential exponential;
+      const static distributions::Spherical spherical;
 
     public:
       constexpr static double MASS = 0;
