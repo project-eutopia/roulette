@@ -4,14 +4,28 @@
 #include <cmath>
 
 namespace roulette {
-  VoxelGrid::VoxelGrid(const ThreeVector& v0, const ThreeVector& vn) :
+  VoxelGrid::VoxelGrid(const ThreeVector& v0, const ThreeVector& vn, int nx, int ny, int nz) :
     m_v0(v0),
-    m_vn(vn)
+    m_vn(vn),
+    m_nx(nx),
+    m_ny(ny),
+    m_nz(nz),
+    m_delta_x((m_vn(0) - m_v0(0)) / m_nx),
+    m_delta_y((m_vn(1) - m_v0(1)) / m_ny),
+    m_delta_z((m_vn(2) - m_v0(2)) / m_nz)
   {
   }
 
   const ThreeVector& VoxelGrid::v0() const { return m_v0; }
   const ThreeVector& VoxelGrid::vn() const { return m_vn; }
+
+  int VoxelGrid::nx() const { return m_nx; }
+  int VoxelGrid::ny() const { return m_ny; }
+  int VoxelGrid::nz() const { return m_nz; }
+
+  double VoxelGrid::delta_x() const { return m_delta_x; }
+  double VoxelGrid::delta_y() const { return m_delta_y; }
+  double VoxelGrid::delta_z() const { return m_delta_z; }
 
   bool VoxelGrid::inside(const ThreeVector& point) const {
     return (
@@ -215,5 +229,29 @@ namespace roulette {
     }
 
     return t;
+  }
+
+  std::ofstream& VoxelGrid::write(std::ofstream& os) const {
+    m_v0.write(os);
+    m_vn.write(os);
+    os.write(reinterpret_cast<const char*>(&m_nx), sizeof(int));
+    os.write(reinterpret_cast<const char*>(&m_ny), sizeof(int));
+    os.write(reinterpret_cast<const char*>(&m_nz), sizeof(int));
+    os.write(reinterpret_cast<const char*>(&m_delta_x), sizeof(double));
+    os.write(reinterpret_cast<const char*>(&m_delta_y), sizeof(double));
+    os.write(reinterpret_cast<const char*>(&m_delta_z), sizeof(double));
+    return os;
+  }
+
+  std::ifstream& VoxelGrid::read(std::ifstream& is) {
+    m_v0.read(is);
+    m_vn.read(is);
+    is.read(reinterpret_cast<char*>(&m_nx), sizeof(int));
+    is.read(reinterpret_cast<char*>(&m_ny), sizeof(int));
+    is.read(reinterpret_cast<char*>(&m_nz), sizeof(int));
+    is.read(reinterpret_cast<char*>(&m_delta_x), sizeof(double));
+    is.read(reinterpret_cast<char*>(&m_delta_y), sizeof(double));
+    is.read(reinterpret_cast<char*>(&m_delta_z), sizeof(double));
+    return is;
   }
 };

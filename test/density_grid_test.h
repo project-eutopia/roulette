@@ -18,7 +18,8 @@ class DensityGridRayTraceTest : public ::testing::Test {
     void SetUp() {
       VoxelGrid voxel_grid(
         ThreeVector(-5, -5, -5),
-        ThreeVector( 5,  5,  5)
+        ThreeVector( 5,  5,  5),
+        1,1,1
       );
 
       const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
@@ -207,7 +208,8 @@ TEST_F(DensityGridRayTraceTest, ray_trace_voxels_test_going_through_corner) {
 TEST(DensityGridTest, ray_trace_voxels_going_through_random_directions) {
   VoxelGrid voxel_grid(
     ThreeVector(0, -10, -10),
-    ThreeVector(10, 10, 10)
+    ThreeVector(10, 10, 10),
+    1,1,1
   );
 
   const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
@@ -247,7 +249,7 @@ TEST(DensityGridTest, ray_trace_voxels_going_through_random_directions) {
 TEST(DensityGridTest, transport_photon_unitless_depth_test) {
   const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
 
-  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100));
+  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100), 1, 1, 1);
 
   DensityGrid density_grid(
     grid,

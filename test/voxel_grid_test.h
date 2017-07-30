@@ -13,7 +13,8 @@ using namespace roulette;
 TEST(VoxelGridTest, intersection_for_start_inside) {
   VoxelGrid grid(
     ThreeVector(0, 0, 0),
-    ThreeVector(10, 10, 20)
+    ThreeVector(10, 10, 20),
+    1,1,1
   );
 
   {
@@ -62,7 +63,8 @@ TEST(VoxelGridTest, intersection_for_start_inside) {
 TEST(VoxelGridTest, intersection_for_start_on_plane) {
   VoxelGrid grid(
     ThreeVector(0, 0, 0),
-    ThreeVector(10, 10, 20)
+    ThreeVector(10, 10, 20),
+    1,1,1
   );
 
   {
@@ -111,7 +113,8 @@ TEST(VoxelGridTest, intersection_for_start_on_plane) {
 TEST(VoxelGridTest, intersection_for_outside_grid) {
   VoxelGrid grid(
     ThreeVector(0, 0, 0),
-    ThreeVector(10, 10, 20)
+    ThreeVector(10, 10, 20),
+    1,1,1
   );
 
   {
@@ -176,7 +179,8 @@ TEST(VoxelGridTest, intersection_for_outside_grid) {
 TEST(VoxelGridTest, transport_particle_to_surface_works) {
   VoxelGrid grid(
     ThreeVector(0, 0, 0),
-    ThreeVector(10, 10, 20)
+    ThreeVector(10, 10, 20),
+    1,1,1
   );
 
   Photon photon(
@@ -192,7 +196,7 @@ TEST(VoxelGridTest, transport_particle_to_surface_works) {
 
 TEST(VoxelGridTest, transport_beamlet_particle_to_surface) {
   RandomGenerator generator;
-  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(20, 10, 10));
+  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(20, 10, 10), 1, 1, 1);
   Beamlet beamlet(ThreeVector(-10, 0, 0), ThreeVector(0, -1, -1), ThreeVector(0, 1, -1), ThreeVector(0, 1, 1));
   double energy = 1000000;
   BeamletParticleGenerator<Photon,distributions::DiracDelta> photon_generator(
