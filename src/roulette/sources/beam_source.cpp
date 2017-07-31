@@ -1,6 +1,4 @@
 #include "roulette/sources/beam_source.h"
-
-#include "roulette/particle.h"
 #include "roulette/photon.h"
 
 namespace roulette {

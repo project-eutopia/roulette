@@ -1,4 +1,5 @@
 #include "roulette/sources/beamlet_source.h"
+#include "roulette/photon.h"
 
 namespace roulette {
   namespace sources {
@@ -8,11 +9,11 @@ namespace roulette {
     {
     }
 
-    Photon BeamletSource::particle(RandomGenerator& generator) {
+    std::shared_ptr<Particle> BeamletSource::particle(RandomGenerator& generator) {
       double energy = m_energy_spectrum(generator);
       ThreeVector direction = m_beamlet.directional_unit_vector(generator);
 
-      return Photon(
+      return std::make_shared<Photon>(
         FourMomentum(
           energy,
           energy*direction(0),

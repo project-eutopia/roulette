@@ -13,8 +13,6 @@ namespace roulette {
   class Particle;
 
   namespace sources {
-    class Source;
-
     class BeamSource : public Source {
       private:
         Beam m_beam;

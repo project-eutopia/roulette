@@ -1,12 +1,14 @@
 #pragma once
 
 #include "roulette/beamlet.h"
-#include "roulette/photon.h"
+#include "roulette/sources/source.h"
 #include "roulette/distributions/spectrum.h"
 
 namespace roulette {
+  class Particle;
+
   namespace sources {
-    class BeamletSource {
+    class BeamletSource : public Source {
       private:
         Beamlet m_beamlet;
         distributions::Spectrum m_energy_spectrum;
@@ -15,7 +17,7 @@ namespace roulette {
         // p0, p1, p2 are cyclic corners of square
         BeamletSource(const Beamlet& beamlet, const distributions::Spectrum& energy_spectrum);
 
-        Photon particle(RandomGenerator& generator);
+        std::shared_ptr<Particle> particle(RandomGenerator& generator);
     };
   };
 };
