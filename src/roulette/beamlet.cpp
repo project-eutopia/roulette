@@ -3,6 +3,8 @@
 #include <cassert>
 
 namespace roulette {
+  Beamlet::Beamlet() {}
+
   // p3 - p0 = p2 - p1
   Beamlet::Beamlet(const ThreeVector& source, const ThreeVector& p0, const ThreeVector& p1, const ThreeVector& p2) :
     m_source(source),

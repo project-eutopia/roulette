@@ -4,6 +4,8 @@
 #include "roulette/sources/source.h"
 #include "roulette/distributions/spectrum.h"
 
+#include "rapidjson/document.h"
+
 namespace roulette {
   class Particle;
 
@@ -14,6 +16,7 @@ namespace roulette {
         distributions::Spectrum m_energy_spectrum;
 
       public:
+        BeamletSource(const rapidjson::Value& data);
         // p0, p1, p2 are cyclic corners of square
         BeamletSource(const Beamlet& beamlet, const distributions::Spectrum& energy_spectrum);
 

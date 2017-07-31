@@ -1,4 +1,5 @@
 #include "roulette/sources/source_factory.h"
+#include "roulette/sources/beamlet_source.h"
 #include "roulette/sources/beam_source.h"
 
 namespace roulette {
@@ -8,7 +9,10 @@ namespace roulette {
     std::shared_ptr<Source> SourceFactory::source(const rapidjson::Value& data) {
       assert(data.HasMember("type"));
 
-      if (data["type"].GetString() == std::string("BeamSource")) {
+      if (data["type"].GetString() == std::string("BeamletSource")) {
+        return std::make_shared<BeamletSource>(data);
+      }
+      else if (data["type"].GetString() == std::string("BeamSource")) {
         return std::make_shared<BeamSource>(data);
       }
       else {
