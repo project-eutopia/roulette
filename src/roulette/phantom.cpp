@@ -231,6 +231,9 @@ namespace roulette {
   std::ifstream& Phantom::read(std::ifstream& is) {
     m_voxel_grid.read(is);
     m_densities.read(is);
+    m_delta_x = (m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx();
+    m_delta_y = (m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny();
+    m_delta_z = (m_voxel_grid.vn()(2) - m_voxel_grid.v0()(2)) / this->nz();
     return is;
   }
 };
