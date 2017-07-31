@@ -7,7 +7,7 @@ namespace roulette {
   std::string Json::json_string_from_file(std::string filename) {
     std::ifstream json_file(filename);
     if (!json_file.is_open()) {
-      throw std::runtime_error("Spectrum file " + filename + " not found");
+      throw std::runtime_error("JSON file " + filename + " not found");
     }
     std::string json_content( (std::istreambuf_iterator<char>(json_file) ),
                               (std::istreambuf_iterator<char>()    ) );
