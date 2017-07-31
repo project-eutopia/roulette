@@ -7,6 +7,7 @@ namespace roulette {
   Simulation::Simulation(const rapidjson::Value& data)
   {
     m_description = data.HasMember("description") ? data["description"].GetString() : "";
+    m_output_folder = data.HasMember("output_folder") ? data["output_folder"].GetString() : "./";
 
     assert(data.HasMember("compound_table"));
     m_compound_table = std::make_shared<const CompoundTable>(data["compound_table"].GetString());
@@ -46,7 +47,7 @@ namespace roulette {
   void Simulation::write_doses() {
     for (int i = 0; i < m_source_simulations.size(); ++i) {
       const auto& source_simulation = m_source_simulations[i];
-      std::string filename = std::string("dose_") + std::to_string(i) + std::string(".dose");
+      std::string filename = m_output_folder + "/" + std::string("dose_") + std::to_string(i) + std::string(".dose");
       std::ofstream ofs;
       ofs.open(filename, std::ofstream::out);
       source_simulation.dose().write(ofs);

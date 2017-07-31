@@ -14,6 +14,7 @@ namespace roulette {
   class Simulation {
     private:
       std::string m_description;
+      std::string m_output_folder;
       std::shared_ptr<const CompoundTable> m_compound_table;
       std::shared_ptr<Phantom> m_phantom;
       RandomGenerator m_generator;
