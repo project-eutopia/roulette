@@ -23,5 +23,5 @@ namespace roulette {
       const Compound& compound(std::string name) const;
   };
 
-  extern const CompoundTable builtin_compound_table;
+  const CompoundTable builtin_compound_table();
 };

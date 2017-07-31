@@ -27,7 +27,7 @@ class PhantomRayTraceTest : public ::testing::Test {
       phantom = std::make_shared<Phantom>(
         voxel_grid,
         ThreeTensor(4, 4, 2, 1.0),
-        builtin_compound_table.compound("Water, Liquid")
+        builtin_compound_table().compound("Water, Liquid")
       );
     }
 
