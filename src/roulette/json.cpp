@@ -20,4 +20,15 @@ namespace roulette {
     data.Parse(Json::json_string_from_file(filename).c_str());
     return data;
   }
+
+  rapidjson::Document Json::json_document_from_file_or_string(std::string s) {
+    rapidjson::Document data;
+    rapidjson::ParseResult ok = data.Parse(s.c_str());
+    if (!ok) {
+      // Try again as file
+      rapidjson::ParseResult ok2 = data.Parse(Json::json_string_from_file(s).c_str());
+      if (!ok2) throw std::runtime_error("Invalid JSON string/file");
+    }
+    return data;
+  }
 };

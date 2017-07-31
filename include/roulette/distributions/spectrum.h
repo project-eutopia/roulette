@@ -16,7 +16,7 @@ namespace roulette {
 
       public:
         Spectrum();
-        Spectrum(std::string json_filename);
+        Spectrum(std::string filename_or_json_string);
         double operator()(RandomGenerator& generator);
     };
   };

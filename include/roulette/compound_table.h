@@ -14,7 +14,7 @@ namespace roulette {
 
     public:
       CompoundTable(const rapidjson::Value& data);
-      CompoundTable(std::string json_filename);
+      CompoundTable(std::string filename_or_json_string);
 
       const PeriodicTable& periodic_table() const;
       // Name => Compound

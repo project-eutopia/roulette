@@ -25,7 +25,7 @@ namespace roulette {
 
     public:
       Simulation(const rapidjson::Value& data);
-      Simulation(std::string config_filename);
+      Simulation(std::string filename_or_json_string);
 
       void run();
       void write_doses();

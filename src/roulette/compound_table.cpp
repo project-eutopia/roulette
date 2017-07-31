@@ -19,8 +19,8 @@ namespace roulette {
     }
   }
 
-  CompoundTable::CompoundTable(std::string json_filename) :
-    CompoundTable(Json::json_document_from_file(json_filename))
+  CompoundTable::CompoundTable(std::string filename_or_json_string) :
+    CompoundTable(Json::json_document_from_file_or_string(filename_or_json_string))
   {
   }
 

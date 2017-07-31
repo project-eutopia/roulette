@@ -33,7 +33,7 @@ namespace roulette {
   }
 
   Simulation::Simulation(std::string json_filename) :
-    Simulation(Json::json_document_from_file(json_filename))
+    Simulation(Json::json_document_from_file_or_string(json_filename))
   {
   }
 

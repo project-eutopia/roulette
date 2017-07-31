@@ -8,10 +8,10 @@ namespace roulette {
   namespace distributions {
     Spectrum::Spectrum() {}
 
-    Spectrum::Spectrum(std::string json_filename) :
+    Spectrum::Spectrum(std::string filename_or_json_string) :
       m_inv_cdf()
     {
-      const rapidjson::Document data = Json::json_document_from_file(json_filename);
+      const rapidjson::Document data = Json::json_document_from_file_or_string(filename_or_json_string);
 
       const rapidjson::Value& array = data["data"];
 

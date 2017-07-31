@@ -8,5 +8,6 @@ namespace roulette {
     public:
       static std::string json_string_from_file(std::string filename);
       static rapidjson::Document json_document_from_file(std::string filename);
+      static rapidjson::Document json_document_from_file_or_string(std::string s);
   };
 };
