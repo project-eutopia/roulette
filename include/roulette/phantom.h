@@ -6,6 +6,8 @@
 #include "roulette/three_tensor.h"
 #include "roulette/compound.h"
 
+#include "rapidjson/document.h"
+
 namespace roulette {
   class VoxelGrid;
   class ThreeTensor;
@@ -35,8 +37,10 @@ namespace roulette {
       typedef std::function<double(const Phantom& phantom, double distance, int xi, int yi, int zi)> voxel_iterator;
 
       Phantom();
+      Phantom(const rapidjson::Value& data);
       Phantom(std::string filename);
       Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities);
+      Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Compound& compound);
 
       void set_compound(const Compound& compound);
       int nx() const;
@@ -53,7 +57,7 @@ namespace roulette {
       double operator()(int xi, int yi, int zi) const;
       const Compound& compound(int xi, int yi, int zi) const;
 
-      // Returns false if transported all the way out.
+      // Returns true if still inside, false if transported all the way out.
       bool transport_photon_unitless_depth(Photon& photon, double depth) const;
 
       // Returns final position

@@ -3,6 +3,8 @@
 #include <boost/multi_array.hpp>
 #include "roulette/three_vector.h"
 
+#include "rapidjson/document.h"
+
 namespace roulette {
   class Particle;
 
@@ -23,6 +25,7 @@ namespace roulette {
 
     public:
       VoxelGrid();
+      VoxelGrid(const rapidjson::Value& data);
       VoxelGrid(const ThreeVector& v0, const ThreeVector& vn, int nx, int ny, int nz);
 
       const ThreeVector& v0() const;

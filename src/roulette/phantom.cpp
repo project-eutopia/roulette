@@ -1,6 +1,7 @@
 #include "roulette/phantom.h"
 #include "roulette/math.h"
 #include "roulette/photon.h"
+#include "roulette/compound_table.h"
 
 #include <fstream>
 
@@ -8,6 +9,13 @@ namespace roulette {
   Phantom::Phantom() :
     m_voxel_grid(),
     m_densities()
+  {
+  }
+
+  Phantom::Phantom(const rapidjson::Value& data) :
+    m_voxel_grid(data["voxel_grid"]),
+    m_densities(m_voxel_grid.nx(), m_voxel_grid.ny(), m_voxel_grid.nz(), data["density"].GetDouble()),
+    m_compound(builtin_compound_table.compound(data["compound"].GetString()))
   {
   }
 
@@ -19,13 +27,19 @@ namespace roulette {
     data_file.close();
   }
 
-  Phantom::Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities) :
+  Phantom::Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Compound& compound) :
     m_voxel_grid(voxel_grid),
-    m_densities(densities)
+    m_densities(densities),
+    m_compound(compound),
+    m_delta_x((m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx()),
+    m_delta_y((m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny()),
+    m_delta_z((m_voxel_grid.vn()(2) - m_voxel_grid.v0()(2)) / this->nz())
   {
-    m_delta_x = (m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx();
-    m_delta_y = (m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny();
-    m_delta_z = (m_voxel_grid.vn()(2) - m_voxel_grid.v0()(2)) / this->nz();
+  }
+
+  Phantom::Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities) :
+    Phantom(voxel_grid, densities, builtin_compound_table.compound("Water, Liquid"))
+  {
   }
 
   void Phantom::set_compound(const Compound& compound) { m_compound = compound; }
@@ -53,7 +67,7 @@ namespace roulette {
   bool Phantom::transport_photon_unitless_depth(Photon& photon, double depth) const {
     double current_depth = 0;
     double energy = photon.energy();
-    bool exited = true;
+    bool inside = false;
 
     ThreeVector final_position = this->ray_trace_voxels(
       photon.position(), photon.momentum().three_momentum(),
@@ -63,14 +77,14 @@ namespace roulette {
           current_depth += delta_depth;
           if (current_depth < depth) return distance;
 
-          exited = false;
+          inside = true;
           return (delta_depth - current_depth + depth) / cur_phantom(xi, yi, zi) / cur_phantom.compound(xi, yi, zi).photon_scattering_cross_section(energy);
         }
       )
     );
 
     photon.position() = final_position;
-    return !exited;
+    return inside;
   }
 
   ThreeVector Phantom::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, Phantom::voxel_iterator it) const {
@@ -80,7 +94,9 @@ namespace roulette {
 
     ThreeVector current_position = initial_position;
     // Done if does not intersect surface
-    if (m_voxel_grid.outside(current_position) && !m_voxel_grid.transport_position_to_surface(current_position, u)) return initial_position;
+    if (m_voxel_grid.outside(current_position) && !m_voxel_grid.transport_position_to_surface(current_position, u)) {
+      return initial_position;
+    }
 
     int xinc, yinc, zinc;
     int xi, yi, zi;

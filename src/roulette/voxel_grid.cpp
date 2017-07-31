@@ -18,6 +18,18 @@ namespace roulette {
   {
   }
 
+  VoxelGrid::VoxelGrid(const rapidjson::Value& data) :
+    m_nx(data["nx"].GetInt()),
+    m_ny(data["ny"].GetInt()),
+    m_nz(data["nz"].GetInt()),
+    m_v0(data["bottom_left"][0].GetDouble(), data["bottom_left"][1].GetDouble(), data["bottom_left"][2].GetDouble()),
+    m_vn(data["top_right"][0].GetDouble(), data["top_right"][1].GetDouble(), data["top_right"][2].GetDouble()),
+    m_delta_x((m_vn(0) - m_v0(0)) / m_nx),
+    m_delta_y((m_vn(1) - m_v0(1)) / m_ny),
+    m_delta_z((m_vn(2) - m_v0(2)) / m_nz)
+  {
+  }
+
   VoxelGrid::VoxelGrid(const ThreeVector& v0, const ThreeVector& vn, int nx, int ny, int nz) :
     m_nx(nx),
     m_ny(ny),
