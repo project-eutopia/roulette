@@ -23,7 +23,7 @@ namespace roulette {
 
     m_generator = data.HasMember("seed") ? RandomGenerator(data["seed"].GetInt()) : RandomGenerator();
 
-    const rapidjson::Value& sources = data["sources"];
+    const rapidjson::Value& sources = data["source_simulations"];
     for (auto it = sources.Begin(); it != sources.End(); ++it) {
       m_source_simulations.emplace_back(m_generator.random_seed(), m_compound_table, m_phantom, *it);
     }
