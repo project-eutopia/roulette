@@ -6,6 +6,8 @@
 #include "roulette/non_uniform_linear_interpolation.h"
 #include "roulette/distribution.h"
 
+#include "rapidjson/document.h"
+
 namespace roulette {
   namespace distributions {
     class Spectrum : public Distribution {
@@ -16,8 +18,12 @@ namespace roulette {
 
       public:
         Spectrum();
+        Spectrum(const rapidjson::Value& data);
         Spectrum(std::string filename_or_json_string);
         double operator()(RandomGenerator& generator);
+
+      private:
+        void load_data(const rapidjson::Value& data);
     };
   };
 };

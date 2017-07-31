@@ -2,19 +2,27 @@
 #include "roulette/json.h"
 
 #include <iostream>
-#include "rapidjson/document.h"
 
 namespace roulette {
   namespace distributions {
     Spectrum::Spectrum() {}
 
-    Spectrum::Spectrum(std::string filename_or_json_string) :
-      m_inv_cdf()
+    Spectrum::Spectrum(const rapidjson::Value& data)
+    {
+      this->load_data(data["data"]);
+    }
+
+    Spectrum::Spectrum(std::string filename_or_json_string)
     {
       const rapidjson::Document data = Json::json_document_from_file_or_string(filename_or_json_string);
+      this->load_data(data["data"]);
+    };
 
-      const rapidjson::Value& array = data["data"];
+    double Spectrum::operator()(RandomGenerator& generator) {
+      return m_inv_cdf(generator.uniform());
+    };
 
+    void Spectrum::load_data(const rapidjson::Value& array) {
       for (auto it = array.Begin(); it != array.End(); ++it) {
         m_pdf.add_point(
             (*it)[0].GetDouble() * 1000000, // Convert from MeV to eV
@@ -39,10 +47,6 @@ namespace roulette {
           m_cdf.xs()[i]
         );
       }
-    };
-
-    double Spectrum::operator()(RandomGenerator& generator) {
-      return m_inv_cdf(generator.uniform());
-    };
+    }
   };
 };

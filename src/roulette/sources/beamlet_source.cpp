@@ -28,7 +28,13 @@ namespace roulette {
       );
 
       m_beamlet = Beamlet(source, bottom_left, bottom_right, top_right);
-      m_energy_spectrum = distributions::Spectrum(data["spectrum"].GetString());
+
+      if (data["spectrum"].IsString()) {
+        m_energy_spectrum = distributions::Spectrum(data["spectrum"].GetString());
+      }
+      else {
+        m_energy_spectrum = distributions::Spectrum(data["spectrum"]);
+      }
     }
 
     BeamletSource::BeamletSource(const Beamlet& beamlet, const distributions::Spectrum& energy_spectrum) :
