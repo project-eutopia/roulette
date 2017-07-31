@@ -17,7 +17,7 @@ namespace roulette {
       double fraction;
 
       for (auto it = sub_sources.Begin(); it != sub_sources.End(); ++it) {
-        if (!it->HasMember("fraction") || !(*it)["fraction"].IsDouble()) throw std::runtime_error("CompositeSource sub_source must have double member \"fraction\"");
+        if (!it->HasMember("fraction") || !(*it)["fraction"].IsNumber()) throw std::runtime_error("CompositeSource sub_source must have numerical member \"fraction\"");
 
         fraction = (*it)["fraction"].GetDouble();
         total_fractions += fraction;

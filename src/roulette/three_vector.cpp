@@ -9,7 +9,7 @@ namespace roulette {
   {
     if (!data.IsArray() || data.Size() != 3) throw std::runtime_error("ThreeVector must be length 3 array");
     for (int i = 0; i < 3; ++i) {
-      if (!data[i].IsDouble()) throw std::runtime_error("ThreeVector must be array of doubles");
+      if (!data[i].IsNumber()) throw std::runtime_error("ThreeVector must be array of numbers");
       m_v(i) = data[i].GetDouble();
     }
   }
