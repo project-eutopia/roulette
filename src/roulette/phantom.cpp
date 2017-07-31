@@ -15,7 +15,10 @@ namespace roulette {
   Phantom::Phantom(const rapidjson::Value& data) :
     m_voxel_grid(data["voxel_grid"]),
     m_densities(m_voxel_grid.nx(), m_voxel_grid.ny(), m_voxel_grid.nz(), data["density"].GetDouble()),
-    m_compound(builtin_compound_table.compound(data["compound"].GetString()))
+    m_compound(builtin_compound_table.compound(data["compound"].GetString())),
+    m_delta_x((m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx()),
+    m_delta_y((m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny()),
+    m_delta_z((m_voxel_grid.vn()(2) - m_voxel_grid.v0()(2)) / this->nz())
   {
   }
 
