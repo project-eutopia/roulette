@@ -95,13 +95,21 @@ namespace roulette {
   }
 
   std::ofstream& ThreeVector::write(std::ofstream& os) const {
-    os.write(reinterpret_cast<const char*>(&m_v[0]), 3*sizeof(decltype(m_v)::value_type));
+    float val;
+    for (int i = 0; i < 3; ++i) {
+      val = m_v[i];
+      os.write(reinterpret_cast<const char*>(&val), sizeof(val));
+    }
     return os;
   }
 
   std::ifstream& ThreeVector::read(std::ifstream& is) {
     m_v = boost::numeric::ublas::vector<double>(3);
-    is.read(reinterpret_cast<char*>(&m_v[0]), 3*sizeof(decltype(m_v)::value_type));
+    float val;
+    for (int i = 0; i < 3; ++i) {
+      is.read(reinterpret_cast<char*>(&val), sizeof(val));
+      m_v[i] = val;
+    }
     return is;
   }
 };

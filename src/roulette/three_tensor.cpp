@@ -35,20 +35,41 @@ namespace roulette {
   double& ThreeTensor::operator()(int xi, int yi, int zi) { return m_data[xi + m_nx*yi + (m_nx*m_ny)*zi]; }
 
   std::ofstream& ThreeTensor::write(std::ofstream& os) const {
-    os.write(reinterpret_cast<const char*>(&m_nx), sizeof(m_nx));
-    os.write(reinterpret_cast<const char*>(&m_ny), sizeof(m_ny));
-    os.write(reinterpret_cast<const char*>(&m_nz), sizeof(m_nz));
-    os.write(reinterpret_cast<const char*>(m_data.data()), m_data.size() * sizeof(decltype(m_data)::value_type));
+    int32_t n;
+
+    n = m_nx;
+    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
+    n = m_ny;
+    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
+    n = m_nz;
+    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
+
+    float val;
+    for (int i = 0; i < m_data.size(); ++i) {
+      val = m_data[i];
+      os.write(reinterpret_cast<const char*>(&val), sizeof(val));
+    }
     return os;
   }
 
   std::ifstream& ThreeTensor::read(std::ifstream& is) {
-    is.read(reinterpret_cast<char*>(&m_nx), sizeof(m_nx));
-    is.read(reinterpret_cast<char*>(&m_ny), sizeof(m_ny));
-    is.read(reinterpret_cast<char*>(&m_nz), sizeof(m_nz));
+    int32_t n;
+
+    is.read(reinterpret_cast<char*>(&n), sizeof(n));
+    m_nx = n;
+    is.read(reinterpret_cast<char*>(&n), sizeof(n));
+    m_ny = n;
+    is.read(reinterpret_cast<char*>(&n), sizeof(n));
+    m_nz = n;
+
+    float val;
 
     m_data = std::vector<double>(m_nx*m_ny*m_nz);
-    is.read(reinterpret_cast<char*>(m_data.data()), m_data.size() * sizeof(decltype(m_data)::value_type));
+    for (int i = 0; i < m_data.size(); ++i) {
+      is.read(reinterpret_cast<char*>(&val), sizeof(val));
+      m_data[i] = val;
+    }
+
     return is;
   }
 };

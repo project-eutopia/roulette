@@ -258,20 +258,33 @@ namespace roulette {
   }
 
   std::ofstream& VoxelGrid::write(std::ofstream& os) const {
-    os.write(reinterpret_cast<const char*>(&m_nx), sizeof(m_nx));
-    os.write(reinterpret_cast<const char*>(&m_ny), sizeof(m_ny));
-    os.write(reinterpret_cast<const char*>(&m_nz), sizeof(m_nz));
+    int32_t n;
+
+    n = m_nx;
+    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
+    n = m_ny;
+    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
+    n = m_nz;
+    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
+
     m_v0.write(os);
     m_vn.write(os);
     return os;
   }
 
   std::ifstream& VoxelGrid::read(std::ifstream& is) {
-    is.read(reinterpret_cast<char*>(&m_nx), sizeof(m_nx));
-    is.read(reinterpret_cast<char*>(&m_ny), sizeof(m_ny));
-    is.read(reinterpret_cast<char*>(&m_nz), sizeof(m_nz));
+    int32_t n;
+
+    is.read(reinterpret_cast<char*>(&n), sizeof(n));
+    n = m_nx;
+    is.read(reinterpret_cast<char*>(&n), sizeof(n));
+    n = m_ny;
+    is.read(reinterpret_cast<char*>(&n), sizeof(n));
+    n = m_nz;
+
     m_v0.read(is);
     m_vn.read(is);
+
     m_delta_x = (m_vn(0) - m_v0(0)) / m_nx;
     m_delta_y = (m_vn(1) - m_v0(1)) / m_ny;
     m_delta_z = (m_vn(2) - m_v0(2)) / m_nz;
