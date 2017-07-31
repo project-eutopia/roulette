@@ -1,7 +1,4 @@
 #include "roulette/simulation.h"
-#include "roulette/compound_table.h"
-#include "roulette/phantom.h"
-#include "roulette/source_simulation.h"
 #include <fstream>
 
 #include "roulette/json.h"
@@ -36,6 +33,8 @@ namespace roulette {
     Simulation(Json::json_document_from_file_or_string(json_filename))
   {
   }
+
+  const std::vector<SourceSimulation> Simulation::source_simulations() const { return m_source_simulations; }
 
   void Simulation::run() {
     // TODO multi-thread

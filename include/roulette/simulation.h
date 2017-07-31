@@ -4,14 +4,13 @@
 #include <string>
 
 #include "roulette/random_generator.h"
+#include "roulette/compound_table.h"
+#include "roulette/phantom.h"
+#include "roulette/source_simulation.h"
 
 #include "rapidjson/document.h"
 
 namespace roulette {
-  class CompoundTable;
-  class Phantom;
-  class SourceSimulation;
-
   class Simulation {
     private:
       std::string m_description;
@@ -26,6 +25,8 @@ namespace roulette {
     public:
       Simulation(const rapidjson::Value& data);
       Simulation(std::string filename_or_json_string);
+
+      const std::vector<SourceSimulation> source_simulations() const;
 
       void run();
       void write_doses();

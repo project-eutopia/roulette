@@ -27,6 +27,7 @@ namespace roulette {
     if (m_finished) {
       throw std::runtime_error("Cannot re-run simulation");
     }
+    m_finished = true;
 
     for (int i = 0; i < m_number_of_particles; ++i) {
       std::shared_ptr<Particle> particle = m_source->particle(m_generator);
@@ -34,9 +35,9 @@ namespace roulette {
     }
 
     // Re-weight by m_weight, and scale from energy to dose
-    for (int zi = 0; zi < m_dose.nz(); zi++) {
-      for (int yi = 0; yi < m_dose.ny(); yi++) {
-        for (int xi = 0; xi < m_dose.nx(); xi++) {
+    for (int zi = 0; zi < m_dose.nz(); ++zi) {
+      for (int yi = 0; yi < m_dose.ny(); ++yi) {
+        for (int xi = 0; xi < m_dose.nx(); ++xi) {
           m_dose(xi, yi, zi) *= m_weight / (*m_phantom)(xi, yi, zi);
         }
       }
