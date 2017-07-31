@@ -15,7 +15,7 @@ namespace roulette {
 
       for (double probability : probabilities) {
         if (probability > 0) {
-          total_probability += total_probability;
+          total_probability += probability;
           ++non_zero;
         }
       }
