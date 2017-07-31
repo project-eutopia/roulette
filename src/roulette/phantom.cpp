@@ -50,13 +50,13 @@ namespace roulette {
   double Phantom::operator()(int xi, int yi, int zi) const { return m_densities(xi, yi, zi); }
   const Compound& Phantom::compound(int xi, int yi, int zi) const { return m_compound; }
 
-  bool Phantom::transport_photon_unitless_depth(Photon* photon, double depth) const {
+  bool Phantom::transport_photon_unitless_depth(Photon& photon, double depth) const {
     double current_depth = 0;
-    double energy = photon->energy();
+    double energy = photon.energy();
     bool exited = true;
 
     ThreeVector final_position = this->ray_trace_voxels(
-      photon->position(), photon->momentum().three_momentum(),
+      photon.position(), photon.momentum().three_momentum(),
       Phantom::voxel_iterator(
         [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
           double delta_depth = cur_phantom(xi, yi, zi) * cur_phantom.compound(xi, yi, zi).photon_scattering_cross_section(energy) * distance;
@@ -69,7 +69,7 @@ namespace roulette {
       )
     );
 
-    photon->position() = final_position;
+    photon.position() = final_position;
     return !exited;
   }
 

@@ -43,8 +43,7 @@ namespace roulette {
   }
 
   void Photon::deposit_energy(SourceSimulation& source_simulation) {
-    // TODO
-    // Roulette to eliminate low energy photons (below 100 keV)
+    // Roulette to eliminate low energy photons (below 10 keV)
     if (this->energy() < 10000) {
       // 1 in 3 chance of skipping
       if (source_simulation.generator().uniform() > 2.0/3.0) {
@@ -55,7 +54,7 @@ namespace roulette {
 
     // Sample unitless depth travelled
     double depth = Photon::exponential(source_simulation.generator());
-    bool inside = source_simulation.phantom().transport_photon_unitless_depth(this, depth);
+    bool inside = source_simulation.phantom().transport_photon_unitless_depth(*this, depth);
     if (!inside) return;
 
     std::tuple<int,int,int> xyz = source_simulation.phantom().index_at(this->position());

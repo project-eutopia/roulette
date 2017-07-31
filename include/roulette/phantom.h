@@ -54,7 +54,7 @@ namespace roulette {
       const Compound& compound(int xi, int yi, int zi) const;
 
       // Returns false if transported all the way out.
-      bool transport_photon_unitless_depth(Photon* photon, double depth) const;
+      bool transport_photon_unitless_depth(Photon& photon, double depth) const;
 
       // Returns final position
       ThreeVector ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, voxel_iterator it) const;
