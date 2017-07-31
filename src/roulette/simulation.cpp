@@ -15,9 +15,14 @@ namespace roulette {
     m_compound_table = std::make_shared<const CompoundTable>(data["compound_table"].GetString());
 
     assert(data.HasMember("phantom"));
-    m_phantom = std::make_shared<Phantom>(data["phantom"].GetString());
-    // FIXME: for now, hard code water
-    m_phantom->set_compound(m_compound_table->compound("Water, Liquid"));
+    if (data["phantom"].IsString()) {
+      m_phantom = std::make_shared<Phantom>(data["phantom"].GetString());
+      // FIXME: for now, hard code water, later use DensityCompoundMap
+      m_phantom->set_compound(m_compound_table->compound("Water, Liquid"));
+    }
+    else {
+      m_phantom = std::make_shared<Phantom>(data["phantom"]);
+    }
 
     m_generator = data.HasMember("seed") ? RandomGenerator(data["seed"].GetInt()) : RandomGenerator();
 
