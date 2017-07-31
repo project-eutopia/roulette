@@ -31,6 +31,7 @@ namespace roulette {
       const CompoundTable& compound_table() const;
       const Phantom& phantom() const;
       ThreeTensor& dose();
+      const ThreeTensor& dose() const;
 
       void run();
   };

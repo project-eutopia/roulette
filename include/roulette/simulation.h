@@ -28,5 +28,6 @@ namespace roulette {
       Simulation(std::string config_filename);
 
       void run();
+      void write_doses();
   };
 };

@@ -21,6 +21,7 @@ namespace roulette {
   const CompoundTable& SourceSimulation::compound_table() const { return *m_compound_table; }
   const Phantom& SourceSimulation::phantom() const { return *m_phantom; }
   ThreeTensor& SourceSimulation::dose() { return m_dose; }
+  const ThreeTensor& SourceSimulation::dose() const { return m_dose; }
 
   void SourceSimulation::run() {
     if (m_finished) {
