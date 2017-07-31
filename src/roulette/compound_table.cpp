@@ -2,6 +2,8 @@
 #include "roulette/json.h"
 
 namespace roulette {
+  const CompoundTable builtin_compound_table = CompoundTable("../data/compounds.json");
+
   CompoundTable::CompoundTable(const rapidjson::Value& data) :
     m_periodic_table(data["elements"])
   {
