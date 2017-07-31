@@ -2,19 +2,28 @@
 #include "roulette/sources/source_factory.h"
 #include "roulette/particle.h"
 
+#include <stdexcept>
+
 namespace roulette {
   namespace sources {
     CompositeSource::CompositeSource(const rapidjson::Value& data) {
       assert(data["type"].GetString() == std::string("CompositeSource"));
 
+      if (!data.HasMember("sub_sources")) throw std::runtime_error("CompositeSource requires \"sub_sources\"");
       const rapidjson::Value& sub_sources = data["sub_sources"];
+      if (!sub_sources.IsArray()) throw std::runtime_error("CompositeSource \"sub_sources\" must be array");
+
       double total_fractions = 0;
       double fraction;
 
       for (auto it = sub_sources.Begin(); it != sub_sources.End(); ++it) {
+        if (!it->HasMember("fraction") || !(*it)["fraction"].IsDouble()) throw std::runtime_error("CompositeSource sub_source must have double member \"fraction\"");
+
         fraction = (*it)["fraction"].GetDouble();
         total_fractions += fraction;
         m_fractions.push_back(fraction);
+
+        if (!it->HasMember("source")) throw std::runtime_error("CompositeSource sub_source must have member \"source\"");
         m_sub_sources.push_back(SourceFactory::source((*it)["source"]));
       }
 

@@ -1,8 +1,19 @@
 #include "roulette/three_vector.h"
 
+#include <stdexcept>
 #include <cmath>
 
 namespace roulette {
+  ThreeVector::ThreeVector(const rapidjson::Value& data) :
+    m_v(3)
+  {
+    if (!data.IsArray() || data.Size() != 3) throw std::runtime_error("ThreeVector must be length 3 array");
+    for (int i = 0; i < 3; ++i) {
+      if (!data[i].IsDouble()) throw std::runtime_error("ThreeVector must be array of doubles");
+      m_v(i) = data[i].GetDouble();
+    }
+  }
+
   ThreeVector::ThreeVector(double x, double y, double z) :
     m_v(3)
   {
