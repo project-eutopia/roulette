@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "roulette/non_uniform_linear_interpolation.h"
+#include "roulette/distributions/probability_sampling.h"
 #include "roulette/random_generator.h"
 #include "roulette/two_tensor.h"
 
@@ -12,8 +12,7 @@ namespace roulette {
         int m_nx;
         int m_ny;
 
-        NonUniformLinearInterpolation m_inverse_cdf_to_of_indexes;
-        std::vector<std::pair<int,int>> m_indexes;
+        ProbabilitySampling<std::pair<int,int>> m_sampling;
 
       public:
         FluenceDistribution();
@@ -23,7 +22,7 @@ namespace roulette {
         int ny() const;
 
         // (xi, yi) pair of indexes to sample
-        std::pair<int,int> index(RandomGenerator& generator) const;
+        const std::pair<int,int>& index(RandomGenerator& generator) const;
     };
   };
 };
