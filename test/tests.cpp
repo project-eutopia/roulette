@@ -6,8 +6,7 @@
 #include "electron_test.h"
 #include "voxel_grid_test.h"
 #include "phantom_test.h"
-/* #include "density_grid_test.h" */
-/* #include "dose_calculation_test.h" */
+#include "simulation_test.h"
 #include "beamlet_test.h"
 #include "non_uniform_linear_interpolation_test.h"
 #include "compound_table_test.h"
