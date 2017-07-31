@@ -6,8 +6,8 @@ namespace roulette {
     }
 
     template <typename T>
-    ProbabilitySampling<T>::ProbabilitySampling(const std::vector<double>& probabilities, const std::vector<T>& outputs) {
-      assert(probabilities.size() == outputs.size());
+    ProbabilitySampling<T>::ProbabilitySampling(const std::vector<double>& probabilities, const std::vector<T>& items) {
+      assert(probabilities.size() == items.size());
       assert(probabilities.size() > 0);
 
       double total_probability = 0;
@@ -27,7 +27,7 @@ namespace roulette {
       for (int i = 0; i < probabilities.size(); ++i) {
         if (probabilities[i] > 0) {
           non_zero_probabilities.push_back(probabilities[i] / total_probability);
-          m_values.push_back(outputs[i]);
+          m_values.push_back(items[i]);
         }
       }
 

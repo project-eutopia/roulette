@@ -19,7 +19,7 @@ namespace roulette {
 
       public:
         ProbabilitySampling();
-        ProbabilitySampling(const std::vector<double>& probabilities, const std::vector<T>& outputs);
+        ProbabilitySampling(const std::vector<double>& probabilities, const std::vector<T>& items);
         const T& operator()(RandomGenerator& generator) const;
     };
   };
