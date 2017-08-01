@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "math_test.h"
 #include "real_function_test.h"
 #include "four_momentum_test.h"
 #include "photon_test.h"

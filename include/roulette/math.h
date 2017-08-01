@@ -7,5 +7,7 @@ namespace roulette {
     int ceili(double x);
     double ceilf(double x);
     bool isinteger(double x);
+    double sin(double theta);
+    double cos(double theta);
   }
 };
