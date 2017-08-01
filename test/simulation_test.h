@@ -25,7 +25,7 @@ TEST(SimulationTest, simulation_produces_dose) {
     \"compound\": \"Water, Liquid\" \
   }, \
   \"seed\": 1234, \
-  \"sources\": [ \
+  \"source_simulations\": [ \
     { \
       \"number_of_particles\": 1, \
       \"weight\": 1.0, \
