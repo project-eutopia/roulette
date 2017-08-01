@@ -17,58 +17,32 @@ namespace roulette {
       m_xs[i] = x0 + i * m_delta_x;
     }
 
-    std::vector<double> delta2_x(N);
-    std::vector<double> delta3_x(N);
-    std::vector<double> a1(N);
-    std::vector<double> b1(N);
-    std::vector<double> a2(N);
-    std::vector<double> b2(N);
+    std::vector<double> F0(N);
     std::vector<double> F1(N);
-    std::vector<double> F2(N);
 
     for (int i = 0; i < N; ++i) {
-      delta2_x[i] = m_xs[i+1]*m_xs[i+1]/2.0 - m_xs[i]*m_xs[i]/2.0;
-      delta3_x[i] = m_xs[i+1]*m_xs[i+1]*m_xs[i+1]/3.0 - m_xs[i]*m_xs[i]*m_xs[i]/3.0;
-
-      a1[i] = delta2_x[i]/m_delta_x - m_xs[i];
-      b1[i] = m_xs[i]+m_delta_x - delta2_x[i]/m_delta_x;
-      a2[i] = delta3_x[i]/m_delta_x - delta2_x[i]*m_xs[i]/m_delta_x;
-      b2[i] = delta2_x[i]*m_xs[i]/m_delta_x + delta2_x[i] - delta3_x[i]/m_delta_x;
-
-      F1[i] = integral_f(m_xs[i+1]) - integral_f(m_xs[i]);
-      F2[i] = integral_xf(m_xs[i+1]) - integral_xf(m_xs[i]);
-    }
-
-    std::vector<double> Cprime(N+1);
-
-    for (int i = 1; i < N; ++i) {
-      Cprime[i] = -F2[i-1] + m_xs[i-1]*F1[i-1] + F2[i] - m_xs[i+1]*F1[i];
-    }
-
-    boost::numeric::ublas::matrix<double> Mprime = boost::numeric::ublas::zero_matrix<double>(N+1, N+1);
-
-    for (int i = 1; i < N; ++i) {
-      Mprime(i, i-1) = b1[i-1]*m_xs[i-1] - b2[i-1];
-      Mprime(i, i) = a1[i-1]*m_xs[i-1] - a2[i-1] - b1[i]*m_xs[i+1] + b2[i];
-      Mprime(i, i+1) = -a1[i]*m_xs[i+1] + a2[i];
+      F0[i] = integral_f(m_xs[i+1]) - integral_f(m_xs[i]);
+      F1[i] = integral_xf(m_xs[i+1]) - integral_xf(m_xs[i]);
     }
 
     boost::numeric::ublas::matrix<double> M = boost::numeric::ublas::zero_matrix<double>(N-1, N-1);
     boost::numeric::ublas::vector<double> C = boost::numeric::ublas::zero_vector<double>(N-1);
 
     for (int i = 0; i < N-1; ++i) {
+      C(i) = -F1[i] + m_xs[i]*F0[i] + F1[i+1] - m_xs[i+2]*F0[i+1];
+      M(i,i)   = -2*m_delta_x*m_delta_x/3;
+
       if (i == 0) {
-        C(i) = Cprime[i+1] - Mprime(1,0)*y0;
+        C(i) += y0 * m_delta_x*m_delta_x/6;
+        M(i,i+1) = -m_delta_x*m_delta_x/6;
       }
       else if (i == N-2) {
-        C(i) = Cprime[i+1] - Mprime(N-1,N)*yN;
+        C(i) += yN * m_delta_x*m_delta_x/6;
+        M(i,i-1) = -m_delta_x*m_delta_x/6;
       }
       else {
-        C(i) = Cprime[i+1];
-      }
-
-      for (int j = 0; j < N-1; ++j) {
-        M(i,j) = Mprime(i+1, j+1);
+        M(i,i-1) = -m_delta_x*m_delta_x/6;
+        M(i,i+1) = -m_delta_x*m_delta_x/6;
       }
     }
 
