@@ -27,7 +27,7 @@ TEST(SimulationTest, simulation_produces_dose) {
   \"seed\": 1234, \
   \"source_simulations\": [ \
     { \
-      \"number_of_particles\": 1, \
+      \"number_of_particles\": 50, \
       \"weight\": 1.0, \
       \"source\": { \
         \"type\": \"BeamletSource\", \
