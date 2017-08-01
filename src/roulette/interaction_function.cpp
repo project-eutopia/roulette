@@ -29,7 +29,7 @@ namespace roulette {
       return x * m_first_slope;
     }
     else if (x < m_max_x) {
-      int i = floori(x / m_delta_x);
+      int i = math::floori(x / m_delta_x);
       return m_ys[i] + (x - m_xs[i]) * (m_ys[i+1] - m_ys[i]) / (m_xs[i+1] - m_xs[i]);
     }
     else {

@@ -72,7 +72,7 @@ namespace roulette {
     l = 0;
     r = m_x.size()-2;
 
-    m = floori( (l+r)/2.0 );
+    m = math::floori( (l+r)/2.0 );
 
     // Binary search for MLC
     while (l < r) {
@@ -86,7 +86,7 @@ namespace roulette {
         break;
       }
 
-      m = floori( (l+r)/2.0 );
+      m = math::floori( (l+r)/2.0 );
     }
 
     return m_y[m] + (x - m_x[m]) * (m_y[m+1] - m_y[m]) / (m_x[m+1] - m_x[m]);

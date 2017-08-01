@@ -116,41 +116,41 @@ namespace roulette {
     // Moving backward, voxel i has normal coordinate range (i, i+1] (i.e. ceil(x-1))
     if (u(0) < 0) {
       xinc = -1;
-      xi = ceili(normal_x-1);
+      xi = math::ceili(normal_x-1);
     }
     else if (u(0) > 0) {
       xinc = 1;
-      xi = floori(normal_x);
+      xi = math::floori(normal_x);
     }
     else {
       xinc = 0;
-      xi = floori(normal_x);
+      xi = math::floori(normal_x);
     }
 
     if (u(1) < 0) {
       yinc = -1;
-      yi = ceili(normal_y-1);
+      yi = math::ceili(normal_y-1);
     }
     else if (u(1) > 0) {
       yinc = 1;
-      yi = floori(normal_y);
+      yi = math::floori(normal_y);
     }
     else {
       yinc = 0;
-      yi = floori(normal_y);
+      yi = math::floori(normal_y);
     }
 
     if (u(2) < 0) {
       zinc = -1;
-      zi = ceili(normal_z-1);
+      zi = math::ceili(normal_z-1);
     }
     else if (u(2) > 0) {
       zinc = 1;
-      zi = floori(normal_z);
+      zi = math::floori(normal_z);
     }
     else {
       zinc = 0;
-      zi = floori(normal_z);
+      zi = math::floori(normal_z);
     }
 
     double delta_t = 0;
