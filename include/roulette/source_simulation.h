@@ -9,11 +9,13 @@
 #include "roulette/three_tensor.h"
 #include "roulette/sources/source.h"
 
+#include "roulette/simulation.h"
 #include "rapidjson/document.h"
 
 namespace roulette {
   class SourceSimulation {
     private:
+      Simulation m_simulation;
       RandomGenerator m_generator;
       std::shared_ptr<const CompoundTable> m_compound_table;
       std::shared_ptr<const Phantom> m_phantom;

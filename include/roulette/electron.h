@@ -19,6 +19,7 @@ namespace roulette {
       int charge() const;
 
       void deposit_energy(SourceDose& source_dose);
+      std::shared_ptr<Event> simulate(RandomGenerator& generator, const Phantom& phantom);
   };
 };
 

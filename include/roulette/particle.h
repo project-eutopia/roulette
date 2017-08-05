@@ -3,7 +3,9 @@
 #include "roulette/three_vector.h"
 #include "roulette/four_momentum.h"
 #include "roulette/random_generator.h"
+#include "roulette/event.h"
 #include "roulette/source_dose.h"
+#include "roulette/source_simulation.h"
 
 namespace roulette {
   class Particle {
@@ -35,6 +37,7 @@ namespace roulette {
       int virtual charge() const = 0;
 
       virtual void deposit_energy(SourceDose& source_dose) = 0;
+      virtual std::shared_ptr<Event> simulate(RandomGenerator& generator, const Phantom& phantom) = 0;
   };
 };
 

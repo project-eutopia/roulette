@@ -1,5 +1,6 @@
 #pragma once
 
+#include "roulette/event.h"
 #include "roulette/particle.h"
 #include "roulette/electron.h"
 #include "roulette/source_dose.h"
@@ -27,6 +28,11 @@ namespace roulette {
       Electron compton_scatter(double photon_energy, double electron_energy, double photon_theta, double electron_theta, double phi);
 
       void deposit_energy(SourceDose& source_dose);
+      std::shared_ptr<Event> simulate(RandomGenerator& generator, const Phantom& phantom);
+
+    private:
+      std::shared_ptr<Event> get_event(RandomGenerator& generator, const Phantom& phantom);
+      void event_process(const Event& event, RandomGenerator& generator, std::function<void(Photon&, Electron&)> compton_handler, std::function<void(Electron&)> photoelectric_handler);
   };
 };
 

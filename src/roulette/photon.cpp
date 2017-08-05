@@ -43,42 +43,118 @@ namespace roulette {
   }
 
   void Photon::deposit_energy(SourceDose& source_dose) {
+    const std::shared_ptr<Event> event = this->get_event(source_dose.generator(), source_dose.phantom());
+    this->event_process(
+      *event,
+      source_dose.generator(),
+      [&](Photon& photon, Electron& electron) {
+        photon.deposit_energy(source_dose);
+        electron.deposit_energy(source_dose);
+      },
+      [&](Electron& electron) {
+        electron.deposit_energy(source_dose);
+      }
+    );
+  }
+
+  std::shared_ptr<Event> Photon::simulate(RandomGenerator& generator, const Phantom& phantom) {
+    std::shared_ptr<Event> event = this->get_event(generator, phantom);
+    this->event_process(
+      *event,
+      generator,
+      [&](Photon& photon, Electron& electron) {
+        event->add_child(photon.simulate(generator, phantom));
+        event->add_child(electron.simulate(generator, phantom));
+      },
+      [&](Electron& electron) {
+        event->add_child(electron.simulate(generator, phantom));
+      }
+    );
+    return event;
+  }
+
+  std::shared_ptr<Event> Photon::get_event(RandomGenerator& generator, const Phantom& phantom) {
     // Roulette to eliminate low energy photons (below 10 keV)
     if (this->energy() < 10000) {
       // 1 in 3 chance of skipping
-      if (source_dose.generator().uniform() > 2.0/3.0) {
-        return;
+      if (generator.uniform() > 2.0/3.0) {
+        return std::make_shared<Event>(
+          Event::EventType::TERMINATED,
+          Event::ParticleType::PHOTON,
+          this->momentum(),
+          this->position(),
+          this->position()
+        );
       }
       this->weight() *= 3.0/2.0;
     }
 
-    // Sample unitless depth travelled
-    double depth = Photon::exponential(source_dose.generator());
-    bool inside = source_dose.phantom().transport_photon_unitless_depth(*this, depth);
-    if (!inside) return;
+    ThreeVector initial_position = this->position();
 
-    std::tuple<int,int,int> xyz = source_dose.phantom().index_at(this->position());
-    const Compound& compound = source_dose.phantom().compound(std::get<0>(xyz), std::get<1>(xyz), std::get<2>(xyz));
+    // Sample unitless depth travelled
+    double depth = Photon::exponential(generator);
+    bool inside = phantom.transport_photon_unitless_depth(*this, depth);
+    if (!inside) {
+      return std::make_shared<Event>(
+        Event::EventType::NONE,
+        Event::ParticleType::PHOTON,
+        this->momentum(),
+        initial_position,
+        this->position()
+      );
+    }
+
+    std::tuple<int,int,int> xyz = phantom.index_at(this->position());
+    const Compound& compound = phantom.compound(std::get<0>(xyz), std::get<1>(xyz), std::get<2>(xyz));
 
     // Pick interaction type
     double compton = compound.photon_scattering_cross_section(this->energy());
     double photoelectric = compound.photon_absorption_cross_section(this->energy());
 
-    if ((compton + photoelectric) * source_dose.generator().uniform() < compton) {
-      distributions::ComptonScattering compton_scattering;
-
-      // Compton scatter
-      compton_scattering.set_initial_photon(*this);
-      compton_scattering(source_dose.generator());
-      Electron electron = this->compton_scatter(compton_scattering.final_photon_energy(), compton_scattering.final_electron_energy(), compton_scattering.final_photon_theta(), compton_scattering.final_electron_theta(), compton_scattering.final_phi());
-
-      electron.deposit_energy(source_dose);
-      this->deposit_energy(source_dose);
+    if ((compton + photoelectric) * generator.uniform() < compton) {
+      return std::make_shared<Event>(
+        Event::EventType::PHOTON_SCATTER,
+        Event::ParticleType::PHOTON,
+        this->momentum(),
+        initial_position,
+        this->position()
+      );
     }
     else {
-      // Photoelectric effect
-      Electron electron(this->energy() + Electron::MASS, Electron::MASS, Photon::spherical(source_dose.generator()), this->position(), this->weight());
-      electron.deposit_energy(source_dose);
+      return std::make_shared<Event>(
+        Event::EventType::PHOTON_PHOTOELECTRIC,
+        Event::ParticleType::PHOTON,
+        this->momentum(),
+        initial_position,
+        this->position()
+      );
+    }
+  }
+
+  void Photon::event_process(const Event& event, RandomGenerator& generator, std::function<void(Photon&, Electron&)> compton_handler, std::function<void(Electron&)> photoelectric_handler) {
+    switch(event.event_type()) {
+      case Event::EventType::PHOTON_SCATTER:
+        {
+          distributions::ComptonScattering compton_scattering;
+
+          // Compton scatter
+          compton_scattering.set_initial_photon(*this);
+          compton_scattering(generator);
+          Electron electron = this->compton_scatter(compton_scattering.final_photon_energy(), compton_scattering.final_electron_energy(), compton_scattering.final_photon_theta(), compton_scattering.final_electron_theta(), compton_scattering.final_phi());
+
+          compton_handler(*this, electron);
+        }
+        break;
+      case Event::EventType::PHOTON_PHOTOELECTRIC:
+        {
+          // Photoelectric effect
+          Electron electron(this->energy() + Electron::MASS, Electron::MASS, Photon::spherical(generator), this->position(), this->weight());
+          photoelectric_handler(electron);
+        }
+        break;
+
+      default:
+        break;
     }
   }
 };

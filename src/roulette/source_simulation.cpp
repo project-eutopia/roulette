@@ -6,6 +6,7 @@
 
 namespace roulette {
   SourceSimulation::SourceSimulation(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, const rapidjson::Value& data) :
+    m_simulation(),
     m_generator(seed),
     m_compound_table(compound_table),
     m_phantom(phantom),
@@ -28,8 +29,7 @@ namespace roulette {
 
     for (int i = 0; i < m_number_of_particles; ++i) {
       std::shared_ptr<Particle> particle = m_source->particle(m_generator);
-      // FIXME: do particle simulation
-      /* particle->deposit_energy(*this); */
+      m_simulation.add_event(particle->simulate(m_generator, *m_phantom));
     }
   }
 };
