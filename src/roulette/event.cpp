@@ -32,6 +32,7 @@ namespace roulette {
     ofs << ", children = [";
     for (const auto child : m_children) {
       child->write(ofs);
+      ofs << ", ";
     }
     ofs << "])";
     return ofs;
