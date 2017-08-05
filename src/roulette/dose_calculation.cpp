@@ -1,5 +1,6 @@
 #include "roulette/dose_calculation.h"
 #include <fstream>
+#include <thread>
 
 #include "roulette/json.h"
 
@@ -41,9 +42,15 @@ namespace roulette {
   const std::vector<SourceDose> DoseCalculation::source_doses() const { return m_source_doses; }
 
   void DoseCalculation::run() {
-    // TODO multi-thread
+    std::vector<std::thread> threads;
     for (auto& source_dose : m_source_doses) {
-      source_dose.run();
+      threads.emplace_back([&]() {
+        source_dose.run();
+      });
+    }
+
+    for (auto& t : threads) {
+      t.join();
     }
   }
 
