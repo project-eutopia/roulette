@@ -10,11 +10,16 @@ namespace roulette {
     m_compound_table(compound_table),
     m_phantom(phantom),
     m_dose(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0),
-    m_number_of_particles(data["number_of_particles"].GetInt()),
-    m_weight(data["weight"].GetDouble()),
+    m_number_of_particles(0),
+    m_weight(0),
     m_source(sources::SourceFactory::source(data["source"])),
     m_finished(false)
   {
+    if (!data["number_of_particles"].IsInt()) throw std::runtime_error("number_of_particles must be integer");
+    m_number_of_particles = data["number_of_particles"].GetInt();
+
+    if (!data["weight"].IsNumber()) throw std::runtime_error("weight must be number");
+    m_weight = data["weight"].GetDouble();
   }
 
   RandomGenerator& SourceDose::generator() { return m_generator; }

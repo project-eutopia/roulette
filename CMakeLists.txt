@@ -12,7 +12,7 @@ if (NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
 endif()
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast -pthread" )
 
 find_package(Boost 1.61 REQUIRED)
 
