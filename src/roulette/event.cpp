@@ -26,4 +26,14 @@ namespace roulette {
   void Event::add_child(std::shared_ptr<Event> child) {
     m_children.push_back(child);
   }
+
+  std::ofstream& Event::write(std::ofstream& ofs) const {
+    ofs << "Event(" << m_event_type << ", " << m_particle_type << ", " << m_initial_momentum << ", " << m_initial_position << ", " << m_final_position;
+    ofs << ", children = [";
+    for (const auto child : m_children) {
+      child->write(ofs);
+    }
+    ofs << "])";
+    return ofs;
+  }
 }

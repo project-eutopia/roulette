@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <fstream>
 
 #include "roulette/random_generator.h"
 #include "roulette/compound_table.h"
@@ -33,5 +34,7 @@ namespace roulette {
       const Phantom& phantom() const;
 
       void run();
+
+      std::ofstream& write(std::ofstream& ofs) const;
   };
 };

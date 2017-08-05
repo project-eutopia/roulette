@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 #include "roulette/four_momentum.h"
 #include "roulette/three_vector.h"
 
@@ -45,5 +47,6 @@ namespace roulette {
 
       const std::vector<std::shared_ptr<Event>>& children() const;
       void add_child(std::shared_ptr<Event> child);
+      std::ofstream& write(std::ofstream& ofs) const;
   };
 }

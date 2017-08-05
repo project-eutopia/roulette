@@ -32,4 +32,9 @@ namespace roulette {
       m_simulation.add_event(particle->simulate(m_generator, *m_phantom));
     }
   }
+
+  std::ofstream& SourceSimulation::write(std::ofstream& ofs) const {
+    m_simulation.write(ofs);
+    return ofs;
+  }
 };
