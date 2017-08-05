@@ -19,8 +19,6 @@ namespace roulette {
       std::shared_ptr<Phantom> m_phantom;
       RandomGenerator m_generator;
 
-      std::vector<int> m_number_of_particles;
-      std::vector<double> m_weights;
       std::vector<SourceDose> m_source_doses;
 
     public:
