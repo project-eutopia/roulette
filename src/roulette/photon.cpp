@@ -42,43 +42,43 @@ namespace roulette {
     );
   }
 
-  void Photon::deposit_energy(SourceSimulation& source_simulation) {
+  void Photon::deposit_energy(SourceDose& source_dose) {
     // Roulette to eliminate low energy photons (below 10 keV)
     if (this->energy() < 10000) {
       // 1 in 3 chance of skipping
-      if (source_simulation.generator().uniform() > 2.0/3.0) {
+      if (source_dose.generator().uniform() > 2.0/3.0) {
         return;
       }
       this->weight() *= 3.0/2.0;
     }
 
     // Sample unitless depth travelled
-    double depth = Photon::exponential(source_simulation.generator());
-    bool inside = source_simulation.phantom().transport_photon_unitless_depth(*this, depth);
+    double depth = Photon::exponential(source_dose.generator());
+    bool inside = source_dose.phantom().transport_photon_unitless_depth(*this, depth);
     if (!inside) return;
 
-    std::tuple<int,int,int> xyz = source_simulation.phantom().index_at(this->position());
-    const Compound& compound = source_simulation.phantom().compound(std::get<0>(xyz), std::get<1>(xyz), std::get<2>(xyz));
+    std::tuple<int,int,int> xyz = source_dose.phantom().index_at(this->position());
+    const Compound& compound = source_dose.phantom().compound(std::get<0>(xyz), std::get<1>(xyz), std::get<2>(xyz));
 
     // Pick interaction type
     double compton = compound.photon_scattering_cross_section(this->energy());
     double photoelectric = compound.photon_absorption_cross_section(this->energy());
 
-    if ((compton + photoelectric) * source_simulation.generator().uniform() < compton) {
+    if ((compton + photoelectric) * source_dose.generator().uniform() < compton) {
       distributions::ComptonScattering compton_scattering;
 
       // Compton scatter
       compton_scattering.set_initial_photon(*this);
-      compton_scattering(source_simulation.generator());
+      compton_scattering(source_dose.generator());
       Electron electron = this->compton_scatter(compton_scattering.final_photon_energy(), compton_scattering.final_electron_energy(), compton_scattering.final_photon_theta(), compton_scattering.final_electron_theta(), compton_scattering.final_phi());
 
-      electron.deposit_energy(source_simulation);
-      this->deposit_energy(source_simulation);
+      electron.deposit_energy(source_dose);
+      this->deposit_energy(source_dose);
     }
     else {
       // Photoelectric effect
-      Electron electron(this->energy() + Electron::MASS, Electron::MASS, Photon::spherical(source_simulation.generator()), this->position(), this->weight());
-      electron.deposit_energy(source_simulation);
+      Electron electron(this->energy() + Electron::MASS, Electron::MASS, Photon::spherical(source_dose.generator()), this->position(), this->weight());
+      electron.deposit_energy(source_dose);
     }
   }
 };

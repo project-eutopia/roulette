@@ -12,7 +12,7 @@
 #include "rapidjson/document.h"
 
 namespace roulette {
-  class SourceSimulation {
+  class SourceDose {
     private:
       RandomGenerator m_generator;
       std::shared_ptr<const CompoundTable> m_compound_table;
@@ -25,7 +25,7 @@ namespace roulette {
       bool m_finished;
 
     public:
-      SourceSimulation(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, const rapidjson::Value& data);
+      SourceDose(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, const rapidjson::Value& data);
 
       RandomGenerator& generator();
       const CompoundTable& compound_table() const;

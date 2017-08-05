@@ -6,12 +6,12 @@
 #include "roulette/random_generator.h"
 #include "roulette/compound_table.h"
 #include "roulette/phantom.h"
-#include "roulette/source_simulation.h"
+#include "roulette/source_dose.h"
 
 #include "rapidjson/document.h"
 
 namespace roulette {
-  class Simulation {
+  class DoseCalculation {
     private:
       std::string m_description;
       std::string m_output_folder;
@@ -21,13 +21,13 @@ namespace roulette {
 
       std::vector<int> m_number_of_particles;
       std::vector<double> m_weights;
-      std::vector<SourceSimulation> m_source_simulations;
+      std::vector<SourceDose> m_source_doses;
 
     public:
-      Simulation(const rapidjson::Value& data);
-      Simulation(std::string filename_or_json_string);
+      DoseCalculation(const rapidjson::Value& data);
+      DoseCalculation(std::string filename_or_json_string);
 
-      const std::vector<SourceSimulation> source_simulations() const;
+      const std::vector<SourceDose> source_doses() const;
 
       void run();
       void write_doses();

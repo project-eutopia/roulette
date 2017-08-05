@@ -1,6 +1,6 @@
 #include "roulette/controller.h"
 
-#include "roulette/simulation.h"
+#include "roulette/dose_calculation.h"
 
 namespace roulette {
 
@@ -13,10 +13,10 @@ namespace roulette {
   std::string Controller::type() const { return m_settings["type"].GetString(); }
 
   void Controller::run() {
-    if (this->type() == std::string("Simulation")) {
-      Simulation simulation(m_settings["simulation"]);
-      simulation.run();
-      simulation.write_doses();
+    if (this->type() == std::string("DoseCalculation")) {
+      DoseCalculation dose_calculation(m_settings["dose_calculation"]);
+      dose_calculation.run();
+      dose_calculation.write_doses();
     }
 
     else if (this->type() == std::string("BeamletOptimization")) {

@@ -1,11 +1,11 @@
-#include "roulette/source_simulation.h"
+#include "roulette/source_dose.h"
 #include "roulette/particle.h"
 #include "roulette/sources/source_factory.h"
 
 #include <stdexcept>
 
 namespace roulette {
-  SourceSimulation::SourceSimulation(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, const rapidjson::Value& data) :
+  SourceDose::SourceDose(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, const rapidjson::Value& data) :
     m_generator(seed),
     m_compound_table(compound_table),
     m_phantom(phantom),
@@ -17,15 +17,15 @@ namespace roulette {
   {
   }
 
-  RandomGenerator& SourceSimulation::generator() { return m_generator; }
-  const CompoundTable& SourceSimulation::compound_table() const { return *m_compound_table; }
-  const Phantom& SourceSimulation::phantom() const { return *m_phantom; }
-  ThreeTensor& SourceSimulation::dose() { return m_dose; }
-  const ThreeTensor& SourceSimulation::dose() const { return m_dose; }
+  RandomGenerator& SourceDose::generator() { return m_generator; }
+  const CompoundTable& SourceDose::compound_table() const { return *m_compound_table; }
+  const Phantom& SourceDose::phantom() const { return *m_phantom; }
+  ThreeTensor& SourceDose::dose() { return m_dose; }
+  const ThreeTensor& SourceDose::dose() const { return m_dose; }
 
-  void SourceSimulation::run() {
+  void SourceDose::run() {
     if (m_finished) {
-      throw std::runtime_error("Cannot re-run simulation");
+      throw std::runtime_error("Cannot re-run dose calculation");
     }
     m_finished = true;
 

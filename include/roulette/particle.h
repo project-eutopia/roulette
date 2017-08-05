@@ -3,7 +3,7 @@
 #include "roulette/three_vector.h"
 #include "roulette/four_momentum.h"
 #include "roulette/random_generator.h"
-#include "roulette/source_simulation.h"
+#include "roulette/source_dose.h"
 
 namespace roulette {
   class Particle {
@@ -34,7 +34,7 @@ namespace roulette {
       double virtual mass() const = 0;
       int virtual charge() const = 0;
 
-      virtual void deposit_energy(SourceSimulation& source_simulation) = 0;
+      virtual void deposit_energy(SourceDose& source_dose) = 0;
   };
 };
 
