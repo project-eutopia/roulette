@@ -123,6 +123,15 @@ namespace roulette {
     }
     return is;
   }
+
+  rapidjson::Value ThreeVector::to_json(rapidjson::Document::AllocatorType& allocator) const {
+    rapidjson::Value v;
+    v.SetArray();
+    v.PushBack(rapidjson::Value().SetDouble(m_v(0)), allocator);
+    v.PushBack(rapidjson::Value().SetDouble(m_v(1)), allocator);
+    v.PushBack(rapidjson::Value().SetDouble(m_v(2)), allocator);
+    return v;
+  }
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::ThreeVector& v) {

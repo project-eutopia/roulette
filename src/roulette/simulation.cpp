@@ -1,5 +1,7 @@
 #include "roulette/simulation.h"
 
+#include "rapidjson/document.h"
+
 namespace roulette {
   Simulation::Simulation() :
     m_events()
@@ -9,14 +11,18 @@ namespace roulette {
   const std::vector<std::shared_ptr<Event>>& Simulation::events() const { return m_events; }
   void Simulation::add_event(std::shared_ptr<Event> event) { m_events.push_back(event); }
 
-  std::ofstream& Simulation::write(std::ofstream& ofs) const {
-    ofs << "Simulation[" << std::endl;
+  rapidjson::Value Simulation::to_json(rapidjson::Document::AllocatorType& allocator) const {
+    rapidjson::Value v;
+    v.SetObject();
+
+    rapidjson::Value events;
+    events.SetArray();
+
     for (auto event : m_events) {
-      ofs << "  ";
-      event->write(ofs);
-      ofs << std::endl;
+      events.PushBack(event->to_json(allocator), allocator);
     }
-    ofs << "]";
-    return ofs;
+
+    v.AddMember("events", events, allocator);
+    return v;
   }
 }

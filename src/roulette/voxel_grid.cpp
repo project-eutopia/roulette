@@ -290,4 +290,18 @@ namespace roulette {
     m_delta_z = (m_vn(2) - m_v0(2)) / m_nz;
     return is;
   }
+
+  rapidjson::Value VoxelGrid::to_json(rapidjson::Document::AllocatorType& allocator) const {
+    rapidjson::Value v;
+    v.SetObject();
+
+    v.AddMember("nx", rapidjson::Value().SetInt(m_nx), allocator);
+    v.AddMember("ny", rapidjson::Value().SetInt(m_ny), allocator);
+    v.AddMember("nz", rapidjson::Value().SetInt(m_nz), allocator);
+
+    v.AddMember("v0", m_v0.to_json(allocator), allocator);
+    v.AddMember("vn", m_vn.to_json(allocator), allocator);
+
+    return v;
+  }
 };

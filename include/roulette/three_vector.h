@@ -44,6 +44,8 @@ namespace roulette {
 
       std::ofstream& write(std::ofstream& os) const;
       std::ifstream& read(std::ifstream& is);
+
+      rapidjson::Value to_json(rapidjson::Document::AllocatorType& allocator) const;
   };
 };
 

@@ -35,6 +35,6 @@ namespace roulette {
 
       void run();
 
-      std::ofstream& write(std::ofstream& ofs) const;
+      std::ofstream& write_json(std::ofstream& ofs) const;
   };
 };

@@ -118,6 +118,16 @@ namespace roulette {
   FourMomentum operator/(const FourMomentum& lhs, double rhs) {
     return FourMomentum(lhs.m_p / rhs);
   }
+
+  rapidjson::Value FourMomentum::to_json(rapidjson::Document::AllocatorType& allocator) const {
+    rapidjson::Value v;
+    v.SetArray();
+    v.PushBack(rapidjson::Value().SetDouble(m_p(0)), allocator);
+    v.PushBack(rapidjson::Value().SetDouble(m_p(1)), allocator);
+    v.PushBack(rapidjson::Value().SetDouble(m_p(2)), allocator);
+    v.PushBack(rapidjson::Value().SetDouble(m_p(3)), allocator);
+    return v;
+  }
 };
 
 std::ostream &operator<<(std::ostream &os, const roulette::FourMomentum& p) {

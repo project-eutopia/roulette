@@ -50,11 +50,11 @@ namespace roulette {
   void ParticleSimulation::write_simulations() {
     for (int i = 0; i < m_source_simulations.size(); ++i) {
       const auto& source_simulation = m_source_simulations[i];
-      std::string filename = m_output_folder + "/" + std::string("simulation_") + std::to_string(i) + std::string(".sim");
+      std::string filename = m_output_folder + "/" + std::string("simulation_") + std::to_string(i) + std::string(".json");
 
       std::ofstream ofs;
       ofs.open(filename, std::ofstream::out);
-      source_simulation.write(ofs);
+      source_simulation.write_json(ofs);
       ofs.close();
     }
   }

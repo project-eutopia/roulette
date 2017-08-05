@@ -1,6 +1,8 @@
 #include "roulette/source_simulation.h"
 #include "roulette/particle.h"
 #include "roulette/sources/source_factory.h"
+#include <rapidjson/ostreamwrapper.h>
+#include <rapidjson/writer.h>
 
 #include <stdexcept>
 
@@ -33,8 +35,18 @@ namespace roulette {
     }
   }
 
-  std::ofstream& SourceSimulation::write(std::ofstream& ofs) const {
-    m_simulation.write(ofs);
+  std::ofstream& SourceSimulation::write_json(std::ofstream& ofs) const {
+    rapidjson::Document d;
+    d.SetObject();
+    auto& allocator = d.GetAllocator();
+
+    d.AddMember("simulation", m_simulation.to_json(allocator), allocator);
+    d.AddMember("voxel_grid", m_phantom->voxel_grid().to_json(allocator), allocator);
+
+    rapidjson::OStreamWrapper osw(ofs);
+    rapidjson::Writer<rapidjson::OStreamWrapper> writer(osw);
+    d.Accept(writer);
+
     return ofs;
   }
 };

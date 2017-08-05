@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/numeric/ublas/vector.hpp>
+#include "rapidjson/document.h"
 #include "roulette/three_vector.h"
 
 namespace roulette {
@@ -45,6 +46,8 @@ namespace roulette {
       friend FourMomentum operator*(double lhs, const FourMomentum& rhs);
       friend FourMomentum operator*(const FourMomentum& lhs, double rhs);
       friend FourMomentum operator/(const FourMomentum& lhs, double rhs);
+
+      rapidjson::Value to_json(rapidjson::Document::AllocatorType& allocator) const;
   };
 };
 

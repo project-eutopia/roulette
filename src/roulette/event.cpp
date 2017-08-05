@@ -37,4 +37,25 @@ namespace roulette {
     ofs << "])";
     return ofs;
   }
+
+  rapidjson::Value Event::to_json(rapidjson::Document::AllocatorType& allocator) const {
+    rapidjson::Value v;
+    v.SetObject();
+    v.AddMember("event_type", rapidjson::Value().SetInt(m_event_type), allocator);
+    v.AddMember("particle_type", rapidjson::Value().SetInt(m_particle_type), allocator);
+    v.AddMember("initial_momentum", m_initial_momentum.to_json(allocator), allocator);
+    v.AddMember("initial_position", m_initial_position.to_json(allocator), allocator);
+    v.AddMember("final_position", m_final_position.to_json(allocator), allocator);
+
+    rapidjson::Value children;
+    children.SetArray();
+
+    for (auto child : m_children) {
+      children.PushBack(child->to_json(allocator), allocator);
+    }
+
+    v.AddMember("children", children, allocator);
+
+    return v;
+  }
 }
