@@ -1,6 +1,7 @@
 #include "roulette/controller.h"
 
 #include "roulette/dose_calculation.h"
+#include "roulette/particle_simulation.h"
 
 namespace roulette {
 
@@ -17,6 +18,12 @@ namespace roulette {
       DoseCalculation dose_calculation(m_settings["dose_calculation"]);
       dose_calculation.run();
       dose_calculation.write_doses();
+    }
+
+    if (this->type() == std::string("ParticleSimulation")) {
+      ParticleSimulation particle_simulation(m_settings["particle_simulation"]);
+      particle_simulation.run();
+      particle_simulation.write_simulations();
     }
 
     else if (this->type() == std::string("BeamletOptimization")) {
