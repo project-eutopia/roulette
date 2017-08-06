@@ -38,8 +38,8 @@ namespace roulette {
     }
 
     const rapidjson::Value& electron_stopping_powers = data["electron_stopping_powers"];
-
     m_electron_stopping_powers.reserve(electron_stopping_powers.Size());
+    m_electron_csda_ranges.reserve(electron_stopping_powers.Size());
 
     for (auto it = electron_stopping_powers.Begin(); it != electron_stopping_powers.End(); ++it) {
       // Covert from MeV to eV
@@ -49,6 +49,11 @@ namespace roulette {
           energy,
           // Convert from MeV cm^2 / g to eV cm^2 / g
           (*it)["total_stopping_power"].GetDouble() * 1000000.0
+      );
+
+      m_electron_csda_ranges.add_point(
+          energy,
+          (*it)["csda_range"].GetDouble()
       );
     }
   }
@@ -78,5 +83,10 @@ namespace roulette {
   const NonUniformLinearInterpolation& Element::electron_stopping_powers() const { return m_electron_stopping_powers; }
   double Element::electron_stopping_power(double energy) const {
     return m_electron_stopping_powers(energy);
+  }
+
+  const NonUniformLinearInterpolation& Element::electron_csda_ranges() const { return m_electron_csda_ranges; }
+  double Element::electron_csda_range(double energy) const {
+    return m_electron_csda_ranges(energy);
   }
 };

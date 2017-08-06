@@ -19,6 +19,7 @@ namespace roulette {
       NonUniformLinearInterpolation m_photon_pair_production_cross_sections;
 
       NonUniformLinearInterpolation m_electron_stopping_powers;
+      NonUniformLinearInterpolation m_electron_csda_ranges;
 
     public:
       Element(const rapidjson::Value& data);
@@ -43,5 +44,9 @@ namespace roulette {
       // eV cm^2 / g
       const NonUniformLinearInterpolation& electron_stopping_powers() const;
       double electron_stopping_power(double energy) const;
+
+      // g / cm^2
+      const NonUniformLinearInterpolation& electron_csda_ranges() const;
+      double electron_csda_range(double energy) const;
   };
 };

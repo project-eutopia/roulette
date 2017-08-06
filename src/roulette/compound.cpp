@@ -23,6 +23,7 @@ namespace roulette {
     std::vector<const NonUniformLinearInterpolation*> photon_absorption_cross_sections;
     std::vector<const NonUniformLinearInterpolation*> photon_pair_production_cross_sections;
     std::vector<const NonUniformLinearInterpolation*> electron_stopping_powers;
+    std::vector<const NonUniformLinearInterpolation*> electron_csda_ranges;
 
     for (auto& kv : m_composition) {
       const Element& element = periodic_table.element(kv.first);
@@ -32,6 +33,7 @@ namespace roulette {
       photon_absorption_cross_sections.push_back(&element.photon_absorption_cross_sections());
       photon_pair_production_cross_sections.push_back(&element.photon_pair_production_cross_sections());
       electron_stopping_powers.push_back(&element.electron_stopping_powers());
+      electron_csda_ranges.push_back(&element.electron_csda_ranges());
     }
 
     m_photon_scattering_cross_sections = NonUniformLinearInterpolation::linear_combination(
@@ -45,6 +47,9 @@ namespace roulette {
     );
     m_electron_stopping_powers = NonUniformLinearInterpolation::linear_combination(
       electron_stopping_powers, weights
+    );
+    m_electron_csda_ranges = NonUniformLinearInterpolation::linear_combination(
+      electron_csda_ranges, weights
     );
   }
 
@@ -68,6 +73,10 @@ namespace roulette {
     m_electron_stopping_powers(
       element.electron_stopping_powers().xs(),
       element.electron_stopping_powers().ys()
+    ),
+    m_electron_csda_ranges(
+      element.electron_csda_ranges().xs(),
+      element.electron_csda_ranges().ys()
     )
   {
     m_composition[element.atomic_number()] = 1.0;
@@ -97,5 +106,9 @@ namespace roulette {
   // eV cm^2 / g
   double Compound::electron_stopping_power(double energy) const {
     return m_electron_stopping_powers(energy);
+  }
+  // g / cm^2
+  double Compound::electron_csda_range(double energy) const {
+    return m_electron_csda_ranges(energy);
   }
 };

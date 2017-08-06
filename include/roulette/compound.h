@@ -22,6 +22,7 @@ namespace roulette {
       NonUniformLinearInterpolation m_photon_pair_production_cross_sections;
 
       NonUniformLinearInterpolation m_electron_stopping_powers;
+      NonUniformLinearInterpolation m_electron_csda_ranges;
 
     public:
       Compound();
@@ -42,5 +43,7 @@ namespace roulette {
       double photon_total_cross_section(double energy) const;
       // eV cm^2 / g
       double electron_stopping_power(double energy) const;
+      // g / cm^2
+      double electron_csda_range(double energy) const;
   };
 };
