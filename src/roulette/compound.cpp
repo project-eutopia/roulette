@@ -90,6 +90,10 @@ namespace roulette {
   double Compound::photon_pair_production_cross_section(double energy) const {
     return m_photon_pair_production_cross_sections(energy);
   }
+  double Compound::photon_total_cross_section(double energy) const {
+    // FIXME: Add pair production when implemented
+    return m_photon_scattering_cross_sections(energy) + m_photon_absorption_cross_sections(energy);
+  }
   // eV cm^2 / g
   double Compound::electron_stopping_power(double energy) const {
     return m_electron_stopping_powers(energy);

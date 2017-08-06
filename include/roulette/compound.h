@@ -39,6 +39,7 @@ namespace roulette {
       double photon_scattering_cross_section(double energy) const;
       double photon_absorption_cross_section(double energy) const;
       double photon_pair_production_cross_section(double energy) const;
+      double photon_total_cross_section(double energy) const;
       // eV cm^2 / g
       double electron_stopping_power(double energy) const;
   };

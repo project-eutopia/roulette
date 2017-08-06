@@ -76,12 +76,12 @@ namespace roulette {
       photon.position(), photon.momentum().three_momentum(),
       Phantom::voxel_iterator(
         [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
-          double delta_depth = cur_phantom(xi, yi, zi) * cur_phantom.compound(xi, yi, zi).photon_scattering_cross_section(energy) * distance;
+          double delta_depth = cur_phantom(xi, yi, zi) * cur_phantom.compound(xi, yi, zi).photon_total_cross_section(energy) * distance;
           current_depth += delta_depth;
           if (current_depth < depth) return distance;
 
           inside = true;
-          return (delta_depth - current_depth + depth) / cur_phantom(xi, yi, zi) / cur_phantom.compound(xi, yi, zi).photon_scattering_cross_section(energy);
+          return (delta_depth - current_depth + depth) / cur_phantom(xi, yi, zi) / cur_phantom.compound(xi, yi, zi).photon_total_cross_section(energy);
         }
       )
     );
