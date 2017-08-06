@@ -2,6 +2,7 @@
 #include "roulette/sources/beamlet_source.h"
 #include "roulette/sources/beam_source.h"
 #include "roulette/sources/composite_source.h"
+#include "roulette/sources/dirac_delta_source.h"
 
 namespace roulette {
   namespace sources {
@@ -15,6 +16,9 @@ namespace roulette {
       }
       else if (data["type"].GetString() == std::string("BeamSource")) {
         return std::make_shared<BeamSource>(data);
+      }
+      else if (data["type"].GetString() == std::string("DiracDeltaSource")) {
+        return std::make_shared<DiracDeltaSource>(data);
       }
       else if (data["type"].GetString() == std::string("CompositeSource")) {
         return std::make_shared<CompositeSource>(data);
