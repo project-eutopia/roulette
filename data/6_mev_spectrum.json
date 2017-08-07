@@ -1,5 +1,6 @@
 {
   "description": "6 MeV photons",
+  "type": "pdf",
   "data": [
     [0.000000, 0.000000],
     [0.075000, 0.236151],

@@ -15,6 +15,7 @@ namespace roulette {
         NonUniformLinearInterpolation m_pdf;
         NonUniformLinearInterpolation m_cdf;
         NonUniformLinearInterpolation m_inv_cdf;
+        double m_value;
 
       public:
         Spectrum();
@@ -24,6 +25,8 @@ namespace roulette {
 
       private:
         void load_data(const rapidjson::Value& data);
+        void load_pdf(const rapidjson::Value& data);
+        void load_delta(const rapidjson::Value& data);
     };
   };
 };

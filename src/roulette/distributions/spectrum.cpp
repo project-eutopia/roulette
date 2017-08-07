@@ -27,11 +27,27 @@ namespace roulette {
     };
 
     double Spectrum::operator()(RandomGenerator& generator) {
-      return m_inv_cdf(generator.uniform());
+      if (m_value > 0) {
+        return m_value;
+      }
+      else {
+        return m_inv_cdf(generator.uniform());
+      }
     };
 
     void Spectrum::load_data(const rapidjson::Value& spectrum) {
-      if (!spectrum.HasMember("data")) throw std::runtime_error("Spectrum must have \"data\" member");
+      if (!spectrum.HasMember("type") || !spectrum["type"].IsString()) throw std::runtime_error("Spectrum must have \"type\" string");
+
+      if (spectrum["type"].GetString() == std::string("pdf")) {
+        this->load_pdf(spectrum);
+      }
+      else if (spectrum["type"].GetString() == std::string("delta")) {
+        this->load_delta(spectrum);
+      }
+    }
+
+    void Spectrum::load_pdf(const rapidjson::Value& spectrum) {
+      if (!spectrum.HasMember("data") || !spectrum["data"].IsArray()) throw std::runtime_error("PDF Spectrum must have \"data\" array");
       const rapidjson::Value& data = spectrum["data"];
 
       for (auto it = data.Begin(); it != data.End(); ++it) {
@@ -58,6 +74,12 @@ namespace roulette {
           m_cdf.xs()[i]
         );
       }
+      m_value = 0;
+    }
+
+    void Spectrum::load_delta(const rapidjson::Value& spectrum) {
+      if (!spectrum.HasMember("value") || !spectrum["value"].IsNumber()) throw std::runtime_error("Delta Spectrum must have \"value\" number");
+      m_value = spectrum["value"].GetDouble();
     }
   };
 };
