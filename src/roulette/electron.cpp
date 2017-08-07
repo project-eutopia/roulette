@@ -11,10 +11,9 @@ namespace roulette {
       this->position(), this->momentum().three_momentum(),
       Phantom::voxel_iterator(
         [&,this](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
-          double delta_energy = cur_phantom(xi, yi, zi) * cur_phantom.compound(xi, yi, zi).electron_stopping_power(kinetic_energy) * distance;
+          double csda_range_cm = cur_phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / cur_phantom(xi, yi, zi);
 
-          double energy_drop = (delta_energy < kinetic_energy) ? delta_energy : kinetic_energy;
-
+          double energy_drop = (distance <= csda_range_cm) ? kinetic_energy*(distance / csda_range_cm) : kinetic_energy;
           source_dose.dose()(xi, yi, zi) += this->weight() * energy_drop;
           kinetic_energy -= energy_drop;
 
@@ -27,11 +26,7 @@ namespace roulette {
             this->weight() *= 3.0/2.0;
           }
 
-          if (kinetic_energy >= 0) {
-            return distance;
-          }
-
-          return energy_drop / cur_phantom(xi, yi, zi) / cur_phantom.compound(xi, yi, zi).electron_stopping_power(kinetic_energy);
+          return std::min(csda_range_cm, distance);
         }
       )
     );
@@ -46,9 +41,9 @@ namespace roulette {
       this->position(), this->momentum().three_momentum(),
       Phantom::voxel_iterator(
         [&,this](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
-          double delta_energy = cur_phantom(xi, yi, zi) * cur_phantom.compound(xi, yi, zi).electron_stopping_power(kinetic_energy) * distance;
+          double csda_range_cm = cur_phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / cur_phantom(xi, yi, zi);
 
-          double energy_drop = (delta_energy < kinetic_energy) ? delta_energy : kinetic_energy;
+          double energy_drop = (distance <= csda_range_cm) ? kinetic_energy*(distance / csda_range_cm) : kinetic_energy;
           kinetic_energy -= energy_drop;
 
           // Roulette to decide if we keep going
@@ -60,11 +55,7 @@ namespace roulette {
             this->weight() *= 3.0/2.0;
           }
 
-          if (kinetic_energy >= 0) {
-            return distance;
-          }
-
-          return energy_drop / cur_phantom(xi, yi, zi) / cur_phantom.compound(xi, yi, zi).electron_stopping_power(kinetic_energy);
+          return std::min(csda_range_cm, distance);
         }
       )
     );
