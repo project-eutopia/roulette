@@ -60,7 +60,7 @@ namespace roulette {
             this->weight() *= 3.0/2.0;
           }
 
-          if (energy_drop < kinetic_energy) {
+          if (kinetic_energy >= 0) {
             return distance;
           }
 
