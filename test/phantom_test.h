@@ -4,6 +4,7 @@
 
 #include "test_helper.h"
 
+#include "roulette/density_compound_map.h"
 #include "roulette/random_generator.h"
 #include "roulette/phantom.h"
 #include "roulette/photon.h"
@@ -23,13 +24,13 @@ class PhantomRayTraceTest : public ::testing::Test {
         1,1,1
       );
 
-      const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
+      const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
       phantom = std::make_shared<Phantom>(
         voxel_grid,
-        ThreeTensor(4, 4, 2, 1.0),
-        builtin_compound_table().compound("Water, Liquid")
+        ThreeTensor(4, 4, 2, 1.0)
       );
+      phantom->set_compound_map(map);
     }
 
     // virtual void TearDown() {}
@@ -213,13 +214,13 @@ TEST(PhantomTest, ray_trace_voxels_going_through_random_directions) {
     1,1,1
   );
 
-  const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
+  const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
   Phantom phantom(
     voxel_grid,
-    ThreeTensor(256, 1, 1, 1.0),
-    soft_tissue_icru_44
+    ThreeTensor(256, 1, 1, 1.0)
   );
+  phantom.set_compound_map(map);
 
   ThreeVector start_position(-5, 0, 0);
   RandomGenerator generator;
@@ -248,27 +249,27 @@ TEST(PhantomTest, ray_trace_voxels_going_through_random_directions) {
 }
 
 TEST(PhantomTest, transport_photon_unitless_depth_test) {
-  const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
+  const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
   VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100), 1, 1, 1);
 
   Phantom phantom(
     grid,
-    ThreeTensor(256, 1, 1, 1.06),
-    soft_tissue_icru_44
+    ThreeTensor(256, 1, 1, 1.06)
   );
+  phantom.set_compound_map(map);
 
   Photon initial_photon(FourMomentum(1000000, 1000000, 0, 0), ThreeVector(-10, 0, 0));
   bool res = phantom.transport_photon_unitless_depth(initial_photon, 1.0);
 
   EXPECT_TRUE(res);
-  EXPECT_NEAR(1.0 / soft_tissue_icru_44.photon_total_cross_section(initial_photon.energy()) / 1.06, initial_photon.position()(0), 0.0001);
+  EXPECT_NEAR(1.0 / map.compound_for_density(1)->photon_total_cross_section(initial_photon.energy()) / 1.06, initial_photon.position()(0), 0.0001);
   EXPECT_EQ(0, initial_photon.position()(1));
   EXPECT_EQ(0, initial_photon.position()(2));
 }
 
 TEST(PhantomTest, transport_photon_unitless_depth_inhomogeneous_test) {
-  const Compound soft_tissue_icru_44 = compound_table.compound("Tissue, Soft (ICRU-44)");
+  const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
   VoxelGrid grid(ThreeVector(0, -25, -25), ThreeVector(50, 25, 25), 1, 1, 1);
 
@@ -279,12 +280,12 @@ TEST(PhantomTest, transport_photon_unitless_depth_inhomogeneous_test) {
 
   Phantom phantom(
     grid,
-    densities,
-    soft_tissue_icru_44
+    densities
   );
+  phantom.set_compound_map(map);
 
   Photon initial_photon(FourMomentum(1000000, 1000000, 0, 0), ThreeVector(-10, 0, 0));
-  double cross_section = soft_tissue_icru_44.photon_scattering_cross_section(initial_photon.energy()) + soft_tissue_icru_44.photon_absorption_cross_section(initial_photon.energy());
+  double cross_section = map.compound_for_density(1)->photon_scattering_cross_section(initial_photon.energy()) + map.compound_for_density(1)->photon_absorption_cross_section(initial_photon.energy());
 
   phantom.transport_photon_unitless_depth(initial_photon, 2.5 * cross_section);
   EXPECT_NEAR(2.5, initial_photon.position()(0), 0.0001);

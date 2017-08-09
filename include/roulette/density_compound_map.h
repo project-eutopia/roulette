@@ -14,6 +14,7 @@ namespace roulette {
       std::vector<std::shared_ptr<Compound>> m_compounds;
 
     public:
+      DensityCompoundMap(const Compound& compound);
       DensityCompoundMap(const rapidjson::Value& data, const CompoundTable& table);
       DensityCompoundMap(std::string filename_or_json_string, const CompoundTable& table);
 

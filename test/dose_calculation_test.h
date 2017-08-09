@@ -25,6 +25,7 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose) {
     \"compound\": \"Water, Liquid\" \
   }, \
   \"seed\": 1234, \
+  \"density_compound_map\": \"Water, Liquid\", \
   \"source_doses\": [ \
     { \
       \"number_of_particles\": 50, \
@@ -35,7 +36,7 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose) {
         \"bottom_left\": [-50, -5, -5], \
         \"bottom_right\": [-50, 5, -5], \
         \"top_right\": [-50, 5, 5], \
-        \"spectrum\": {\"data\": [[5.0, 0], [5.5, 0.5], [6.0, 1]]} \
+        \"spectrum\": {\"type\": \"pdf\", \"data\": [[5.0, 0], [5.5, 0.5], [6.0, 1]]} \
       } \
     } \
   ] \
