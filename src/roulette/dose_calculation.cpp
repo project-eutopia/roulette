@@ -23,6 +23,10 @@ namespace roulette {
       m_phantom = std::make_shared<Phantom>(data["phantom"]);
     }
 
+    if (data.HasMember("structure_grid")) {
+      m_structure_grid = std::make_shared<ThreeTensor>(data["structure_grid"].GetString());
+    }
+
     m_generator = data.HasMember("seed") ? RandomGenerator(data["seed"].GetInt()) : RandomGenerator();
 
     if (!data.HasMember("source_doses") || !data["source_doses"].IsArray()) {
