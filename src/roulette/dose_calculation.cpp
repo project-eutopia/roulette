@@ -17,6 +17,12 @@ namespace roulette {
       m_structure_grid = std::make_shared<ThreeTensor>(data["structure_grid"].GetString());
     }
 
+    if (data.HasMember("dose_writer")) {
+      m_dose_writer = std::make_shared<DoseWriter>(data["dose_writer"]);
+    } else {
+      m_dose_writer = std::make_shared<DoseWriter>();
+    }
+
     if (!data.HasMember("density_compound_map")) throw std::runtime_error("DoseCalculation needs \"density_compound_map\"");
     m_density_compound_map = std::make_shared<const DensityCompoundMap>(data["density_compound_map"], *m_compound_table);
 
@@ -66,7 +72,7 @@ namespace roulette {
       std::string filename = m_output_folder + "/" + std::string("dose_") + std::to_string(i) + std::string(".dose");
       std::ofstream ofs;
       ofs.open(filename, std::ofstream::out);
-      source_dose.dose().write(ofs);
+      m_dose_writer->write_dose_to_file(source_dose.dose(), ofs);
       ofs.close();
     }
   }
