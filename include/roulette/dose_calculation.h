@@ -16,6 +16,7 @@ namespace roulette {
       std::string m_description;
       std::string m_output_folder;
       std::shared_ptr<const CompoundTable> m_compound_table;
+      std::shared_ptr<const DensityCompoundMap> m_density_compound_map;
       std::shared_ptr<Phantom> m_phantom;
       std::shared_ptr<ThreeTensor> m_structure_grid;
       RandomGenerator m_generator;

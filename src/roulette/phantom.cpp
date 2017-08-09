@@ -15,7 +15,6 @@ namespace roulette {
   Phantom::Phantom(const rapidjson::Value& data) :
     m_voxel_grid(data["voxel_grid"]),
     m_densities(m_voxel_grid.nx(), m_voxel_grid.ny(), m_voxel_grid.nz(), data["density"].GetDouble()),
-    m_compound(builtin_compound_table().compound(data["compound"].GetString())),
     m_delta_x((m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx()),
     m_delta_y((m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny()),
     m_delta_z((m_voxel_grid.vn()(2) - m_voxel_grid.v0()(2)) / this->nz())
@@ -30,22 +29,28 @@ namespace roulette {
     data_file.close();
   }
 
-  Phantom::Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities, const Compound& compound) :
+  Phantom::Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities) :
     m_voxel_grid(voxel_grid),
     m_densities(densities),
-    m_compound(compound),
     m_delta_x((m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx()),
     m_delta_y((m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny()),
     m_delta_z((m_voxel_grid.vn()(2) - m_voxel_grid.v0()(2)) / this->nz())
   {
   }
 
-  Phantom::Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities) :
-    Phantom(voxel_grid, densities, builtin_compound_table().compound("Water, Liquid"))
-  {
-  }
+  void Phantom::set_compound_map(const DensityCompoundMap& map) {
+    if (!m_compounds.empty()) throw std::runtime_error("Cannot set compound map on phantom that has already had it set");
 
-  void Phantom::set_compound(const Compound& compound) { m_compound = compound; }
+    m_compounds.reserve(this->nx() * this->ny() + this->nz());
+
+    for (int z = 0; z < this->nz(); ++z) {
+      for (int y = 0; y < this->ny(); ++y) {
+        for (int x = 0; x < this->nx(); ++x) {
+          m_compounds.push_back(map.compound_for_density(m_densities(x, y, z)));
+        }
+      }
+    }
+  }
 
   int Phantom::nx() const { return m_densities.nx(); }
   int Phantom::ny() const { return m_densities.ny(); }
@@ -65,7 +70,7 @@ namespace roulette {
 
   const VoxelGrid& Phantom::voxel_grid() const { return m_voxel_grid; }
   double Phantom::operator()(int xi, int yi, int zi) const { return m_densities(xi, yi, zi); }
-  const Compound& Phantom::compound(int xi, int yi, int zi) const { return m_compound; }
+  const Compound& Phantom::compound(int xi, int yi, int zi) const { return *m_compounds[xi + yi*this->nx() + zi*this->nx()*this->ny()]; }
 
   bool Phantom::transport_photon_unitless_depth(Photon& photon, double depth) const {
     double current_depth = 0;

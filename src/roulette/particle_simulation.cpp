@@ -12,15 +12,17 @@ namespace roulette {
     if (!data.HasMember("compound_table")) throw std::runtime_error("ParticleSimulation needs \"compound_table\"");
     m_compound_table = std::make_shared<const CompoundTable>(data["compound_table"].GetString());
 
+    if (!data.HasMember("density_compound_map")) throw std::runtime_error("ParticleSimulation needs \"density_compound_map\"");
+    m_density_compound_map = std::make_shared<const DensityCompoundMap>(data["density_compound_map"], *m_compound_table);
+
     if (!data.HasMember("phantom")) throw std::runtime_error("ParticleSimulation needs \"phantom\"");
     if (data["phantom"].IsString()) {
       m_phantom = std::make_shared<Phantom>(data["phantom"].GetString());
-      // FIXME: for now, hard code water, later use DensityCompoundMap
-      m_phantom->set_compound(m_compound_table->compound("Water, Liquid"));
     }
     else {
       m_phantom = std::make_shared<Phantom>(data["phantom"]);
     }
+    m_phantom->set_compound_map(*m_density_compound_map);
 
     m_generator = data.HasMember("seed") ? RandomGenerator(data["seed"].GetInt()) : RandomGenerator();
 
