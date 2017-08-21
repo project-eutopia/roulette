@@ -44,11 +44,21 @@ namespace roulette {
 
       double cutoff = max_dose * m_map_cutoff_fraction;
 
+      int32_t n;
+      float d;
+
       for (int zi = 0; zi < dose.nz(); ++zi) {
         for (int yi = 0; yi < dose.ny(); ++yi) {
           for (int xi = 0; xi < dose.nx(); ++xi) {
             if (dose(xi, yi, zi) > cutoff) {
-              ofs << xi << "," << yi << "," << zi << ": " << dose(xi, yi, zi) << std::endl;
+              n = xi;
+              ofs.write(reinterpret_cast<const char*>(&n), sizeof(n));
+              n = yi;
+              ofs.write(reinterpret_cast<const char*>(&n), sizeof(n));
+              n = zi;
+              ofs.write(reinterpret_cast<const char*>(&n), sizeof(n));
+              d = dose(xi, yi, zi);
+              ofs.write(reinterpret_cast<const char*>(&d), sizeof(d));
             }
           }
         }
