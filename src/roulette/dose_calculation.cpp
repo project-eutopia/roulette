@@ -40,9 +40,14 @@ namespace roulette {
     if (!data.HasMember("source_doses") || !data["source_doses"].IsArray()) {
       throw std::runtime_error("DoseCalculation needs \"source_doses\"");
     }
+
     const rapidjson::Value& sources = data["source_doses"];
-    for (auto it = sources.Begin(); it != sources.End(); ++it) {
-      m_source_doses.emplace_back(m_generator.random_seed(), m_compound_table, m_phantom, *it);
+    for (int i = 0; i < sources.Size(); ++i) {
+      int seed = m_generator.random_seed();
+      const rapidjson::Value& source = sources[i];
+      m_source_doses.emplace_back([&]() -> std::shared_ptr<SourceDose> {
+        return std::make_shared<SourceDose>(seed, m_compound_table, m_phantom, source);
+      });
     }
   }
 
@@ -51,29 +56,34 @@ namespace roulette {
   {
   }
 
-  const std::vector<SourceDose> DoseCalculation::source_doses() const { return m_source_doses; }
-
-  void DoseCalculation::run() {
-    std::vector<std::thread> threads;
-    for (auto& source_dose : m_source_doses) {
-      threads.emplace_back([&]() {
-        source_dose.run();
-      });
-    }
-
-    for (auto& t : threads) {
-      t.join();
-    }
-  }
-
   void DoseCalculation::write_doses() {
-    for (int i = 0; i < m_source_doses.size(); ++i) {
-      const auto& source_dose = m_source_doses[i];
-      std::string filename = m_output_folder + "/" + std::string("dose_") + std::to_string(i) + std::string(".dose");
-      std::ofstream ofs;
-      ofs.open(filename, std::ofstream::out);
-      m_dose_writer->write_dose_to_file(source_dose.dose(), ofs);
-      ofs.close();
+    // Run in batches of 4
+    int N = 4;
+    for (int i = 0; i < m_source_doses.size(); i += N) {
+      std::vector<std::thread> threads;
+      std::vector<int> seeds;
+
+      for (int j = i; j < m_source_doses.size() && j < i+4; ++j) {
+        int index = j;
+        threads.emplace_back([&]() {
+          std::cout << "Building source_dose " << index << std::endl;
+          std::shared_ptr<SourceDose> source_dose = m_source_doses[index]();
+          std::cout << "Running source_dose " << index << std::endl;
+          source_dose->run();
+          std::cout << "Ran source_dose " << index << std::endl;
+
+          std::string filename = m_output_folder + "/" + std::string("dose_") + std::to_string(index) + std::string(".dose");
+          std::cout << "Writing to file " << filename << std::endl;
+          std::ofstream ofs;
+          ofs.open(filename, std::ofstream::out);
+          m_dose_writer->write_dose_to_file(source_dose->dose(), ofs);
+          ofs.close();
+        });
+      }
+
+      for (auto& t : threads) {
+        t.join();
+      }
     }
   }
 };

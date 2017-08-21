@@ -23,7 +23,7 @@ namespace roulette {
       std::shared_ptr<DoseWriter> m_dose_writer;
       RandomGenerator m_generator;
 
-      std::vector<SourceDose> m_source_doses;
+      std::vector<std::function<std::shared_ptr<SourceDose>()>> m_source_doses;
 
     public:
       DoseCalculation(const rapidjson::Value& data);
@@ -31,7 +31,6 @@ namespace roulette {
 
       const std::vector<SourceDose> source_doses() const;
 
-      void run();
       void write_doses();
   };
 };

@@ -16,7 +16,6 @@ namespace roulette {
   void Controller::run() {
     if (this->type() == std::string("DoseCalculation")) {
       DoseCalculation dose_calculation(m_settings["dose_calculation"]);
-      dose_calculation.run();
       dose_calculation.write_doses();
     }
 
