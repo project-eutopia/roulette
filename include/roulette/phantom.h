@@ -18,7 +18,7 @@ namespace roulette {
   class Phantom {
     private:
       VoxelGrid m_voxel_grid;
-      std::shared_ptr<ThreeTensor> m_densities;
+      std::shared_ptr<MatrixThreeTensor> m_densities;
       std::vector<std::shared_ptr<Compound>> m_compounds;
 
       double m_delta_x;
@@ -40,7 +40,7 @@ namespace roulette {
       Phantom();
       Phantom(const rapidjson::Value& data);
       Phantom(std::string filename);
-      Phantom(const VoxelGrid& voxel_grid, std::shared_ptr<ThreeTensor> densities);
+      Phantom(const VoxelGrid& voxel_grid, std::shared_ptr<MatrixThreeTensor> densities);
 
       void set_compound_map(const DensityCompoundMap& map);
 
@@ -52,6 +52,7 @@ namespace roulette {
       double delta_y() const;
       double delta_z() const;
 
+      std::shared_ptr<const MatrixThreeTensor> densities() const;
       std::tuple<int,int,int> index_at(const ThreeVector& position) const;
 
       const VoxelGrid& voxel_grid() const;

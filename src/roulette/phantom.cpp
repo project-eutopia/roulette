@@ -8,7 +8,7 @@
 namespace roulette {
   Phantom::Phantom() :
     m_voxel_grid(),
-    m_densities()
+    m_densities(std::make_shared<MatrixThreeTensor>())
   {
   }
 
@@ -21,7 +21,8 @@ namespace roulette {
   {
   }
 
-  Phantom::Phantom(std::string filename)
+  Phantom::Phantom(std::string filename) :
+    m_densities(std::make_shared<MatrixThreeTensor>())
   {
     std::ifstream data_file;
     data_file.open(filename, std::ios::in | std::ios::binary);
@@ -29,7 +30,7 @@ namespace roulette {
     data_file.close();
   }
 
-  Phantom::Phantom(const VoxelGrid& voxel_grid, std::shared_ptr<ThreeTensor> densities) : m_voxel_grid(voxel_grid),
+  Phantom::Phantom(const VoxelGrid& voxel_grid, std::shared_ptr<MatrixThreeTensor> densities) : m_voxel_grid(voxel_grid),
     m_densities(densities),
     m_delta_x((m_voxel_grid.vn()(0) - m_voxel_grid.v0()(0)) / this->nx()),
     m_delta_y((m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny()),
@@ -58,6 +59,10 @@ namespace roulette {
   double Phantom::delta_x() const { return m_delta_x; }
   double Phantom::delta_y() const { return m_delta_y; }
   double Phantom::delta_z() const { return m_delta_z; }
+
+  std::shared_ptr<const MatrixThreeTensor> Phantom::densities() const {
+    return std::const_pointer_cast<const MatrixThreeTensor>(m_densities);
+  }
 
   std::tuple<int,int,int> Phantom::index_at(const ThreeVector& position) const {
     double normal_x = (position(0) - m_voxel_grid.v0()(0)) / m_delta_x;

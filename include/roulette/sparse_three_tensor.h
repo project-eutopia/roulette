@@ -2,21 +2,22 @@
 
 #include "roulette/three_tensor.h"
 
-#include <vector>
+#include <map>
 #include <string>
 
 namespace roulette {
-  class MatrixThreeTensor : public ThreeTensor {
+  class SparseThreeTensor : public ThreeTensor {
     private:
       int m_nx;
       int m_ny;
       int m_nz;
-      std::vector<double> m_data;
+      double m_default;
+      std::map<int,double> m_data;
 
     public:
-      MatrixThreeTensor();
-      MatrixThreeTensor(int nx, int ny, int nz, double fill_value = 0);
-      MatrixThreeTensor(std::string filename);
+      SparseThreeTensor();
+      SparseThreeTensor(int nx, int ny, int nz, double fill_value = 0);
+      SparseThreeTensor(std::string filename);
 
       int nx() const;
       int ny() const;

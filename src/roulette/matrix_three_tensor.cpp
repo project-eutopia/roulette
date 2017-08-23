@@ -72,4 +72,15 @@ namespace roulette {
 
     return is;
   }
+
+  void MatrixThreeTensor::rescale(double weight, std::shared_ptr<const ThreeTensor> densities) {
+    // Re-weight by m_weight, and scale from energy to dose
+    for (int zi = 0; zi < this->nz(); ++zi) {
+      for (int yi = 0; yi < this->ny(); ++yi) {
+        for (int xi = 0; xi < this->nx(); ++xi) {
+          (*this)(xi, yi, zi) *= weight / (*densities)(xi, yi, zi);
+        }
+      }
+    }
+  }
 };

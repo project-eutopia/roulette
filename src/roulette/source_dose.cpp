@@ -1,5 +1,8 @@
 #include "roulette/source_dose.h"
 #include "roulette/particle.h"
+#include "roulette/matrix_three_tensor.h"
+#include "roulette/sparse_three_tensor.h"
+
 #include "roulette/sources/source_factory.h"
 
 #include <stdexcept>
@@ -9,7 +12,6 @@ namespace roulette {
     m_generator(seed),
     m_compound_table(compound_table),
     m_phantom(phantom),
-    m_dose(std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0)),
     m_number_of_particles(0),
     m_weight(0),
     m_source(sources::SourceFactory::source(data["source"])),
@@ -20,6 +22,13 @@ namespace roulette {
 
     if (!data["weight"].IsNumber()) throw std::runtime_error("weight must be number");
     m_weight = data["weight"].GetDouble();
+
+    if (data.HasMember("dose_storage") && data["dose_storage"].IsString() && data["dose_storage"].GetString() == std::string("sparse")) {
+      m_dose = std::make_shared<SparseThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
+    }
+    else {
+      m_dose = std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
+    }
   }
 
   RandomGenerator& SourceDose::generator() { return m_generator; }
@@ -38,13 +47,6 @@ namespace roulette {
       particle->deposit_energy(*this);
     }
 
-    // Re-weight by m_weight, and scale from energy to dose
-    for (int zi = 0; zi < m_dose->nz(); ++zi) {
-      for (int yi = 0; yi < m_dose->ny(); ++yi) {
-        for (int xi = 0; xi < m_dose->nx(); ++xi) {
-          (*m_dose)(xi, yi, zi) *= m_weight / (*m_phantom)(xi, yi, zi);
-        }
-      }
-    }
+    m_dose->rescale(m_weight, m_phantom->densities());
   }
 };

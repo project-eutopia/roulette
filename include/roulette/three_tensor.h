@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 #include <string>
 
 namespace roulette {
@@ -15,5 +16,7 @@ namespace roulette {
 
       virtual std::ofstream& write(std::ofstream& os) const = 0;
       virtual std::ifstream& read(std::ifstream& is) = 0;
+
+      virtual void rescale(double weight, std::shared_ptr<const ThreeTensor> densities) = 0;
   };
 };
