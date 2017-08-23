@@ -28,42 +28,44 @@ namespace roulette {
   {
   }
 
-  std::ofstream& DoseWriter::write_dose_to_file(const ThreeTensor& dose, std::ofstream& ofs) const {
-    if (m_type == WriterType::MATRIX) {
-      dose.write(ofs);
-    }
-    else if (m_type == WriterType::MAP) {
-      double max_dose = 0;
-      for (int zi = 0; zi < dose.nz(); ++zi) {
-        for (int yi = 0; yi < dose.ny(); ++yi) {
-          for (int xi = 0; xi < dose.nx(); ++xi) {
-            max_dose = std::max(max_dose, dose(xi, yi, zi));
-          }
-        }
-      }
+  std::ofstream& DoseWriter::write_dose_to_file(std::shared_ptr<ThreeTensor> dose, std::ofstream& ofs) const {
+    dose->write(ofs);
+    // TODO remove once generate ThreeTensor for dose from factory
+    /* if (m_type == WriterType::MATRIX) { */
+    /*   dose->write(ofs); */
+    /* } */
+    /* else if (m_type == WriterType::MAP) { */
+    /*   double max_dose = 0; */
+    /*   for (int zi = 0; zi < dose->nz(); ++zi) { */
+    /*     for (int yi = 0; yi < dose.ny(); ++yi) { */
+    /*       for (int xi = 0; xi < dose.nx(); ++xi) { */
+    /*         max_dose = std::max(max_dose, dose(xi, yi, zi)); */
+    /*       } */
+    /*     } */
+    /*   } */
 
-      double cutoff = max_dose * m_map_cutoff_fraction;
+    /*   double cutoff = max_dose * m_map_cutoff_fraction; */
 
-      int32_t n;
-      float d;
+    /*   int32_t n; */
+    /*   float d; */
 
-      for (int zi = 0; zi < dose.nz(); ++zi) {
-        for (int yi = 0; yi < dose.ny(); ++yi) {
-          for (int xi = 0; xi < dose.nx(); ++xi) {
-            if (dose(xi, yi, zi) > cutoff) {
-              n = xi;
-              ofs.write(reinterpret_cast<const char*>(&n), sizeof(n));
-              n = yi;
-              ofs.write(reinterpret_cast<const char*>(&n), sizeof(n));
-              n = zi;
-              ofs.write(reinterpret_cast<const char*>(&n), sizeof(n));
-              d = dose(xi, yi, zi);
-              ofs.write(reinterpret_cast<const char*>(&d), sizeof(d));
-            }
-          }
-        }
-      }
-    }
+    /*   for (int zi = 0; zi < dose.nz(); ++zi) { */
+    /*     for (int yi = 0; yi < dose.ny(); ++yi) { */
+    /*       for (int xi = 0; xi < dose.nx(); ++xi) { */
+    /*         if (dose(xi, yi, zi) > cutoff) { */
+    /*           n = xi; */
+    /*           ofs.write(reinterpret_cast<const char*>(&n), sizeof(n)); */
+    /*           n = yi; */
+    /*           ofs.write(reinterpret_cast<const char*>(&n), sizeof(n)); */
+    /*           n = zi; */
+    /*           ofs.write(reinterpret_cast<const char*>(&n), sizeof(n)); */
+    /*           d = dose(xi, yi, zi); */
+    /*           ofs.write(reinterpret_cast<const char*>(&d), sizeof(d)); */
+    /*         } */
+    /*       } */
+    /*     } */
+    /*   } */
+    /* } */
 
     return ofs;
   }

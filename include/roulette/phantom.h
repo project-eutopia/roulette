@@ -3,7 +3,7 @@
 #include <string>
 
 #include "roulette/voxel_grid.h"
-#include "roulette/three_tensor.h"
+#include "roulette/matrix_three_tensor.h"
 #include "roulette/compound.h"
 #include "roulette/density_compound_map.h"
 
@@ -18,7 +18,7 @@ namespace roulette {
   class Phantom {
     private:
       VoxelGrid m_voxel_grid;
-      ThreeTensor m_densities;
+      std::shared_ptr<ThreeTensor> m_densities;
       std::vector<std::shared_ptr<Compound>> m_compounds;
 
       double m_delta_x;
@@ -40,7 +40,7 @@ namespace roulette {
       Phantom();
       Phantom(const rapidjson::Value& data);
       Phantom(std::string filename);
-      Phantom(const VoxelGrid& voxel_grid, const ThreeTensor& densities);
+      Phantom(const VoxelGrid& voxel_grid, std::shared_ptr<ThreeTensor> densities);
 
       void set_compound_map(const DensityCompoundMap& map);
 

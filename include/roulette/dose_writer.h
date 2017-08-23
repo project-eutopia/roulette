@@ -2,6 +2,7 @@
 
 #include <string>
 #include <fstream>
+#include <memory>
 #include "roulette/three_tensor.h"
 #include "rapidjson/document.h"
 
@@ -22,6 +23,6 @@ namespace roulette {
       DoseWriter(const rapidjson::Value& data);
       DoseWriter(std::string filename_or_json_string);
 
-      std::ofstream& write_dose_to_file(const ThreeTensor& dose, std::ofstream& ofs) const;
+      std::ofstream& write_dose_to_file(std::shared_ptr<ThreeTensor> dose, std::ofstream& ofs) const;
   };
 }

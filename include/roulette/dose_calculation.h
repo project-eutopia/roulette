@@ -8,6 +8,7 @@
 #include "roulette/phantom.h"
 #include "roulette/source_dose.h"
 #include "roulette/dose_writer.h"
+#include "roulette/matrix_three_tensor.h"
 
 #include "rapidjson/document.h"
 
@@ -29,7 +30,7 @@ namespace roulette {
       DoseCalculation(const rapidjson::Value& data);
       DoseCalculation(std::string filename_or_json_string);
 
-      const std::vector<SourceDose> source_doses() const;
+      std::vector<std::shared_ptr<SourceDose>> source_doses() const;
 
       void write_doses();
   };

@@ -14,7 +14,7 @@ namespace roulette {
           double csda_range_cm = cur_phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / cur_phantom(xi, yi, zi);
 
           double energy_drop = (distance <= csda_range_cm) ? kinetic_energy*(distance / csda_range_cm) : kinetic_energy;
-          source_dose.dose()(xi, yi, zi) += this->weight() * energy_drop;
+          (*source_dose.dose())(xi, yi, zi) += this->weight() * energy_drop;
           kinetic_energy -= energy_drop;
 
           // Roulette to decide if we keep going

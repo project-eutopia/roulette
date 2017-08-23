@@ -1,9 +1,9 @@
-#include "roulette/three_tensor.h"
+#include "roulette/matrix_three_tensor.h"
 
 #include <fstream>
 
 namespace roulette {
-  ThreeTensor::ThreeTensor() :
+  MatrixThreeTensor::MatrixThreeTensor() :
     m_nx(0),
     m_ny(0),
     m_nz(0),
@@ -11,7 +11,7 @@ namespace roulette {
   {
   }
 
-  ThreeTensor::ThreeTensor(int nx, int ny, int nz, double fill_value) :
+  MatrixThreeTensor::MatrixThreeTensor(int nx, int ny, int nz, double fill_value) :
     m_nx(nx),
     m_ny(ny),
     m_nz(nz),
@@ -19,7 +19,7 @@ namespace roulette {
   {
   }
 
-  ThreeTensor::ThreeTensor(std::string filename)
+  MatrixThreeTensor::MatrixThreeTensor(std::string filename)
   {
     std::ifstream data_file;
     data_file.open(filename, std::ios::in | std::ios::binary);
@@ -27,14 +27,14 @@ namespace roulette {
     data_file.close();
   }
 
-  int ThreeTensor::nx() const { return m_nx; }
-  int ThreeTensor::ny() const { return m_ny; }
-  int ThreeTensor::nz() const { return m_nz; }
+  int MatrixThreeTensor::nx() const { return m_nx; }
+  int MatrixThreeTensor::ny() const { return m_ny; }
+  int MatrixThreeTensor::nz() const { return m_nz; }
 
-  double ThreeTensor::operator()(int xi, int yi, int zi) const { return m_data[xi + m_nx*yi + (m_nx*m_ny)*zi]; }
-  double& ThreeTensor::operator()(int xi, int yi, int zi) { return m_data[xi + m_nx*yi + (m_nx*m_ny)*zi]; }
+  double MatrixThreeTensor::operator()(int xi, int yi, int zi) const { return m_data[xi + m_nx*yi + (m_nx*m_ny)*zi]; }
+  double& MatrixThreeTensor::operator()(int xi, int yi, int zi) { return m_data[xi + m_nx*yi + (m_nx*m_ny)*zi]; }
 
-  std::ofstream& ThreeTensor::write(std::ofstream& os) const {
+  std::ofstream& MatrixThreeTensor::write(std::ofstream& os) const {
     int32_t n;
 
     n = m_nx;
@@ -52,7 +52,7 @@ namespace roulette {
     return os;
   }
 
-  std::ifstream& ThreeTensor::read(std::ifstream& is) {
+  std::ifstream& MatrixThreeTensor::read(std::ifstream& is) {
     int32_t n;
 
     is.read(reinterpret_cast<char*>(&n), sizeof(n));

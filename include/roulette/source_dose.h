@@ -17,7 +17,7 @@ namespace roulette {
       RandomGenerator m_generator;
       std::shared_ptr<const CompoundTable> m_compound_table;
       std::shared_ptr<const Phantom> m_phantom;
-      ThreeTensor m_dose;
+      std::shared_ptr<ThreeTensor> m_dose;
 
       int m_number_of_particles;
       double m_weight;
@@ -30,8 +30,7 @@ namespace roulette {
       RandomGenerator& generator();
       const CompoundTable& compound_table() const;
       const Phantom& phantom() const;
-      ThreeTensor& dose();
-      const ThreeTensor& dose() const;
+      std::shared_ptr<ThreeTensor> dose();
 
       void run();
   };

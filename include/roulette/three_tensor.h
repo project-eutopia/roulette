@@ -5,25 +5,15 @@
 
 namespace roulette {
   class ThreeTensor {
-    private:
-      int m_nx;
-      int m_ny;
-      int m_nz;
-      std::vector<double> m_data;
-
     public:
-      ThreeTensor();
-      ThreeTensor(int nx, int ny, int nz, double fill_value = 0);
-      ThreeTensor(std::string filename);
+      virtual int nx() const = 0;
+      virtual int ny() const = 0;
+      virtual int nz() const = 0;
 
-      int nx() const;
-      int ny() const;
-      int nz() const;
+      virtual double operator()(int xi, int yi, int zi) const = 0;
+      virtual double& operator()(int xi, int yi, int zi) = 0;
 
-      double operator()(int xi, int yi, int zi) const;
-      double& operator()(int xi, int yi, int zi);
-
-      std::ofstream& write(std::ofstream& os) const;
-      std::ifstream& read(std::ifstream& is);
+      virtual std::ofstream& write(std::ofstream& os) const = 0;
+      virtual std::ifstream& read(std::ifstream& is) = 0;
   };
 };

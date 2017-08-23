@@ -43,6 +43,6 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose) {
 } \
   ");
 
-  dose_calculation.run();
-  EXPECT_GT(dose_calculation.source_doses()[0].dose()(0,0,0), 0);
+  auto dose = dose_calculation.source_doses()[0]->dose();
+  EXPECT_GT((*dose)(0,0,0), 0);
 }

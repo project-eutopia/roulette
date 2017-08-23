@@ -8,6 +8,7 @@
 #include "roulette/random_generator.h"
 #include "roulette/phantom.h"
 #include "roulette/photon.h"
+#include "roulette/matrix_three_tensor.h"
 
 using namespace roulette;
 
@@ -28,7 +29,7 @@ class PhantomRayTraceTest : public ::testing::Test {
 
       phantom = std::make_shared<Phantom>(
         voxel_grid,
-        ThreeTensor(4, 4, 2, 1.0)
+        std::make_shared<MatrixThreeTensor>(4, 4, 2, 1.0)
       );
       phantom->set_compound_map(map);
     }
@@ -218,7 +219,7 @@ TEST(PhantomTest, ray_trace_voxels_going_through_random_directions) {
 
   Phantom phantom(
     voxel_grid,
-    ThreeTensor(256, 1, 1, 1.0)
+    std::make_shared<MatrixThreeTensor>(256, 1, 1, 1.0)
   );
   phantom.set_compound_map(map);
 
@@ -255,7 +256,7 @@ TEST(PhantomTest, transport_photon_unitless_depth_test) {
 
   Phantom phantom(
     grid,
-    ThreeTensor(256, 1, 1, 1.06)
+    std::make_shared<MatrixThreeTensor>(256, 1, 1, 1.06)
   );
   phantom.set_compound_map(map);
 
@@ -273,9 +274,9 @@ TEST(PhantomTest, transport_photon_unitless_depth_inhomogeneous_test) {
 
   VoxelGrid grid(ThreeVector(0, -25, -25), ThreeVector(50, 25, 25), 1, 1, 1);
 
-  ThreeTensor densities(100, 1, 1, 1.0);
+  std::shared_ptr<MatrixThreeTensor> densities = std::make_shared<MatrixThreeTensor>(100, 1, 1, 1.0);
   for (int i = 20; i < 40; ++i) {
-    densities(i, 0, 0) = 0.5;
+    (*densities)(i, 0, 0) = 0.5;
   }
 
   Phantom phantom(

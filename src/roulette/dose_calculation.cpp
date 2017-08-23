@@ -14,7 +14,7 @@ namespace roulette {
     m_compound_table = std::make_shared<const CompoundTable>(data["compound_table"].GetString());
 
     if (data.HasMember("structure_grid")) {
-      m_structure_grid = std::make_shared<ThreeTensor>(data["structure_grid"].GetString());
+      m_structure_grid = std::make_shared<MatrixThreeTensor>(data["structure_grid"].GetString());
     }
 
     if (data.HasMember("dose_writer")) {
@@ -54,6 +54,17 @@ namespace roulette {
   DoseCalculation::DoseCalculation(std::string json_filename) :
     DoseCalculation(Json::json_document_from_file_or_string(json_filename))
   {
+  }
+
+  std::vector<std::shared_ptr<SourceDose>> DoseCalculation::source_doses() const {
+    std::vector<std::shared_ptr<SourceDose>> source_doses;
+
+    for (auto& f : m_source_doses) {
+      source_doses.push_back(f());
+      source_doses.back()->run();
+    }
+
+    return source_doses;
   }
 
   void DoseCalculation::write_doses() {
