@@ -34,7 +34,7 @@ namespace roulette {
   int SparseThreeTensor::nz() const { return m_nz; }
 
   double SparseThreeTensor::operator()(int xi, int yi, int zi) const {
-    auto it = m_data.find(xi + m_nx*yi + (m_nx*m_ny)*zi);
+    auto it = m_data.find(this->internal_index(xi, yi, zi));
 
     if (it == m_data.end()) {
       return m_default;
@@ -45,7 +45,7 @@ namespace roulette {
   }
 
   double& SparseThreeTensor::operator()(int xi, int yi, int zi) {
-    int i = xi + m_nx*yi + (m_nx*m_ny)*zi;
+    int i = this->internal_index(xi, yi, zi);
     auto it = m_data.find(i);
 
     if (it == m_data.end()) {
@@ -110,5 +110,9 @@ namespace roulette {
     for (auto& entry : m_data) {
       entry.second *= weight / (*densities)(entry.first % m_nx, (entry.first/m_nx) % m_ny, (entry.first/m_nx/m_ny) % m_nz);
     }
+  }
+
+  int SparseThreeTensor::internal_index(int xi, int yi, int zi) const {
+    return xi + m_nx*yi + (m_nx*m_ny)*zi;
   }
 };

@@ -2,6 +2,7 @@
 #include "roulette/particle.h"
 #include "roulette/matrix_three_tensor.h"
 #include "roulette/sparse_three_tensor.h"
+#include "roulette/pointwise_three_tensor.h"
 
 #include "roulette/sources/source_factory.h"
 
@@ -23,8 +24,33 @@ namespace roulette {
     if (!data["weight"].IsNumber()) throw std::runtime_error("weight must be number");
     m_weight = data["weight"].GetDouble();
 
-    if (data.HasMember("dose_storage") && data["dose_storage"].IsString() && data["dose_storage"].GetString() == std::string("sparse")) {
-      m_dose = std::make_shared<SparseThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
+    if (data.HasMember("dose_storage")) {
+      std::string type;
+
+      // Get type of storage
+      if (data["dose_storage"].IsString()) {
+        type = data["dose_storage"].GetString();
+      }
+      else if (data["dose_storage"].IsObject() && data["dose_storage"].HasMember("type") && data["dose_storage"]["type"].IsString()) {
+        type = data["dose_storage"]["type"].GetString();
+      }
+      else {
+        throw std::runtime_error("Invalid \"dose_storage\" for SourceDose");
+      }
+
+      // Build dose matrix based on storage type
+      if (type == std::string("matrix")) {
+        m_dose = std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
+      }
+      else if (type == std::string("sparse")) {
+        m_dose = std::make_shared<SparseThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
+      }
+      else if (type == std::string("pointwise")) {
+        m_dose = std::make_shared<PointwiseThreeTensor>(m_phantom, data["dose_storage"], 0);
+      }
+      else {
+        throw std::runtime_error("Invalid \"dose_storage\" type " + type + " for SourceDose");
+      }
     }
     else {
       m_dose = std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
