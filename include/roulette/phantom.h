@@ -19,7 +19,7 @@ namespace roulette {
     private:
       VoxelGrid m_voxel_grid;
       std::shared_ptr<MatrixThreeTensor> m_densities;
-      std::vector<std::shared_ptr<Compound>> m_compounds;
+      std::vector<std::shared_ptr<const Compound>> m_compounds;
 
       double m_delta_x;
       double m_delta_y;
@@ -41,6 +41,9 @@ namespace roulette {
       Phantom(const rapidjson::Value& data);
       Phantom(std::string filename);
       Phantom(const VoxelGrid& voxel_grid, std::shared_ptr<MatrixThreeTensor> densities);
+      // Returns a new Phantom object that has the same data as the original, just on
+      // a coarser scale (e.g. {2,2,2} means each voxel has 2x2x2 block of voxels within)
+      Phantom(const Phantom& original_phantom, std::tuple<int,int,int> voxelation_scale);
 
       void set_compound_map(const DensityCompoundMap& map);
 
@@ -59,6 +62,7 @@ namespace roulette {
       const VoxelGrid& voxel_grid() const;
       double operator()(int xi, int yi, int zi) const;
       const Compound& compound(int xi, int yi, int zi) const;
+      std::shared_ptr<const Compound> compound_ptr(int xi, int yi, int zi) const;
 
       // Returns true if still inside, false if transported all the way out.
       bool transport_photon_unitless_depth(Photon& photon, double depth) const;

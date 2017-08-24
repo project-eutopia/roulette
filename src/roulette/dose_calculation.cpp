@@ -33,6 +33,19 @@ namespace roulette {
     }
     m_phantom->set_compound_map(*m_density_compound_map);
 
+    if (data.HasMember("phantom_voxelation")) {
+      if (!data["phantom_voxelation"].IsArray() || data["phantom_voxelation"].Size() != 3) {
+        throw std::runtime_error("DoseCalculation \"phantom_voxelation\" must be an array of 3 positive integers");
+      }
+
+      std::tuple<int,int,int> voxelation;
+      std::get<0>(voxelation) = data["phantom_voxelation"][0].GetInt();
+      std::get<1>(voxelation) = data["phantom_voxelation"][1].GetInt();
+      std::get<2>(voxelation) = data["phantom_voxelation"][2].GetInt();
+
+      m_phantom = std::make_shared<Phantom>(*m_phantom, voxelation);
+    }
+
     m_generator = data.HasMember("seed") ? RandomGenerator(data["seed"].GetInt()) : RandomGenerator();
 
     if (!data.HasMember("source_doses") || !data["source_doses"].IsArray()) {

@@ -3,6 +3,8 @@
 #include "roulette/photon.h"
 #include "roulette/compound_table.h"
 
+#include <random>
+#include <numeric>
 #include <fstream>
 
 namespace roulette {
@@ -36,6 +38,71 @@ namespace roulette {
     m_delta_y((m_voxel_grid.vn()(1) - m_voxel_grid.v0()(1)) / this->ny()),
     m_delta_z((m_voxel_grid.vn()(2) - m_voxel_grid.v0()(2)) / this->nz())
   {
+  }
+
+  Phantom::Phantom(const Phantom& original_phantom, std::tuple<int,int,int> voxelation_scale) {
+    int sx = std::get<0>(voxelation_scale);
+    int sy = std::get<1>(voxelation_scale);
+    int sz = std::get<2>(voxelation_scale);
+
+    assert(sx > 0 && sy > 0 && sz > 0);
+
+    int nx = (original_phantom.nx() + sx - 1) / sx;
+    int ny = (original_phantom.ny() + sy - 1) / sy;
+    int nz = (original_phantom.nz() + sz - 1) / sz;
+
+    m_delta_x = original_phantom.delta_x() * sx;
+    m_delta_y = original_phantom.delta_y() * sy;
+    m_delta_z = original_phantom.delta_z() * sz;
+
+    ThreeVector vn(
+      original_phantom.voxel_grid().v0()(0) + nx*m_delta_x,
+      original_phantom.voxel_grid().v0()(1) + ny*m_delta_y,
+      original_phantom.voxel_grid().v0()(2) + nz*m_delta_z
+    );
+
+    m_voxel_grid = VoxelGrid(original_phantom.voxel_grid().v0(), vn, nx, ny, nz);
+    m_densities = std::make_shared<MatrixThreeTensor>(nx, ny, nz);
+
+    m_compounds = std::vector<std::shared_ptr<const Compound>>();
+    m_compounds.reserve(nx*ny*nz);
+
+    std::random_device rd;
+    std::mt19937 gen{rd()};
+
+    // Fill in densities and compounds
+    int x, y, z, xx, yy, zz, x2, y2, z2;
+    for (z = 0; z < nz; ++z) {
+      for (y = 0; y < ny; ++y) {
+        for (x = 0; x < nx; ++x) {
+          std::vector<double> densities;
+          std::vector<std::shared_ptr<const Compound>> compounds;
+
+          for (xx = 0; xx < sx; ++xx) {
+            x2 = sx*x + xx;
+            if (x2 >= original_phantom.nx()) continue;
+
+            for (yy = 0; yy < sy; ++yy) {
+              y2 = sy*y + yy;
+              if (y2 >= original_phantom.ny()) continue;
+
+              for (zz = 0; zz < sz; ++zz) {
+                z2 = sz*z + zz;
+                if (z2 >= original_phantom.nz()) continue;
+
+                densities.push_back((*original_phantom.densities())(x2, y2, z2));
+                compounds.push_back(original_phantom.compound_ptr(x2, y2, z2));
+              }
+            }
+          }
+
+          (*m_densities)(x, y, z) = std::accumulate(densities.begin(), densities.end(), 0.0) / densities.size();
+          // Select random compound within the existing compounds
+          std::uniform_int_distribution<int> dist(0, compounds.size()-1);
+          m_compounds.push_back(compounds[dist(gen)]);
+        }
+      }
+    }
   }
 
   void Phantom::set_compound_map(const DensityCompoundMap& map) {
@@ -80,6 +147,7 @@ namespace roulette {
   const VoxelGrid& Phantom::voxel_grid() const { return m_voxel_grid; }
   double Phantom::operator()(int xi, int yi, int zi) const { return (*m_densities)(xi, yi, zi); }
   const Compound& Phantom::compound(int xi, int yi, int zi) const { return *m_compounds[xi + yi*this->nx() + zi*this->nx()*this->ny()]; }
+  std::shared_ptr<const Compound> Phantom::compound_ptr(int xi, int yi, int zi) const { return m_compounds[xi + yi*this->nx() + zi*this->nx()*this->ny()]; }
 
   bool Phantom::transport_photon_unitless_depth(Photon& photon, double depth) const {
     double current_depth = 0;
