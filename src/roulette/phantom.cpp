@@ -65,11 +65,16 @@ namespace roulette {
   }
 
   std::tuple<int,int,int> Phantom::index_at(const ThreeVector& position) const {
-    double normal_x = (position(0) - m_voxel_grid.v0()(0)) / m_delta_x;
-    double normal_y = (position(1) - m_voxel_grid.v0()(1)) / m_delta_y;
-    double normal_z = (position(2) - m_voxel_grid.v0()(2)) / m_delta_z;
+    auto normal = this->normal_coordinates(position);
+    return std::make_tuple((int)std::get<0>(normal), (int)std::get<1>(normal), (int)std::get<2>(normal));
+  }
 
-    return std::make_tuple((int)normal_x, (int)normal_y, (int)normal_z);
+  std::tuple<double,double,double> Phantom::normal_coordinates(const ThreeVector& position) const {
+    return std::make_tuple(
+      (position(0) - m_voxel_grid.v0()(0)) / m_delta_x,
+      (position(1) - m_voxel_grid.v0()(1)) / m_delta_y,
+      (position(2) - m_voxel_grid.v0()(2)) / m_delta_z
+    );
   }
 
   const VoxelGrid& Phantom::voxel_grid() const { return m_voxel_grid; }
@@ -114,9 +119,7 @@ namespace roulette {
     int xi, yi, zi;
 
     // Coordinates in units of voxel indexes
-    double normal_x = (current_position(0) - m_voxel_grid.v0()(0)) / m_delta_x;
-    double normal_y = (current_position(1) - m_voxel_grid.v0()(1)) / m_delta_y;
-    double normal_z = (current_position(2) - m_voxel_grid.v0()(2)) / m_delta_z;
+    auto normal = this->normal_coordinates(current_position);
 
     // Set increments to +1 for moving forward, -1 for backward, and 0 for stationary
     //
@@ -125,41 +128,41 @@ namespace roulette {
     // Moving backward, voxel i has normal coordinate range (i, i+1] (i.e. ceil(x-1))
     if (u(0) < 0) {
       xinc = -1;
-      xi = math::ceili(normal_x-1);
+      xi = math::ceili(std::get<0>(normal)-1);
     }
     else if (u(0) > 0) {
       xinc = 1;
-      xi = math::floori(normal_x);
+      xi = math::floori(std::get<0>(normal));
     }
     else {
       xinc = 0;
-      xi = math::floori(normal_x);
+      xi = math::floori(std::get<0>(normal));
     }
 
     if (u(1) < 0) {
       yinc = -1;
-      yi = math::ceili(normal_y-1);
+      yi = math::ceili(std::get<1>(normal)-1);
     }
     else if (u(1) > 0) {
       yinc = 1;
-      yi = math::floori(normal_y);
+      yi = math::floori(std::get<1>(normal));
     }
     else {
       yinc = 0;
-      yi = math::floori(normal_y);
+      yi = math::floori(std::get<1>(normal));
     }
 
     if (u(2) < 0) {
       zinc = -1;
-      zi = math::ceili(normal_z-1);
+      zi = math::ceili(std::get<2>(normal)-1);
     }
     else if (u(2) > 0) {
       zinc = 1;
-      zi = math::floori(normal_z);
+      zi = math::floori(std::get<2>(normal));
     }
     else {
       zinc = 0;
-      zi = math::floori(normal_z);
+      zi = math::floori(std::get<2>(normal));
     }
 
     double delta_t = 0;

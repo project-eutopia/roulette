@@ -54,6 +54,7 @@ namespace roulette {
 
       std::shared_ptr<const MatrixThreeTensor> densities() const;
       std::tuple<int,int,int> index_at(const ThreeVector& position) const;
+      std::tuple<double,double,double> normal_coordinates(const ThreeVector& position) const;
 
       const VoxelGrid& voxel_grid() const;
       double operator()(int xi, int yi, int zi) const;
