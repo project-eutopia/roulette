@@ -1,18 +1,16 @@
 #include "roulette/source_dose.h"
 #include "roulette/particle.h"
-#include "roulette/matrix_three_tensor.h"
-#include "roulette/sparse_three_tensor.h"
-#include "roulette/pointwise_three_tensor.h"
 
 #include "roulette/sources/source_factory.h"
 
 #include <stdexcept>
 
 namespace roulette {
-  SourceDose::SourceDose(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, const rapidjson::Value& data) :
+  SourceDose::SourceDose(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, std::shared_ptr<ThreeTensor> dose, const rapidjson::Value& data) :
     m_generator(seed),
     m_compound_table(compound_table),
     m_phantom(phantom),
+    m_dose(dose),
     m_number_of_particles(0),
     m_weight(0),
     m_source(sources::SourceFactory::source(data["source"])),
@@ -23,38 +21,6 @@ namespace roulette {
 
     if (!data["weight"].IsNumber()) throw std::runtime_error("weight must be number");
     m_weight = data["weight"].GetDouble();
-
-    if (data.HasMember("dose_storage")) {
-      std::string type;
-
-      // Get type of storage
-      if (data["dose_storage"].IsString()) {
-        type = data["dose_storage"].GetString();
-      }
-      else if (data["dose_storage"].IsObject() && data["dose_storage"].HasMember("type") && data["dose_storage"]["type"].IsString()) {
-        type = data["dose_storage"]["type"].GetString();
-      }
-      else {
-        throw std::runtime_error("Invalid \"dose_storage\" for SourceDose");
-      }
-
-      // Build dose matrix based on storage type
-      if (type == std::string("matrix")) {
-        m_dose = std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
-      }
-      else if (type == std::string("sparse")) {
-        m_dose = std::make_shared<SparseThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
-      }
-      else if (type == std::string("pointwise")) {
-        m_dose = std::make_shared<PointwiseThreeTensor>(m_phantom, data["dose_storage"], 0);
-      }
-      else {
-        throw std::runtime_error("Invalid \"dose_storage\" type " + type + " for SourceDose");
-      }
-    }
-    else {
-      m_dose = std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
-    }
   }
 
   RandomGenerator& SourceDose::generator() { return m_generator; }

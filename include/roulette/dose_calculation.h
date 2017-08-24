@@ -7,7 +7,7 @@
 #include "roulette/compound_table.h"
 #include "roulette/phantom.h"
 #include "roulette/source_dose.h"
-#include "roulette/matrix_three_tensor.h"
+#include "roulette/three_tensor.h"
 
 #include "rapidjson/document.h"
 
@@ -22,12 +22,15 @@ namespace roulette {
       std::shared_ptr<ThreeTensor> m_structure_grid;
       RandomGenerator m_generator;
 
+      std::function<std::shared_ptr<ThreeTensor>()> m_dose_tensor;
       std::vector<std::function<std::shared_ptr<SourceDose>()>> m_source_doses;
 
     public:
       DoseCalculation(const rapidjson::Value& data);
       DoseCalculation(std::string filename_or_json_string);
 
+      std::shared_ptr<const Phantom> phantom() const;
+      std::shared_ptr<ThreeTensor> build_dose_tensor() const;
       std::vector<std::shared_ptr<SourceDose>> source_doses() const;
 
       void write_doses();

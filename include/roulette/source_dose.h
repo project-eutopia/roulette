@@ -25,7 +25,7 @@ namespace roulette {
       bool m_finished;
 
     public:
-      SourceDose(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, const rapidjson::Value& data);
+      SourceDose(unsigned int seed, std::shared_ptr<const CompoundTable> compound_table, std::shared_ptr<const Phantom> phantom, std::shared_ptr<ThreeTensor> dose, const rapidjson::Value& data);
 
       RandomGenerator& generator();
       const CompoundTable& compound_table() const;
