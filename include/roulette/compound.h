@@ -28,6 +28,7 @@ namespace roulette {
       Compound();
       Compound(const rapidjson::Value& data, const PeriodicTable& periodic_table);
       Compound(const Element& element);
+      Compound(const std::vector<const Compound*>& compounds);
 
       const std::string& name() const;
       double z_over_a_ratio() const;
@@ -45,5 +46,11 @@ namespace roulette {
       double electron_stopping_power(double energy) const;
       // g / cm^2
       double electron_csda_range(double energy) const;
+
+      const NonUniformLinearInterpolation& photon_scattering_cross_sections() const;
+      const NonUniformLinearInterpolation& photon_absorption_cross_sections() const;
+      const NonUniformLinearInterpolation& photon_pair_production_cross_sections() const;
+      const NonUniformLinearInterpolation& electron_stopping_powers() const;
+      const NonUniformLinearInterpolation& electron_csda_ranges() const;
   };
 };

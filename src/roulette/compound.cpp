@@ -1,5 +1,9 @@
 #include "roulette/compound.h"
 
+#include <numeric>
+#include <algorithm>
+#include <vector>
+
 namespace roulette {
   Compound::Compound() {}
 
@@ -51,6 +55,75 @@ namespace roulette {
     m_electron_csda_ranges = NonUniformLinearInterpolation::linear_combination(
       electron_csda_ranges, weights
     );
+  }
+
+  Compound::Compound(const std::vector<const Compound*>& compounds) {
+    m_z_over_a_ratio = std::accumulate(compounds.begin(), compounds.end(), 0.0, [](double total, const Compound* next_compound) {
+      return total + next_compound->z_over_a_ratio();
+    }) / compounds.size();
+
+    m_excitation_energy = std::accumulate(compounds.begin(), compounds.end(), 0.0, [](double total, const Compound* next_compound) {
+      return total + next_compound->excitation_energy();
+    }) / compounds.size();
+
+    m_density = std::accumulate(compounds.begin(), compounds.end(), 0.0, [](double total, const Compound* next_compound) {
+      return total + next_compound->density();
+    }) / compounds.size();
+
+    std::vector<double> weights;
+    for (int i = 0; i < compounds.size(); ++i) {
+      weights.push_back(1.0 / compounds.size());
+    }
+
+    {
+      std::vector<const NonUniformLinearInterpolation*> fns;
+      std::transform(compounds.begin(), compounds.end(), std::back_inserter(fns), [](const Compound* compound) {
+        return &compound->photon_scattering_cross_sections();
+      });
+      m_photon_scattering_cross_sections = NonUniformLinearInterpolation::linear_combination(
+        fns, weights
+      );
+    }
+
+    {
+      std::vector<const NonUniformLinearInterpolation*> fns;
+      std::transform(compounds.begin(), compounds.end(), std::back_inserter(fns), [](const Compound* compound) {
+        return &compound->photon_absorption_cross_sections();
+      });
+      m_photon_absorption_cross_sections = NonUniformLinearInterpolation::linear_combination(
+        fns, weights
+      );
+    }
+
+    {
+      std::vector<const NonUniformLinearInterpolation*> fns;
+      std::transform(compounds.begin(), compounds.end(), std::back_inserter(fns), [](const Compound* compound) {
+        return &compound->photon_pair_production_cross_sections();
+      });
+      m_photon_pair_production_cross_sections = NonUniformLinearInterpolation::linear_combination(
+        fns, weights
+      );
+    }
+
+    {
+      std::vector<const NonUniformLinearInterpolation*> fns;
+      std::transform(compounds.begin(), compounds.end(), std::back_inserter(fns), [](const Compound* compound) {
+        return &compound->electron_stopping_powers();
+      });
+      m_electron_stopping_powers = NonUniformLinearInterpolation::linear_combination(
+        fns, weights
+      );
+    }
+
+    {
+      std::vector<const NonUniformLinearInterpolation*> fns;
+      std::transform(compounds.begin(), compounds.end(), std::back_inserter(fns), [](const Compound* compound) {
+        return &compound->electron_csda_ranges();
+      });
+      m_electron_csda_ranges = NonUniformLinearInterpolation::linear_combination(
+        fns, weights
+      );
+    }
   }
 
   Compound::Compound(const Element& element) :
@@ -111,4 +184,10 @@ namespace roulette {
   double Compound::electron_csda_range(double energy) const {
     return m_electron_csda_ranges(energy);
   }
+
+  const NonUniformLinearInterpolation& Compound::photon_scattering_cross_sections() const { return m_photon_scattering_cross_sections; }
+  const NonUniformLinearInterpolation& Compound::photon_absorption_cross_sections() const { return m_photon_absorption_cross_sections; }
+  const NonUniformLinearInterpolation& Compound::photon_pair_production_cross_sections() const { return m_photon_pair_production_cross_sections; }
+  const NonUniformLinearInterpolation& Compound::electron_stopping_powers() const { return m_electron_stopping_powers; }
+  const NonUniformLinearInterpolation& Compound::electron_csda_ranges() const { return m_electron_csda_ranges; }
 };
