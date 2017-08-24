@@ -96,26 +96,7 @@ namespace roulette {
 
   double PointwiseThreeTensor::value_at(const ThreeVector& position) const {
     auto normal_coordinates = m_phantom->normal_coordinates(position);
-    int xi = math::floori(std::get<0>(normal_coordinates) - 0.5);
-    int yi = math::floori(std::get<1>(normal_coordinates) - 0.5);
-    int zi = math::floori(std::get<2>(normal_coordinates) - 0.5);
-
-    int cur_index;
-    double value = 0;
-
-    // Check neighbor coordinates
-    for (int a = 0; a < 2; ++a) {
-      for (int b = 0; b < 2; ++b) {
-        for (int c = 0; c < 2; ++c) {
-          cur_index = this->internal_index(xi+a, yi+b, zi+c);
-          if (cur_index >= 0 && cur_index < this->size()) {
-            value += 0.125*m_data.at(cur_index);
-          }
-        }
-      }
-    }
-
-    return value;
+    return this->trilinearly_interpolated_value(std::get<0>(normal_coordinates), std::get<1>(normal_coordinates), std::get<2>(normal_coordinates));
   }
 
   std::ofstream& PointwiseThreeTensor::write(std::ofstream& os) const {
