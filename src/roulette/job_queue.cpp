@@ -18,13 +18,15 @@ namespace roulette {
     std::function<void()> job;
 
     m_mutex.lock();
+
     if (m_jobs.empty()) {
+      m_mutex.unlock();
       throw NoJobsLeftException();
     }
     job = m_jobs.front();
     m_jobs.pop_front();
-    m_mutex.unlock();
 
+    m_mutex.unlock();
     return job;
   }
 
