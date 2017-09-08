@@ -2,9 +2,9 @@
 #include "roulette/matrix_three_tensor.h"
 #include "roulette/sparse_three_tensor.h"
 #include "roulette/pointwise_three_tensor.h"
+#include "roulette/job_queue.h"
 
 #include <fstream>
-#include <thread>
 
 #include "roulette/json.h"
 
@@ -121,29 +121,20 @@ namespace roulette {
   }
 
   void DoseCalculation::write_doses() {
-    // Run in batches of 4
-    int N = 4;
-    for (int i = 0; i < m_source_doses.size(); i += N) {
-      std::vector<std::thread> threads;
+    JobQueue queue;
+    for (int i = 0; i < m_source_doses.size(); ++i) {
+      int index = i;
+      queue.add_job([this, index]() {
+        std::shared_ptr<SourceDose> source_dose = this->m_source_doses[index]();
+        source_dose->run();
 
-      for (int j = i; j < m_source_doses.size() && j < i+4; ++j) {
-        int index = j;
-        threads.emplace_back([this, index]() {
-          std::shared_ptr<SourceDose> source_dose = this->m_source_doses[index]();
-          source_dose->run();
-
-          std::string filename = m_output_folder + "/" + std::string("dose_") + std::to_string(index) + std::string(".dose");
-          std::cout << "Writing to file " << filename << std::endl;
-          std::ofstream ofs;
-          ofs.open(filename, std::ofstream::out);
-          source_dose->dose()->write(ofs);
-          ofs.close();
-        });
-      }
-
-      for (auto& t : threads) {
-        t.join();
-      }
+        std::string filename = m_output_folder + "/" + std::string("dose_") + std::to_string(index) + std::string(".dose");
+        std::ofstream ofs;
+        ofs.open(filename, std::ofstream::out);
+        source_dose->dose()->write(ofs);
+        ofs.close();
+      });
     }
+    queue.run();
   }
 };
