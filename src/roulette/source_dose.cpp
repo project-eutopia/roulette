@@ -27,6 +27,12 @@ namespace roulette {
   const CompoundTable& SourceDose::compound_table() const { return *m_compound_table; }
   const Phantom& SourceDose::phantom() const { return *m_phantom; }
   std::shared_ptr<ThreeTensor> SourceDose::dose() { return m_dose; }
+  std::shared_ptr<const ThreeTensor> SourceDose::dose() const { return std::const_pointer_cast<const ThreeTensor>(m_dose); }
+
+  std::ofstream& SourceDose::write_dose(std::ofstream& os) const {
+    this->dose()->write(os);
+    return os;
+  }
 
   void SourceDose::run() {
     if (m_finished) {

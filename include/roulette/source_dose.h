@@ -31,6 +31,7 @@ namespace roulette {
       const CompoundTable& compound_table() const;
       const Phantom& phantom() const;
       std::shared_ptr<ThreeTensor> dose();
+      std::ofstream& write_dose(std::ofstream& os) const;
 
       void run();
   };

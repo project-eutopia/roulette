@@ -131,7 +131,7 @@ namespace roulette {
         std::string filename = m_output_folder + "/" + std::string("dose_") + std::to_string(index) + std::string(".dose");
         std::ofstream ofs;
         ofs.open(filename, std::ofstream::out);
-        source_dose->dose()->write(ofs);
+        source_dose->write_dose(ofs);
         ofs.close();
       });
     }
