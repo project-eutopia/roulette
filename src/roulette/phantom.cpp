@@ -80,15 +80,24 @@ namespace roulette {
 
           for (xx = 0; xx < sx; ++xx) {
             x2 = sx*x + xx;
-            if (x2 >= original_phantom.nx()) continue;
+            if (x2 >= original_phantom.nx()) {
+              densities.push_back(0);
+              continue;
+            }
 
             for (yy = 0; yy < sy; ++yy) {
               y2 = sy*y + yy;
-              if (y2 >= original_phantom.ny()) continue;
+              if (y2 >= original_phantom.ny()) {
+                densities.push_back(0);
+                continue;
+              }
 
               for (zz = 0; zz < sz; ++zz) {
                 z2 = sz*z + zz;
-                if (z2 >= original_phantom.nz()) continue;
+                if (z2 >= original_phantom.nz()) {
+                  densities.push_back(0);
+                  continue;
+                }
 
                 densities.push_back((*original_phantom.densities())(x2, y2, z2));
                 compounds.push_back(original_phantom.compound_ptr(x2, y2, z2));
