@@ -1,0 +1,52 @@
+{
+  "type": "DoseCalculation",
+  "dose_calculation": {
+    "seed": 631970290,
+    "compound_table": "/opt/roulette/data/compounds.json",
+    "dose_storage": "matrix",
+    "source_doses": [
+      {
+        "number_of_particles": 1000000,
+        "source": {
+          "fluence": [
+            [ 0, 1, 0 ],
+            [ 1, 2, 1 ],
+            [ 0, 1, 0 ]
+          ],
+          "bottom_left": [ -50, -5, -5 ],
+          "source": [ -100, 0, 0 ],
+          "ny": 3,
+          "top_right": [ -50, 5, 5 ],
+          "type": "BeamSource",
+          "nx": 3,
+          "bottom_right": [ -50, 5, -5 ],
+          "spectrum": "/opt/roulette/data/6_mev_spectrum.json"
+        },
+        "weight": 1
+      }
+    ],
+    "phantom": "/opt/roulette/examples/water_tank.phantom",
+    "density_compound_map": [
+      {
+        "low": 0,
+        "high": 0.005,
+        "compound": "Air, Dry (near sea level)"
+      },
+      {
+        "low": 0.005,
+        "high": 0.350,
+        "compound": "Lung Tissue (ICRU-44)"
+      },
+      {
+        "low": 0.350,
+        "high": 1.250,
+        "compound": "Tissue, Soft (ICRU-44)"
+      },
+      {
+        "low": 1.250,
+        "compound": "Water, Liquid"
+      }
+    ],
+    "output_folder": "."
+  }
+}

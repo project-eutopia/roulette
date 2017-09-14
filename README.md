@@ -2,6 +2,7 @@
 
 Roulette is a C++ based Monte Carlo dose calculation engine.
 
+
 ## Building source
 
 First you clone the repository and build the `main` executable.
@@ -29,9 +30,11 @@ The program is then run by passing in the settings as either a string or a JSON 
 ${ROULETTE_BUILD_DIR}/main ${SETTINGS}
 ```
 
+
 ## Executable settings
 
 There are two modes to run the program in:  `DoseCalculation` mode and `ParticleSimulation` mode.  The first being used for storing dose deposited by particles, and the second for storing histories of particles.  The settings are stored in JSON format.
+
 
 ### `DoseCalculation` mode
 
@@ -76,7 +79,7 @@ where `DOSE_CALCULATION_SETTINGS` stores the settings specific to `DoseCalculati
     - When `matrix`:  dose is stored as 3D grid:
         - Three 32 bit integers: `nx`, `ny`, `nz`
         - `nx*ny*nz` 32 bit floating point numbers for each dose value (same storage ordering as `phantom`).
-    - When `sparse`:  
+    - When `sparse`:
         - Three 32 bit integers: `nx`, `ny`, `nz`
         - Pairs of (`int32_t`, `float`) where the 32 bit integer is the voxel offset index, and the 32 bit floating point number is the dose value.
     - When storing pointwise, of form
@@ -118,6 +121,7 @@ where `DOSE_CALCULATION_SETTINGS` stores the settings specific to `DoseCalculati
             - `fraction`: The probability of generating a particle from this source (internally normalized so total fraction is 1.0)
             - `source`: Defines a `SOURCE_OBJECT`
 
+
 ### Spectrum object
 
 A typical 6 MeV photon spectrum file is provided at `data/6_mev_spectrum.json`.  There are two formats:
@@ -127,7 +131,29 @@ A typical 6 MeV photon spectrum file is provided at `data/6_mev_spectrum.json`. 
 - When delta function the object has properties:
     - `type` is `"delta"`
     - `value` is the energy in MeV
-   
+
+
+## Example files
+
+The source code provides some example phantoms and input files.  See the `examples/` directory.  For example, to run a cross-shaped fluence on a water tank phantom, run the following command (assuming `roulette` has been installed at `/opt/roulette`):
+
+```sh
+cd /opt/roulette/examples
+/opt/roulette/build/main run.json
+```
+
+To read the dose matrix in and display it, a simple Python code is:
+
+```python
+import numpy
+shape = numpy.fromfile("dose_0.dose", dtype=numpy.int32, count=3)
+dose = numpy.fromfile("dose_0.dose", dtype=numpy.float32)[3:].reshape(shape)
+
+import matplotlib.pyplot as plt
+plt.contourf(dose[:,:,0]); plt.show()
+```
+
+
 ## Compounds
 
 Here is a list of available compounds.
