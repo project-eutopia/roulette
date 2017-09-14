@@ -6,21 +6,21 @@ namespace roulette {
     BeamletSource::BeamletSource(const rapidjson::Value& data) {
       assert(data["type"].GetString() == std::string("BeamletSource"));
 
-      if (!data.HasMember("source")) throw std::runtime_error("BeamSource requires \"source\"");
+      if (!data.HasMember("source")) throw std::runtime_error("BeamletSource requires \"source\"");
       ThreeVector source(data["source"]);
 
-      if (!data.HasMember("bottom_left")) throw std::runtime_error("BeamSource requires \"bottom_left\"");
+      if (!data.HasMember("bottom_left")) throw std::runtime_error("BeamletSource requires \"bottom_left\"");
       ThreeVector bottom_left(data["bottom_left"]);
 
-      if (!data.HasMember("bottom_right")) throw std::runtime_error("BeamSource requires \"bottom_right\"");
+      if (!data.HasMember("bottom_right")) throw std::runtime_error("BeamletSource requires \"bottom_right\"");
       ThreeVector bottom_right(data["bottom_right"]);
 
-      if (!data.HasMember("top_right")) throw std::runtime_error("BeamSource requires \"top_right\"");
+      if (!data.HasMember("top_right")) throw std::runtime_error("BeamletSource requires \"top_right\"");
       ThreeVector top_right(data["top_right"]);
 
       m_beamlet = Beamlet(source, bottom_left, bottom_right, top_right);
 
-      if (!data.HasMember("spectrum")) throw std::runtime_error("BeamSource requires \"spectrum\"");
+      if (!data.HasMember("spectrum")) throw std::runtime_error("BeamletSource requires \"spectrum\"");
       m_energy_spectrum = distributions::Spectrum(data["spectrum"]);
       if (data["spectrum"].IsString()) {
         m_energy_spectrum = distributions::Spectrum(data["spectrum"].GetString());

@@ -6,13 +6,13 @@ namespace roulette {
     DiracDeltaSource::DiracDeltaSource(const rapidjson::Value& data) {
       assert(data["type"].GetString() == std::string("DiracDeltaSource"));
 
-      if (!data.HasMember("source")) throw std::runtime_error("BeamSource requires \"source\"");
+      if (!data.HasMember("source")) throw std::runtime_error("DiracDeltaSource requires \"source\"");
       m_source = ThreeVector(data["source"]);
 
-      if (!data.HasMember("direction")) throw std::runtime_error("BeamSource requires \"direction\"");
+      if (!data.HasMember("direction")) throw std::runtime_error("DiracDeltaSource requires \"direction\"");
       m_direction = ThreeVector(data["direction"]);
 
-      if (!data.HasMember("spectrum")) throw std::runtime_error("BeamSource requires \"spectrum\"");
+      if (!data.HasMember("spectrum")) throw std::runtime_error("DiracDeltaSource requires \"spectrum\"");
       m_energy_spectrum = distributions::Spectrum(data["spectrum"]);
       if (data["spectrum"].IsString()) {
         m_energy_spectrum = distributions::Spectrum(data["spectrum"].GetString());
