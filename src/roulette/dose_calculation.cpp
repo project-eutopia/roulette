@@ -52,39 +52,44 @@ namespace roulette {
       throw std::runtime_error("DoseCalculation needs \"source_doses\"");
     }
 
-    m_dose_tensor = [&]() -> std::shared_ptr<ThreeTensor> {
-      if (data.HasMember("dose_storage")) {
-        std::string type;
+    std::string type;
 
-        // Get type of storage
-        if (data["dose_storage"].IsString()) {
-          type = data["dose_storage"].GetString();
-        }
-        else if (data["dose_storage"].IsObject() && data["dose_storage"].HasMember("type") && data["dose_storage"]["type"].IsString()) {
-          type = data["dose_storage"]["type"].GetString();
-        }
-        else {
-          throw std::runtime_error("Invalid \"dose_storage\" for SourceDose");
-        }
-
-        // Build dose matrix based on storage type
-        if (type == std::string("matrix")) {
-          return std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
-        }
-        else if (type == std::string("sparse")) {
-          return std::make_shared<SparseThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
-        }
-        else if (type == std::string("pointwise")) {
-          return std::make_shared<PointwiseThreeTensor>(m_phantom, data["dose_storage"], 0);
-        }
-        else {
-          throw std::runtime_error("Invalid \"dose_storage\" type " + type + " for SourceDose");
-        }
+    if (data.HasMember("dose_storage")) {
+      // Get type of storage
+      if (data["dose_storage"].IsString()) {
+        type = data["dose_storage"].GetString();
+      }
+      else if (data["dose_storage"].IsObject() && data["dose_storage"].HasMember("type") && data["dose_storage"]["type"].IsString()) {
+        type = data["dose_storage"]["type"].GetString();
       }
       else {
-        return std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
+        throw std::runtime_error("Invalid \"dose_storage\" for SourceDose");
       }
-    };
+    }
+    else {
+      type = std::string("matrix");
+    }
+
+    // Build dose matrix based on storage type
+    if (type == std::string("matrix")) {
+      m_dose_tensor = [this]() -> std::shared_ptr<ThreeTensor> {
+        return std::make_shared<MatrixThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
+      };
+    }
+    else if (type == std::string("sparse")) {
+      m_dose_tensor = [this]() -> std::shared_ptr<ThreeTensor> {
+        return std::make_shared<SparseThreeTensor>(m_phantom->nx(), m_phantom->ny(), m_phantom->nz(), 0);
+      };
+    }
+    else if (type == std::string("pointwise")) {
+      const rapidjson::Value& dose_storage = data["dose_storage"];
+      m_dose_tensor = [this, &dose_storage]() -> std::shared_ptr<ThreeTensor> {
+        return std::make_shared<PointwiseThreeTensor>(m_phantom, dose_storage, 0);
+      };
+    }
+    else {
+      throw std::runtime_error("Invalid \"dose_storage\" type " + type + " for SourceDose");
+    }
 
     const rapidjson::Value& sources = data["source_doses"];
     for (int i = 0; i < sources.Size(); ++i) {
