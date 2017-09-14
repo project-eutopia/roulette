@@ -1,11 +1,14 @@
 language: cpp
+
 dist: trusty
 sudo: require
 compiler: clang
+
 addons:
   apt:
     sources:
-      - llvm-toolchain-precise
+      - boost-latest
+      - llvm-toolchain-trusty
       - ubuntu-toolchain-r-test
     packages:
       - clang-3.8
@@ -13,6 +16,7 @@ addons:
       - gcc-6
       - cmake
       - libgtest-dev
+      - libboost-all-dev
 
 before_script:
   - install -d gtest_build
@@ -23,7 +27,9 @@ before_script:
   - popd
 
 script:
-  - mkdir build && cd build
+  - mkdir build
+  - pushd build
   - cmake ..
   - make -j8 tests
   - ./tests
+  - popd

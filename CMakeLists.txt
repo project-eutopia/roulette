@@ -14,7 +14,7 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast -pthread" )
 
-find_package(Boost 1.61 REQUIRED)
+find_package(Boost REQUIRED)
 
 # Include headers
 include_directories (include)
