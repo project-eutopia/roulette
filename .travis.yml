@@ -1,0 +1,21 @@
+language: cpp
+dist: trusty
+sudo: require
+compiler: clang
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-precise
+      - ubuntu-toolchain-r-test
+    packages:
+      - clang-3.8
+      - g++-6
+      - gcc-6
+      - cmake
+script:
+  - clang -v
+  - clang++ -v
+  - mkdir build && cd build
+  - cmake ..
+  - make -j8 tests
+  - ./tests
