@@ -7,7 +7,7 @@ namespace roulette {
   void Electron::deposit_energy(SourceDose& source_dose) {
     double kinetic_energy = this->kinetic_energy();
 
-    ThreeVector final_position = source_dose.phantom().ray_trace_voxels(
+    source_dose.phantom().ray_trace_voxels(
       this->position(), this->momentum().three_momentum(),
       Phantom::voxel_iterator(
         [&,this](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
