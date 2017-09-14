@@ -79,7 +79,7 @@ namespace roulette {
 
     void Spectrum::load_delta(const rapidjson::Value& spectrum) {
       if (!spectrum.HasMember("value") || !spectrum["value"].IsNumber()) throw std::runtime_error("Delta Spectrum must have \"value\" number");
-      m_value = spectrum["value"].GetDouble();
+      m_value = spectrum["value"].GetDouble() * 1000000;
     }
   };
 };
