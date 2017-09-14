@@ -12,9 +12,17 @@ addons:
       - g++-6
       - gcc-6
       - cmake
+      - libgtest-dev
+
+before_script:
+  - install -d gtest_build
+  - pushd gtest_build
+  - cmake -DCMAKE_CXX_COMPILER=$COMPILER /usr/src/gtest/
+  - make
+  - sudo cp *.a /usr/lib
+  - popd
+
 script:
-  - clang -v
-  - clang++ -v
   - mkdir build && cd build
   - cmake ..
   - make -j8 tests
