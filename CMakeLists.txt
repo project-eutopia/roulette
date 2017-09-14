@@ -1,7 +1,7 @@
 # make      #=> build library
 # make test #=> build tests executable
 # make main #=> build main executable
-cmake_minimum_required (VERSION 3.5.2)
+cmake_minimum_required (VERSION 3.2.2)
 project (roulette CXX)
 
 set (CMAKE_C_COMPILER "/usr/bin/clang")
