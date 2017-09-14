@@ -17,10 +17,6 @@ namespace roulette {
     if (!data.HasMember("compound_table")) throw std::runtime_error("DoseCalculation needs \"compound_table\"");
     m_compound_table = std::make_shared<const CompoundTable>(data["compound_table"].GetString());
 
-    if (data.HasMember("structure_grid")) {
-      m_structure_grid = std::make_shared<MatrixThreeTensor>(data["structure_grid"].GetString());
-    }
-
     if (!data.HasMember("density_compound_map")) throw std::runtime_error("DoseCalculation needs \"density_compound_map\"");
     m_density_compound_map = std::make_shared<const DensityCompoundMap>(data["density_compound_map"], *m_compound_table);
 
