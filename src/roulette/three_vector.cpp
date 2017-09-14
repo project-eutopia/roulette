@@ -4,43 +4,41 @@
 #include <cmath>
 
 namespace roulette {
-  ThreeVector::ThreeVector(const rapidjson::Value& data) :
-    m_v(3)
+  ThreeVector::ThreeVector(const rapidjson::Value& data)
   {
     if (!data.IsArray() || data.Size() != 3) throw std::runtime_error("ThreeVector must be length 3 array");
     for (int i = 0; i < 3; ++i) {
       if (!data[i].IsNumber()) throw std::runtime_error("ThreeVector must be array of numbers");
-      m_v[i] = data[i].GetDouble();
+      m_a[i] = data[i].GetDouble();
     }
   }
 
-  ThreeVector::ThreeVector(double x, double y, double z) :
-    m_v(3)
+  ThreeVector::ThreeVector(double x, double y, double z)
   {
-    m_v[0] = x;
-    m_v[1] = y;
-    m_v[2] = z;
+    m_a[0] = x;
+    m_a[1] = y;
+    m_a[2] = z;
   }
 
   double ThreeVector::operator()(int i) const {
     assert(i >= 0 && i < 3);
-    return m_v[i];
+    return m_a[i];
   }
 
   double& ThreeVector::operator()(int i) {
     assert(i >= 0 && i < 3);
-    return m_v[i];
+    return m_a[i];
   }
 
-  double ThreeVector::x() const { return m_v[0]; }
-  double ThreeVector::y() const { return m_v[1]; }
-  double ThreeVector::z() const { return m_v[2]; }
+  double ThreeVector::x() const { return m_a[0]; }
+  double ThreeVector::y() const { return m_a[1]; }
+  double ThreeVector::z() const { return m_a[2]; }
 
   double ThreeVector::magnitude() const {
     return std::sqrt(this->magnitude2());
   }
   double ThreeVector::magnitude2() const {
-    return m_v[0]*m_v[0] + m_v[1]*m_v[1] + m_v[2]*m_v[2];
+    return m_a[0]*m_a[0] + m_a[1]*m_a[1] + m_a[2]*m_a[2];
   }
 
   ThreeVector ThreeVector::direction_unit_vector() const {
@@ -49,26 +47,26 @@ namespace roulette {
 
   double ThreeVector::dot(const ThreeVector& other) const {
     return (
-      m_v[0]*other(0) +
-      m_v[1]*other(1) +
-      m_v[2]*other(2)
+      m_a[0]*other(0) +
+      m_a[1]*other(1) +
+      m_a[2]*other(2)
     );
   }
 
   ThreeVector ThreeVector::cross(const ThreeVector& other) const {
     return {
-      m_v[1]*other(2) - m_v[2]*other(1),
-      m_v[2]*other(0) - m_v[0]*other(2),
-      m_v[0]*other(1) - m_v[1]*other(0)
+      m_a[1]*other(2) - m_a[2]*other(1),
+      m_a[2]*other(0) - m_a[0]*other(2),
+      m_a[0]*other(1) - m_a[1]*other(0)
     };
   }
 
   bool ThreeVector::operator==(const ThreeVector& other) const {
-    return (m_v[0] == other(0)) && (m_v[1] == other(1)) && (m_v[2] == other(2));
+    return (m_a[0] == other(0)) && (m_a[1] == other(1)) && (m_a[2] == other(2));
   }
 
   ThreeVector& ThreeVector::operator+=(const ThreeVector& rhs) {
-    for (int i = 0; i < 3; ++i) m_v[i] += rhs(i);
+    for (int i = 0; i < 3; ++i) m_a[i] += rhs(i);
     return (*this);
   }
 
@@ -95,7 +93,7 @@ namespace roulette {
   std::ofstream& ThreeVector::write(std::ofstream& os) const {
     float val;
     for (int i = 0; i < 3; ++i) {
-      val = m_v[i];
+      val = m_a[i];
       os.write(reinterpret_cast<const char*>(&val), sizeof(val));
     }
     return os;
@@ -105,7 +103,7 @@ namespace roulette {
     float val;
     for (int i = 0; i < 3; ++i) {
       is.read(reinterpret_cast<char*>(&val), sizeof(val));
-      m_v[i] = val;
+      m_a[i] = val;
     }
     return is;
   }
@@ -113,9 +111,9 @@ namespace roulette {
   rapidjson::Value ThreeVector::to_json(rapidjson::Document::AllocatorType& allocator) const {
     rapidjson::Value v;
     v.SetArray();
-    v.PushBack(rapidjson::Value().SetDouble(m_v[0]), allocator);
-    v.PushBack(rapidjson::Value().SetDouble(m_v[1]), allocator);
-    v.PushBack(rapidjson::Value().SetDouble(m_v[2]), allocator);
+    v.PushBack(rapidjson::Value().SetDouble(m_a[0]), allocator);
+    v.PushBack(rapidjson::Value().SetDouble(m_a[1]), allocator);
+    v.PushBack(rapidjson::Value().SetDouble(m_a[2]), allocator);
     return v;
   }
 };

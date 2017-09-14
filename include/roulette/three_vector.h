@@ -8,7 +8,7 @@
 namespace roulette {
   class ThreeVector {
     private:
-      std::vector<double> m_v;
+      std::array<double,3> m_a;
 
     public:
       ThreeVector(const rapidjson::Value& data);
