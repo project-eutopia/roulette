@@ -44,10 +44,6 @@ namespace roulette {
 
     m_generator = data.HasMember("seed") ? RandomGenerator(data["seed"].GetInt()) : RandomGenerator();
 
-    if (!data.HasMember("source_doses") || !data["source_doses"].IsArray()) {
-      throw std::runtime_error("DoseCalculation needs \"source_doses\"");
-    }
-
     std::string type;
 
     if (data.HasMember("dose_storage")) {
@@ -85,6 +81,10 @@ namespace roulette {
     }
     else {
       throw std::runtime_error("Invalid \"dose_storage\" type " + type + " for SourceDose");
+    }
+
+    if (!data.HasMember("source_doses") || !data["source_doses"].IsArray()) {
+      throw std::runtime_error("DoseCalculation needs \"source_doses\"");
     }
 
     const rapidjson::Value& sources = data["source_doses"];
