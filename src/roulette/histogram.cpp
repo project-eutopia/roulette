@@ -4,9 +4,6 @@
 #include <string>
 #include <limits>
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
-
 namespace roulette {
   Histogram::Histogram(double low, double high, int nbins) :
     m_low(low),
@@ -101,30 +98,5 @@ namespace roulette {
     }
 
     this->set_total(num_samples);
-  }
-
-  void Histogram::write_json(std::ostream& stream) const {
-    boost::property_tree::ptree root;
-
-    boost::property_tree::ptree bins;
-
-    for (int i = -1; i <= m_nbins; ++i) {
-      boost::property_tree::ptree bin;
-      bin.put("i", i);
-      bin.put("low", this->bin_low_x(i));
-      bin.put("high", this->bin_high_x(i));
-      bin.put("bin", this->bin_at(i));
-      bin.put("count", this->count_at(i));
-
-      bins.push_back(std::make_pair(std::to_string(i), bin));
-    }
-
-    root.put("nbins", this->nbins());
-    root.put("total", this->total());
-    root.put("low", this->low());
-    root.put("high", this->high());
-    root.push_back(std::make_pair("bins", bins));
-
-    boost::property_tree::write_json(stream, root);
   }
 };

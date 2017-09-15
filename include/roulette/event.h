@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+#include <memory>
 #include <fstream>
 
 #include "rapidjson/document.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <boost/numeric/ublas/vector.hpp>
+#include <array>
 #include "rapidjson/document.h"
 #include "roulette/three_vector.h"
 
@@ -8,16 +8,11 @@ namespace roulette {
   // Uses Minkowski space-time metric diag(1,-1,-1,-1)
   class FourMomentum {
     private:
-      boost::numeric::ublas::vector<double> m_p;
+      std::array<double,4> m_p;
 
     public:
       FourMomentum(double e = 0, double px = 0, double py = 0, double pz = 0);
-      FourMomentum(const boost::numeric::ublas::vector<double>& p);
-      FourMomentum(boost::numeric::ublas::vector<double>&& p);
       FourMomentum(double energy, double mass, const ThreeVector& direction);
-
-      const boost::numeric::ublas::vector<double>& vector() const;
-      boost::numeric::ublas::vector<double>& vector();
 
       double operator()(int i) const;
       double& operator()(int i);
