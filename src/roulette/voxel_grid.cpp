@@ -2,6 +2,7 @@
 
 #include "roulette/particle.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 
