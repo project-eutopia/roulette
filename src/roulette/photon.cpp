@@ -1,5 +1,5 @@
 #include "roulette/photon.h"
-#include "roulette/lorentz_transform.h"
+#include "roulette/rotation_matrix.h"
 #include "roulette/distributions/compton_scattering.h"
 
 namespace roulette {
@@ -10,18 +10,18 @@ namespace roulette {
   int Photon::charge() const { return Photon::CHARGE; }
 
   Electron Photon::compton_scatter(double photon_energy, double electron_energy, double photon_theta, double electron_theta, double phi) {
-    LorentzTransform rotate_to_initial;
+    RotationMatrix rotate_to_initial;
     int xsign;
 
     // To avoid degenerate rotations, consider rotation matrix from (1,0,0) to photon direction,
     // or (-1,0,0) to photon direction
     if (m_momentum.px() >= 0) {
       xsign = 1;
-      rotate_to_initial = LorentzTransform::rotationUtoV(ThreeVector(1,0,0), this->momentum().direction_unit_vector());
+      rotate_to_initial = RotationMatrix::rotationUtoV(ThreeVector(1,0,0), this->momentum().direction_unit_vector());
     }
     else {
       xsign = -1;
-      rotate_to_initial = LorentzTransform::rotationUtoV(ThreeVector(-1,0,0), this->momentum().direction_unit_vector());
+      rotate_to_initial = RotationMatrix::rotationUtoV(ThreeVector(-1,0,0), this->momentum().direction_unit_vector());
     }
 
     double sin_p = std::sin(photon_theta);

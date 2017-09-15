@@ -3,13 +3,13 @@
 #include "test_helper.h"
 
 #include "roulette/four_momentum.h"
-#include "roulette/lorentz_transform.h"
+#include "roulette/rotation_matrix.h"
 
 using namespace roulette;
 
 TEST(FourMomentum, can_be_rotated) {
   FourMomentum m(1, 1, 0, 0);
-  LorentzTransform rot = LorentzTransform::rotationZ(M_PI/4);
+  RotationMatrix rot = RotationMatrix::rotationZ(M_PI/4);
 
   FourMomentum rot_m = rot * m;
 
