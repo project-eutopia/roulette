@@ -1,6 +1,5 @@
 #pragma once
 
-#include <boost/multi_array.hpp>
 #include "roulette/three_vector.h"
 
 #include "rapidjson/document.h"
