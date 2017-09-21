@@ -2,34 +2,12 @@ language: cpp
 
 dist: trusty
 sudo: require
-compiler: clang
 
-addons:
-  apt:
-    sources:
-      - boost-latest
-      - llvm-toolchain-trusty
-      - ubuntu-toolchain-r-test
-    packages:
-      - clang-3.8
-      - g++-6
-      - gcc-6
-      - cmake
-      - libgtest-dev
-      - libboost-all-dev
+services:
+- docker
 
-before_script:
-  - install -d gtest_build
-  - pushd gtest_build
-  - cmake -DCMAKE_CXX_COMPILER=$COMPILER /usr/src/gtest/
-  - make
-  - sudo cp *.a /usr/lib
-  - popd
+install:
+- docker build -t roulette .
 
 script:
-  - mkdir build
-  - pushd build
-  - cmake ..
-  - make -j8 tests
-  - ./tests
-  - popd
+- docker run -w="/opt/roulette/build" roulette ./tests
