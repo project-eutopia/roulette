@@ -1,7 +1,7 @@
 # make      #=> build library
 # make test #=> build tests executable
 # make main #=> build main executable
-cmake_minimum_required (VERSION 3.5.2)
+cmake_minimum_required (VERSION 3.2.2)
 project (roulette CXX)
 
 set (CMAKE_C_COMPILER "/usr/bin/clang")
@@ -14,7 +14,7 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast -pthread" )
 
-find_package(Boost 1.61 REQUIRED)
+find_package(Boost REQUIRED)
 
 # Include headers
 include_directories (include)

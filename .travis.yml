@@ -1,0 +1,13 @@
+language: cpp
+
+dist: trusty
+sudo: require
+
+services:
+- docker
+
+install:
+- docker build -t roulette .
+
+script:
+- docker run -w="/opt/roulette/build" roulette ./tests
