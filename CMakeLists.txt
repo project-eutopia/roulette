@@ -4,9 +4,6 @@
 cmake_minimum_required (VERSION 3.2.2)
 project (roulette CXX)
 
-set (CMAKE_C_COMPILER "/usr/bin/clang")
-set (CMAKE_CXX_COMPILER "/usr/bin/clang++")
-
 if (NOT CMAKE_BUILD_TYPE MATCHES DEBUG)
   add_definitions(-DNDEBUG)
 endif()

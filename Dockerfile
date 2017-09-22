@@ -8,16 +8,11 @@ RUN apt-get update && apt-get install -y \
         build-essential \
         wget \
         cmake \
-        clang \
         libboost-all-dev \
         libgtest-dev \
         && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# Use clang compiler
-RUN export CC=/usr/bin/clang
-RUN export CXX=/usr/bin/clang++
 
 # Install gtest for importing by CMake
 RUN install -d gtest_build && \
