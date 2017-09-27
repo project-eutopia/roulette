@@ -1,6 +1,6 @@
-#include <boost/numeric/ublas/vector.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/lu.hpp>
+#include <vector>
+
+#include "roulette/two_tensor.h"
 
 namespace roulette {
   template <typename F>
@@ -25,19 +25,19 @@ namespace roulette {
       F1[i] = integral_xf(m_xs[i+1]) - integral_xf(m_xs[i]);
     }
 
-    boost::numeric::ublas::matrix<double> M = boost::numeric::ublas::zero_matrix<double>(N-1, N-1);
-    boost::numeric::ublas::vector<double> C = boost::numeric::ublas::zero_vector<double>(N-1);
+    TwoTensor M(N-1, N-1);
+    std::vector<double> C(N-1);
 
     for (int i = 0; i < N-1; ++i) {
-      C(i) = -F1[i] + m_xs[i]*F0[i] + F1[i+1] - m_xs[i+2]*F0[i+1];
+      C[i] = -F1[i] + m_xs[i]*F0[i] + F1[i+1] - m_xs[i+2]*F0[i+1];
       M(i,i)   = -2*m_delta_x*m_delta_x/3;
 
       if (i == 0) {
-        C(i) += y0 * m_delta_x*m_delta_x/6;
+        C[i] += y0 * m_delta_x*m_delta_x/6;
         M(i,i+1) = -m_delta_x*m_delta_x/6;
       }
       else if (i == N-2) {
-        C(i) += yN * m_delta_x*m_delta_x/6;
+        C[i] += yN * m_delta_x*m_delta_x/6;
         M(i,i-1) = -m_delta_x*m_delta_x/6;
       }
       else {
@@ -46,23 +46,59 @@ namespace roulette {
       }
     }
 
-	// create a working copy of the input
-    boost::numeric::ublas::matrix<double> Mcopy(M);
+    // Invert tridiagonal matrix M
+    // See: https://en.wikipedia.org/wiki/Tridiagonal_matrix#Inversion
+    int n = N-1;
+    std::vector<double> theta(n+2);
+    std::vector<double> phi(n+2);
 
-	// create a permutation matrix for the LU-factorization
-    boost::numeric::ublas::permutation_matrix<std::size_t> pm(M.size1());
+    theta[0] = 1;
+    theta[1] = M(0,0);
+    for (int i = 2; i <= n; ++i) {
+      theta[i] = M(i-1,i-1) * theta[i-1] - M(i-2,i-1) * M(i-1,i-2) * theta[i-2];
+    }
 
-	// perform LU-factorization
-	int res = boost::numeric::ublas::lu_factorize(Mcopy, pm);
-    if (res != 0) throw std::runtime_error("Couldn't LU factorize matrix in SuperLinearInterpolation");
+    phi[n+1] = 1;
+    phi[n] = M(N-2,N-2);
+    for (int i = n-1; i >= 1; --i) {
+      phi[i] = M(i-1,i-1) * phi[i+1] - M(i-1,i) * M(i,i-1) * phi[i+2];
+    }
 
-	// create identity matrix of "inverse"
-    boost::numeric::ublas::matrix<double> inverse = boost::numeric::ublas::identity_matrix<double>(Mcopy.size1());
+    TwoTensor Minv(N-1,N-1);
 
-	// backsubstitute to get the inverse
-    boost::numeric::ublas::lu_substitute(Mcopy, pm, inverse);
+    double value;
+    for (int i = 1; i <= n; ++i) {
+      // i > j
+      for (int j = 1; j < i; ++j) {
+        value = 1 - 2*((i+j) % 2);
+        value *= theta[j-1] * phi[i+1] / theta[n];
+        for (int k = j; k <= i-1; ++k) value *= M(k,k-1);
 
-    boost::numeric::ublas::vector<double> y = boost::numeric::ublas::prod(inverse, C);
+        Minv(i-1,j-1) = value;
+      }
+
+      // i == j
+      Minv(i-1,i-1) = theta[i-1] * phi[i+1] / theta[n];
+
+      // i < j
+      for (int j = i+1; j <= n; ++j) {
+        value = 1 - 2*((i+j) % 2);
+        value *= theta[i-1] * phi[j+1] / theta[n];
+        for (int k = i; k <= j-1; ++k) value *= M(k-1,k);
+
+        Minv(i-1,j-1) = value;
+      }
+    }
+
+    // y = Minv * C
+    std::vector<double> y(N-1);
+    for (int i = 0; i < N-1; ++i) {
+      y[i] = 0;
+
+      for (int j = 0; j < N-1; ++j) {
+        y[i] += Minv(i,j) * C[j];
+      }
+    }
 
     m_ys[0] = y0;
     for (int i = 0; i < N-1; ++i) {
