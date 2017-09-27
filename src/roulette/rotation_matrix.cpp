@@ -4,7 +4,19 @@
 
 namespace roulette {
   RotationMatrix::RotationMatrix()
+    : m_matrix()
   {
+    m_matrix[0][0] = 1;
+    m_matrix[0][1] = 0;
+    m_matrix[0][2] = 0;
+
+    m_matrix[1][0] = 0;
+    m_matrix[1][1] = 1;
+    m_matrix[1][2] = 0;
+
+    m_matrix[2][0] = 0;
+    m_matrix[2][1] = 0;
+    m_matrix[2][2] = 1;
   }
 
   RotationMatrix::RotationMatrix(const std::array<std::array<double,3>,3>& matrix) :

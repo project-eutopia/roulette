@@ -11,6 +11,7 @@ namespace roulette {
       std::array<std::array<double, 3>, 3> m_matrix;
 
     public:
+      // Identity
       RotationMatrix();
       RotationMatrix(const std::array<std::array<double,3>,3>& matrix);
       RotationMatrix(
