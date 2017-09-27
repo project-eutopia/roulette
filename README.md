@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/project-eutopia/roulette.svg?branch=master)](https://travis-ci.org/project-eutopia/roulette)
+
 # Roulette
 
 Roulette is a C++ based Monte Carlo dose calculation engine.
