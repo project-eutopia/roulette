@@ -4,7 +4,19 @@
 
 namespace roulette {
   RotationMatrix::RotationMatrix()
+    : m_matrix()
   {
+    m_matrix[0][0] = 1;
+    m_matrix[0][1] = 0;
+    m_matrix[0][2] = 0;
+
+    m_matrix[1][0] = 0;
+    m_matrix[1][1] = 1;
+    m_matrix[1][2] = 0;
+
+    m_matrix[2][0] = 0;
+    m_matrix[2][1] = 0;
+    m_matrix[2][2] = 1;
   }
 
   RotationMatrix::RotationMatrix(const std::array<std::array<double,3>,3>& matrix) :
@@ -93,6 +105,15 @@ namespace roulette {
       1 - C*(cross(2)*cross(2) + cross(1)*cross(1)), -cross(2) + C*cross(0)*cross(1), cross(1) + C*cross(0)*cross(2),
       cross(2) + C*cross(0)*cross(1), 1 - C*(cross(0)*cross(0) + cross(2)*cross(2)), -cross(0) + C*cross(1)*cross(2),
       -cross(1) + C*cross(0)*cross(2), cross(0) + C*cross(1)*cross(2), 1 - C*(cross(0)*cross(0) + cross(1)*cross(1))
+    );
+  }
+
+  RotationMatrix RotationMatrix::inv() const {
+    // Orthogonal, so just transpose
+    return RotationMatrix(
+      m_matrix[0][0], m_matrix[1][0], m_matrix[2][0],
+      m_matrix[0][1], m_matrix[1][1], m_matrix[2][1],
+      m_matrix[0][2], m_matrix[1][2], m_matrix[2][2]
     );
   }
 

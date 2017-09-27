@@ -65,6 +65,10 @@ namespace roulette {
     return (m_a[0] == other(0)) && (m_a[1] == other(1)) && (m_a[2] == other(2));
   }
 
+  ThreeVector ThreeVector::operator-() const {
+    return -1*(*this);
+  }
+
   ThreeVector& ThreeVector::operator+=(const ThreeVector& rhs) {
     for (int i = 0; i < 3; ++i) m_a[i] += rhs(i);
     return (*this);
