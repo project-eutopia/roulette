@@ -27,6 +27,8 @@ namespace roulette {
       static RotationMatrix rotationU(double angle, const ThreeVector& u);
       static RotationMatrix rotationUtoV(const ThreeVector& u, const ThreeVector& v);
 
+      RotationMatrix inv() const;
+
       friend RotationMatrix operator*(const RotationMatrix& lhs, const RotationMatrix& rhs);
       friend ThreeVector operator*(const RotationMatrix& m, const ThreeVector& v);
       friend FourMomentum operator*(const RotationMatrix& m, const FourMomentum& v);

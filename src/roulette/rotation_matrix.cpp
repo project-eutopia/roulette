@@ -96,6 +96,15 @@ namespace roulette {
     );
   }
 
+  RotationMatrix RotationMatrix::inv() const {
+    // Orthogonal, so just transpose
+    return RotationMatrix(
+      m_matrix[0][0], m_matrix[1][0], m_matrix[2][0],
+      m_matrix[0][1], m_matrix[1][1], m_matrix[2][1],
+      m_matrix[0][2], m_matrix[1][2], m_matrix[2][2]
+    );
+  }
+
   RotationMatrix operator*(const RotationMatrix& lhs, const RotationMatrix& rhs) {
     std::array<std::array<double,3>,3> matrix;
 
