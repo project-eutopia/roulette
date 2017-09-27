@@ -31,6 +31,7 @@ namespace roulette {
 
       bool operator==(const ThreeVector& other) const;
 
+      ThreeVector operator-() const;
       ThreeVector& operator+=(const ThreeVector& rhs);
       friend ThreeVector operator+(const ThreeVector& lhs, const ThreeVector& rhs);
       friend ThreeVector operator-(const ThreeVector& lhs, const ThreeVector& rhs);

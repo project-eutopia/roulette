@@ -14,6 +14,7 @@
 #include "super_linear_interpolation_test.h"
 #include "interaction_function_test.h"
 #include "rotation_matrix_test.h"
+#include "affine_transformation_test.h"
 #include "distributions/uniform_test.h"
 #include "distributions/exponential_test.h"
 #include "distributions/rejection_sampling_test.h"
