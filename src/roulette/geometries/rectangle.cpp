@@ -7,7 +7,13 @@ namespace roulette {
         m_p0(p0),
         m_u1(p1 - p0),
         m_u2(p2 - p1)
-    {}
+    {
+      // Check non-degenerate
+      // NOTE: We allow rhombus shapes, so u1 and u2 are allowed to not be perpendicular
+      if (m_u1.cross(m_u2).magnitude() == 0) {
+        throw InvalidGeometry("Rectangle must be non-degenerate");
+      }
+    }
 
     std::shared_ptr<Rectangle> Rectangle::from_json(const rapidjson::Value& data)
     {

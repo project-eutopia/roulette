@@ -30,3 +30,58 @@ TEST(GeometryEllipseTest, ellipse_test) {
     EXPECT_LE(x*x/a/a + y*y/b/b, 1);
   }
 }
+
+TEST(GeometryEllipseTest, ellipse_error_test) {
+  // Verify exceptions thrown
+  try {
+    geometries::Ellipse ellispse(
+      {0, 0, 0},
+      {1, 0, 0},
+      {-1, 0, 0}
+    );
+    FAIL();
+  }
+  catch( const geometries::InvalidGeometry& err ) {
+    // check exception
+    ASSERT_STREQ("Ellipse must be non-degenerate", err.what());
+  }
+
+  try {
+    geometries::Ellipse ellipse(
+      {0, 0, 0},
+      {1, 0, 0},
+      {0, 0, 0}
+    );
+    FAIL();
+  }
+  catch( const geometries::InvalidGeometry& err ) {
+    // check exception
+    ASSERT_STREQ("Ellipse must be non-degenerate", err.what());
+  }
+
+  try {
+    geometries::Ellipse ellipse(
+      {0, 0, 0},
+      {0, 0, 0},
+      {1, 0, 0}
+    );
+    FAIL();
+  }
+  catch( const geometries::InvalidGeometry& err ) {
+    // check exception
+    ASSERT_STREQ("Ellipse must be non-degenerate", err.what());
+  }
+
+  try {
+    geometries::Ellipse ellipse(
+      {0, 0, 0},
+      {1, 0, 0},
+      {1, 1, 0}
+    );
+    FAIL();
+  }
+  catch( const geometries::InvalidGeometry& err ) {
+    // check exception
+    ASSERT_STREQ("Ellipse vertex and covertex must be perpendicular", err.what());
+  }
+}

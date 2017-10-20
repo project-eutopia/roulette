@@ -11,7 +11,14 @@ namespace roulette {
         m_a((vertex - center).magnitude()),
         m_b((covertex - center).magnitude())
     {
-      if (std::abs(m_u1.dot(m_u2)) > 0.000001) throw std::runtime_error("Ellipse vertex and covertex must be perpendicular");
+      // Check non-degenerate
+      if (m_u1.cross(m_u2).magnitude() == 0) {
+        throw InvalidGeometry("Ellipse must be non-degenerate");
+      }
+
+      if (std::abs(m_u1.dot(m_u2)) > 0.000001*m_u1.magnitude()) {
+        throw InvalidGeometry("Ellipse vertex and covertex must be perpendicular");
+      }
     }
 
     std::shared_ptr<Ellipse> Ellipse::from_json(const rapidjson::Value& data)

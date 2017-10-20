@@ -27,3 +27,45 @@ TEST(GeometryRectangleTest, rectangle_test) {
     EXPECT_EQ(three_vector(0), three_vector(1));
   }
 }
+
+TEST(GeometryRectangleTest, rectangle_error_test) {
+  // Verify exceptions thrown
+  try {
+    geometries::Rectangle rectangle(
+      {0, 0, 0},
+      {1, 0, 0},
+      {-1, 0, 0}
+    );
+    FAIL();
+  }
+  catch( const geometries::InvalidGeometry& err ) {
+    // check exception
+    ASSERT_STREQ("Rectangle must be non-degenerate", err.what());
+  }
+
+  try {
+    geometries::Rectangle rectangle(
+      {0, 0, 0},
+      {1, 0, 0},
+      {0, 0, 0}
+    );
+    FAIL();
+  }
+  catch( const geometries::InvalidGeometry& err ) {
+    // check exception
+    ASSERT_STREQ("Rectangle must be non-degenerate", err.what());
+  }
+
+  try {
+    geometries::Rectangle rectangle(
+      {0, 0, 0},
+      {0, 0, 0},
+      {1, 0, 0}
+    );
+    FAIL();
+  }
+  catch( const geometries::InvalidGeometry& err ) {
+    // check exception
+    ASSERT_STREQ("Rectangle must be non-degenerate", err.what());
+  }
+}
