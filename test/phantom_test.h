@@ -19,7 +19,7 @@ class PhantomRayTraceTest : public ::testing::Test {
     PhantomRayTraceTest() {}
     virtual ~PhantomRayTraceTest() {}
     void SetUp() {
-      VoxelGrid voxel_grid(
+      std::shared_ptr<const VoxelGrid> voxel_grid = std::make_shared<const VoxelGrid>(
         ThreeVector(-5, -5, -5),
         ThreeVector( 5,  5,  5),
         4,4,2
@@ -209,7 +209,7 @@ TEST_F(PhantomRayTraceTest, ray_trace_voxels_test_going_through_corner) {
 }
 
 TEST(PhantomTest, ray_trace_voxels_going_through_random_directions) {
-  VoxelGrid voxel_grid(
+  std::shared_ptr<const VoxelGrid> voxel_grid = std::make_shared<const VoxelGrid>(
     ThreeVector(0, -10, -10),
     ThreeVector(10, 10, 10),
     256,1,1
@@ -252,7 +252,9 @@ TEST(PhantomTest, ray_trace_voxels_going_through_random_directions) {
 TEST(PhantomTest, transport_photon_unitless_depth_test) {
   const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
-  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100), 256, 1, 1);
+  std::shared_ptr<const VoxelGrid> grid = std::make_shared<const VoxelGrid>(
+    ThreeVector(0, -10, -10), ThreeVector(200, 100, 100), 256, 1, 1
+  );
 
   Phantom phantom(
     grid,
@@ -272,7 +274,9 @@ TEST(PhantomTest, transport_photon_unitless_depth_test) {
 TEST(PhantomTest, transport_photon_unitless_depth_inhomogeneous_test) {
   const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
-  VoxelGrid grid(ThreeVector(0, -25, -25), ThreeVector(50, 25, 25), 100, 1, 1);
+  std::shared_ptr<const VoxelGrid> grid = std::make_shared<const VoxelGrid>(
+    ThreeVector(0, -25, -25), ThreeVector(50, 25, 25), 100, 1, 1
+  );
 
   std::shared_ptr<MatrixThreeTensor> densities = std::make_shared<MatrixThreeTensor>(100, 1, 1, 1.0);
   for (int i = 20; i < 40; ++i) {
