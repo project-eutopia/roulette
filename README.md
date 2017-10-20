@@ -117,6 +117,13 @@ where `DOSE_CALCULATION_SETTINGS` stores the settings specific to `DoseCalculati
         - `source` is [x, y, z] coordinates of source point in cm
         - `direction` is [dx, dy, dz] vector specifying the direction of particles
         - `spectrum` is the spectrum settings (see below)
+    - When `BifocalSource`, it is an object that describes particles the originate at some geometry (the origin) with some energy, and that pass through a random point on another geometry (the direction).  It has properties:
+        - `type` is `"BifocalSource"`
+        - `origin_generator` is an object with two properties:
+            - `geometry` which is a `GEOMETRY` object (see below)
+            - `spectrum` is the spectrum settings (see below)
+        - `direction_generator` is an object with one property:
+            - `geometry` which is a `GEOMETRY` object (see below)
     - When `CompositeSource`, it is an object with properties:
         - `type` is `"CompositeSource"`
         - `sub_sources` is an array of objects with properies:
@@ -134,7 +141,25 @@ A typical 6 MeV photon spectrum file is provided at `data/6_mev_spectrum.json`. 
     - `type` is `"delta"`
     - `value` is the energy in MeV
 
+### Geometry object
 
+There are currently 3 supported geometries:  `Point`, `Rectangle`, and `Ellipse`.  These geometries allow for uniform random sampling within.  Note that `DiracDeltaSource` and `BeamletSource` are subsets of `BifocalSource` with `Point`/`Point` geometry and `Point`/`Rectangle` geometry respectively.  Each has the following structure:
+
+- `Point` object
+    - `type` is `"Point"`
+    - `point` is the `[x, y, z]` coordinates in cm
+- `Rectangle` object
+    - `type` is `"Rectangle"`
+    - `bottom_left` is [x, y, z] coordinates of bottom left corner of rectangle in cm
+    - `bottom_right` is [x, y, z] coordinates of bottom right corner of rectangle in cm
+    - `top_right` is [x, y, z] coordinates of top right corner of rectangle in cm
+- `Ellipse` object
+    - `type` is `"Ellipse"`
+    - `center` is [x, y, z] coordinates of center of ellipse in cm
+    - `vertex` is [x, y, z] coordinates of ellipse vertex (point on ellipse in semi-major axis direction) in cm
+    - `covertex` is [x, y, z] coordinates of ellipse covertex (point on ellipse in semi-minor axis direction) in cm
+    
+    
 ## Example files
 
 The source code provides some example phantoms and input files.  See the `examples/` directory.  For example, to run a cross-shaped fluence on a water tank phantom, run the following command (assuming `roulette` has been installed at `/opt/roulette`):
