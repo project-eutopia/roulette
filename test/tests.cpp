@@ -22,7 +22,7 @@
 #include "geometries/point_test.h"
 #include "geometries/rectangle_test.h"
 #include "geometries/ellipse_test.h"
-#include "geometries/geometry_factory.h"
+#include "geometries/geometry_factory_test.h"
 
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);

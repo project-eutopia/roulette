@@ -23,9 +23,9 @@ namespace roulette {
 
     std::shared_ptr<Ellipse> Ellipse::from_json(const rapidjson::Value& data)
     {
-      if (!data.HasMember("center")) throw std::runtime_error("Ellipse requires \"center\"");
-      if (!data.HasMember("vertex")) throw std::runtime_error("Ellipse requires \"vertex\"");
-      if (!data.HasMember("covertex")) throw std::runtime_error("Ellipse requires \"covertex\"");
+      if (!data.HasMember("center")) throw InvalidGeometry("Ellipse requires \"center\"");
+      if (!data.HasMember("vertex")) throw InvalidGeometry("Ellipse requires \"vertex\"");
+      if (!data.HasMember("covertex")) throw InvalidGeometry("Ellipse requires \"covertex\"");
 
       return std::make_shared<Ellipse>(
         ThreeVector(data["center"]),

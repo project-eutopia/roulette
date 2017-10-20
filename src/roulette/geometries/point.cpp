@@ -3,7 +3,7 @@
 namespace roulette {
   namespace geometries {
     std::shared_ptr<Point> Point::from_json(const rapidjson::Value& data) {
-      if (!data.HasMember("point")) throw std::runtime_error("Point requires \"point\"");
+      if (!data.HasMember("point")) throw InvalidGeometry("Point requires \"point\"");
       return std::make_shared<Point>(ThreeVector(data["point"]));
     }
 

@@ -17,9 +17,9 @@ namespace roulette {
 
     std::shared_ptr<Rectangle> Rectangle::from_json(const rapidjson::Value& data)
     {
-      if (!data.HasMember("bottom_left")) throw std::runtime_error("Rectangle requires \"bottom_left\"");
-      if (!data.HasMember("bottom_right")) throw std::runtime_error("Rectangle requires \"bottom_right\"");
-      if (!data.HasMember("top_right")) throw std::runtime_error("Rectangle requires \"top_right\"");
+      if (!data.HasMember("bottom_left")) throw InvalidGeometry("Rectangle requires \"bottom_left\"");
+      if (!data.HasMember("bottom_right")) throw InvalidGeometry("Rectangle requires \"bottom_right\"");
+      if (!data.HasMember("top_right")) throw InvalidGeometry("Rectangle requires \"top_right\"");
 
       return std::make_shared<Rectangle>(
         ThreeVector(data["bottom_left"]),
