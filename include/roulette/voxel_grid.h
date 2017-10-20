@@ -51,6 +51,7 @@ namespace roulette {
       double delta_y() const;
       double delta_z() const;
 
+      std::tuple<int,int,int> index_at(const ThreeVector& position) const;
       std::tuple<double,double,double> normal_coordinates(const ThreeVector& position) const;
 
       bool inside(const ThreeVector& point) const;

@@ -1,5 +1,6 @@
 #include "roulette/pointwise_three_tensor.h"
 #include "roulette/math.h"
+#include "roulette/voxel_grid.h"
 
 #include <set>
 #include <fstream>
@@ -36,18 +37,18 @@ namespace roulette {
 
     // Indexes that neighbor a point
     std::set<int> indexes;
-    std::tuple<double,double,double> normal_coordinates;
+    std::tuple<int,int,int> coordinate;
     int xi, yi, zi;
     int cur_index;
 
     for (int i = 0; i < points.Size(); ++i) {
       m_points.push_back(ThreeVector(points[i]));
-      normal_coordinates = m_phantom->normal_coordinates(m_points.back());
+      coordinate = m_phantom->voxel_grid()->index_at(m_points.back());
 
       // Get coordinates of lower left neighbor voxel
-      xi = math::floori(std::get<0>(normal_coordinates) - 0.5);
-      yi = math::floori(std::get<1>(normal_coordinates) - 0.5);
-      zi = math::floori(std::get<2>(normal_coordinates) - 0.5);
+      xi = std::get<0>(coordinate);
+      yi = std::get<1>(coordinate);
+      zi = std::get<2>(coordinate);
 
       // Check neighbor coordinates
       for (int a = 0; a < 2; ++a) {
@@ -95,7 +96,8 @@ namespace roulette {
   }
 
   double PointwiseThreeTensor::value_at(const ThreeVector& position) const {
-    auto normal_coordinates = m_phantom->normal_coordinates(position);
+    auto voxel_grid = std::dynamic_pointer_cast<const VoxelGrid>(m_phantom->voxel_grid());
+    auto normal_coordinates = voxel_grid->normal_coordinates(position);
     return this->trilinearly_interpolated_value(std::get<0>(normal_coordinates), std::get<1>(normal_coordinates), std::get<2>(normal_coordinates));
   }
 

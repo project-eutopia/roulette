@@ -3,6 +3,8 @@
 #include "roulette/photon.h"
 #include "roulette/compound_table.h"
 
+#include "roulette/voxel_grid.h"
+
 #include <random>
 #include <numeric>
 #include <fstream>
@@ -16,10 +18,7 @@ namespace roulette {
 
   Phantom::Phantom(const rapidjson::Value& data) :
     m_voxel_grid(std::make_shared<const VoxelGrid>(data["voxel_grid"])),
-    m_densities(std::make_shared<MatrixThreeTensor>(m_voxel_grid->nx(), m_voxel_grid->ny(), m_voxel_grid->nz(), data["density"].GetDouble())),
-    m_delta_x((m_voxel_grid->vn()(0) - m_voxel_grid->v0()(0)) / this->nx()),
-    m_delta_y((m_voxel_grid->vn()(1) - m_voxel_grid->v0()(1)) / this->ny()),
-    m_delta_z((m_voxel_grid->vn()(2) - m_voxel_grid->v0()(2)) / this->nz())
+    m_densities(std::make_shared<MatrixThreeTensor>(m_voxel_grid->nx(), m_voxel_grid->ny(), m_voxel_grid->nz(), data["density"].GetDouble()))
   {
   }
 
@@ -32,11 +31,8 @@ namespace roulette {
     data_file.close();
   }
 
-  Phantom::Phantom(std::shared_ptr<const VoxelGrid> voxel_grid, std::shared_ptr<const MatrixThreeTensor> densities) : m_voxel_grid(voxel_grid),
-    m_densities(densities),
-    m_delta_x((m_voxel_grid->vn()(0) - m_voxel_grid->v0()(0)) / this->nx()),
-    m_delta_y((m_voxel_grid->vn()(1) - m_voxel_grid->v0()(1)) / this->ny()),
-    m_delta_z((m_voxel_grid->vn()(2) - m_voxel_grid->v0()(2)) / this->nz())
+  Phantom::Phantom(std::shared_ptr<const IVoxelGrid> voxel_grid, std::shared_ptr<const MatrixThreeTensor> densities) : m_voxel_grid(voxel_grid),
+    m_densities(densities)
   {
   }
 
@@ -51,17 +47,20 @@ namespace roulette {
     int ny = (original_phantom.ny() + sy - 1) / sy;
     int nz = (original_phantom.nz() + sz - 1) / sz;
 
-    m_delta_x = original_phantom.delta_x() * sx;
-    m_delta_y = original_phantom.delta_y() * sy;
-    m_delta_z = original_phantom.delta_z() * sz;
+    // Assume regular grid!
+    auto voxel_grid = std::dynamic_pointer_cast<const VoxelGrid>(this->voxel_grid());
+
+    double delta_x = voxel_grid->delta_x() * sx;
+    double delta_y = voxel_grid->delta_y() * sy;
+    double delta_z = voxel_grid->delta_z() * sz;
 
     ThreeVector vn(
-      original_phantom.voxel_grid()->v0()(0) + nx*m_delta_x,
-      original_phantom.voxel_grid()->v0()(1) + ny*m_delta_y,
-      original_phantom.voxel_grid()->v0()(2) + nz*m_delta_z
+      voxel_grid->v0()(0) + nx*delta_x,
+      voxel_grid->v0()(1) + ny*delta_y,
+      voxel_grid->v0()(2) + nz*delta_z
     );
 
-    m_voxel_grid = std::make_shared<VoxelGrid>(original_phantom.voxel_grid()->v0(), vn, nx, ny, nz);
+    m_voxel_grid = std::make_shared<VoxelGrid>(voxel_grid->v0(), vn, nx, ny, nz);
     auto temp_densities = std::make_shared<MatrixThreeTensor>(nx, ny, nz);
 
     m_compounds = std::vector<std::shared_ptr<const Compound>>();
@@ -134,28 +133,15 @@ namespace roulette {
   int Phantom::ny() const { return (*m_densities).ny(); }
   int Phantom::nz() const { return (*m_densities).nz(); }
 
-  double Phantom::delta_x() const { return m_delta_x; }
-  double Phantom::delta_y() const { return m_delta_y; }
-  double Phantom::delta_z() const { return m_delta_z; }
-
   std::shared_ptr<const MatrixThreeTensor> Phantom::densities() const {
     return std::const_pointer_cast<const MatrixThreeTensor>(m_densities);
   }
 
   std::tuple<int,int,int> Phantom::index_at(const ThreeVector& position) const {
-    auto normal = this->normal_coordinates(position);
-    return std::make_tuple((int)std::get<0>(normal), (int)std::get<1>(normal), (int)std::get<2>(normal));
+    return m_voxel_grid->index_at(position);
   }
 
-  std::tuple<double,double,double> Phantom::normal_coordinates(const ThreeVector& position) const {
-    return std::make_tuple(
-      (position(0) - m_voxel_grid->v0()(0)) / m_delta_x,
-      (position(1) - m_voxel_grid->v0()(1)) / m_delta_y,
-      (position(2) - m_voxel_grid->v0()(2)) / m_delta_z
-    );
-  }
-
-  const std::shared_ptr<const VoxelGrid>& Phantom::voxel_grid() const { return m_voxel_grid; }
+  const std::shared_ptr<const IVoxelGrid>& Phantom::voxel_grid() const { return m_voxel_grid; }
   double Phantom::operator()(int xi, int yi, int zi) const { return (*m_densities)(xi, yi, zi); }
   const Compound& Phantom::compound(int xi, int yi, int zi) const { return *m_compounds[xi + yi*this->nx() + zi*this->nx()*this->ny()]; }
   std::shared_ptr<const Compound> Phantom::compound_ptr(int xi, int yi, int zi) const { return m_compounds[xi + yi*this->nx() + zi*this->nx()*this->ny()]; }
@@ -167,7 +153,7 @@ namespace roulette {
 
     ThreeVector final_position = this->ray_trace_voxels(
       photon.position(), photon.momentum().three_momentum(),
-      VoxelGrid::voxel_iterator(
+      IVoxelGrid::voxel_iterator(
         [&,this](double distance, int xi, int yi, int zi) -> double {
           double delta_depth = (*this)(xi, yi, zi) * this->compound(xi, yi, zi).photon_total_cross_section(energy) * distance;
           current_depth += delta_depth;
@@ -183,7 +169,7 @@ namespace roulette {
     return inside;
   }
 
-  ThreeVector Phantom::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, VoxelGrid::voxel_iterator it) const {
+  ThreeVector Phantom::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, IVoxelGrid::voxel_iterator it) const {
     return m_voxel_grid->ray_trace_voxels(initial_position, direction, it);
   }
 
@@ -196,18 +182,15 @@ namespace roulette {
   std::ifstream& Phantom::read(std::ifstream& is) {
     {
       // Read into temporary voxel grid, then cast to const for local storage
-      std::shared_ptr<VoxelGrid> new_grid = std::make_shared<VoxelGrid>();
+      std::shared_ptr<IVoxelGrid> new_grid = std::make_shared<VoxelGrid>();
       new_grid->read(is);
-      m_voxel_grid = std::const_pointer_cast<const VoxelGrid>(new_grid);
+      m_voxel_grid = std::const_pointer_cast<const IVoxelGrid>(new_grid);
     }
     {
       std::shared_ptr<MatrixThreeTensor> new_matrix = std::make_shared<MatrixThreeTensor>();
       new_matrix->read(is);
       m_densities = std::const_pointer_cast<const MatrixThreeTensor>(new_matrix);
     }
-    m_delta_x = (m_voxel_grid->vn()(0) - m_voxel_grid->v0()(0)) / this->nx();
-    m_delta_y = (m_voxel_grid->vn()(1) - m_voxel_grid->v0()(1)) / this->ny();
-    m_delta_z = (m_voxel_grid->vn()(2) - m_voxel_grid->v0()(2)) / this->nz();
     return is;
   }
 };

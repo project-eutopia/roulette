@@ -26,6 +26,8 @@ namespace roulette {
       virtual int ny() const = 0;
       virtual int nz() const = 0;
 
+      virtual std::tuple<int,int,int> index_at(const ThreeVector& position) const = 0;
+
       virtual bool inside(const ThreeVector& point) const = 0;
       virtual bool strictly_inside(const ThreeVector& point) const = 0;
       virtual bool outside(const ThreeVector& point) const = 0;

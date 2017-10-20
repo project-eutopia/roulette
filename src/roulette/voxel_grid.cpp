@@ -55,6 +55,11 @@ namespace roulette {
   double VoxelGrid::delta_y() const { return m_delta_y; }
   double VoxelGrid::delta_z() const { return m_delta_z; }
 
+  std::tuple<int,int,int> VoxelGrid::index_at(const ThreeVector& position) const {
+    auto normal = this->normal_coordinates(position);
+    return std::make_tuple((int)std::get<0>(normal), (int)std::get<1>(normal), (int)std::get<2>(normal));
+  }
+
   std::tuple<double,double,double> VoxelGrid::normal_coordinates(const ThreeVector& position) const {
     return std::make_tuple(
       (position(0) - m_v0(0)) / m_delta_x,

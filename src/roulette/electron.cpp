@@ -10,7 +10,7 @@ namespace roulette {
     const Phantom& phantom = source_dose.phantom();
     phantom.ray_trace_voxels(
       this->position(), this->momentum().three_momentum(),
-      VoxelGrid::voxel_iterator(
+      IVoxelGrid::voxel_iterator(
         [&,this](double distance, int xi, int yi, int zi) -> double {
           double csda_range_cm = phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / phantom(xi, yi, zi);
 
@@ -40,7 +40,7 @@ namespace roulette {
 
     ThreeVector final_position = phantom.ray_trace_voxels(
       this->position(), this->momentum().three_momentum(),
-      VoxelGrid::voxel_iterator(
+      IVoxelGrid::voxel_iterator(
         [&,this](double distance, int xi, int yi, int zi) -> double {
           double csda_range_cm = phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / phantom(xi, yi, zi);
 
