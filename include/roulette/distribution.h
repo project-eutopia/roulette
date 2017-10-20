@@ -1,5 +1,7 @@
 #pragma once
 
+#include "roulette/random_generator.h"
+
 namespace roulette {
   class Distribution {
     public:

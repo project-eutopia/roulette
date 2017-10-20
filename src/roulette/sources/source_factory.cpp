@@ -3,6 +3,7 @@
 #include "roulette/sources/beam_source.h"
 #include "roulette/sources/composite_source.h"
 #include "roulette/sources/dirac_delta_source.h"
+#include "roulette/sources/bifocal_source.h"
 
 namespace roulette {
   namespace sources {
@@ -22,6 +23,9 @@ namespace roulette {
       }
       else if (data["type"].GetString() == std::string("CompositeSource")) {
         return std::make_shared<CompositeSource>(data);
+      }
+      else if (data["type"].GetString() == std::string("BifocalSource")) {
+        return std::make_shared<BifocalSource>(data);
       }
       else {
         // Unhandled source type
