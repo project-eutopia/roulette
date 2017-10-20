@@ -32,7 +32,7 @@ namespace roulette {
     data_file.close();
   }
 
-  Phantom::Phantom(std::shared_ptr<const VoxelGrid> voxel_grid, std::shared_ptr<MatrixThreeTensor> densities) : m_voxel_grid(voxel_grid),
+  Phantom::Phantom(std::shared_ptr<const VoxelGrid> voxel_grid, std::shared_ptr<const MatrixThreeTensor> densities) : m_voxel_grid(voxel_grid),
     m_densities(densities),
     m_delta_x((m_voxel_grid->vn()(0) - m_voxel_grid->v0()(0)) / this->nx()),
     m_delta_y((m_voxel_grid->vn()(1) - m_voxel_grid->v0()(1)) / this->ny()),
@@ -62,7 +62,7 @@ namespace roulette {
     );
 
     m_voxel_grid = std::make_shared<VoxelGrid>(original_phantom.voxel_grid()->v0(), vn, nx, ny, nz);
-    m_densities = std::make_shared<MatrixThreeTensor>(nx, ny, nz);
+    auto temp_densities = std::make_shared<MatrixThreeTensor>(nx, ny, nz);
 
     m_compounds = std::vector<std::shared_ptr<const Compound>>();
     m_compounds.reserve(nx*ny*nz);
@@ -105,13 +105,15 @@ namespace roulette {
             }
           }
 
-          (*m_densities)(x, y, z) = std::accumulate(densities.begin(), densities.end(), 0.0) / densities.size();
+          (*temp_densities)(x, y, z) = std::accumulate(densities.begin(), densities.end(), 0.0) / densities.size();
           // Select random compound within the existing compounds
           std::uniform_int_distribution<int> dist(0, compounds.size()-1);
           m_compounds.push_back(compounds[dist(gen)]);
         }
       }
     }
+
+    m_densities = std::const_pointer_cast<const MatrixThreeTensor>(temp_densities);
   }
 
   void Phantom::set_compound_map(const DensityCompoundMap& map) {
@@ -198,7 +200,11 @@ namespace roulette {
       new_grid->read(is);
       m_voxel_grid = std::const_pointer_cast<const VoxelGrid>(new_grid);
     }
-    m_densities->read(is);
+    {
+      std::shared_ptr<MatrixThreeTensor> new_matrix = std::make_shared<MatrixThreeTensor>();
+      new_matrix->read(is);
+      m_densities = std::const_pointer_cast<const MatrixThreeTensor>(new_matrix);
+    }
     m_delta_x = (m_voxel_grid->vn()(0) - m_voxel_grid->v0()(0)) / this->nx();
     m_delta_y = (m_voxel_grid->vn()(1) - m_voxel_grid->v0()(1)) / this->ny();
     m_delta_z = (m_voxel_grid->vn()(2) - m_voxel_grid->v0()(2)) / this->nz();

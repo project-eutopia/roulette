@@ -19,7 +19,7 @@ namespace roulette {
   class Phantom {
     private:
       std::shared_ptr<const VoxelGrid> m_voxel_grid;
-      std::shared_ptr<MatrixThreeTensor> m_densities;
+      std::shared_ptr<const MatrixThreeTensor> m_densities;
       std::vector<std::shared_ptr<const Compound>> m_compounds;
 
       double m_delta_x;
@@ -30,7 +30,7 @@ namespace roulette {
       Phantom();
       Phantom(const rapidjson::Value& data);
       Phantom(std::string filename);
-      Phantom(std::shared_ptr<const VoxelGrid> voxel_grid, std::shared_ptr<MatrixThreeTensor> densities);
+      Phantom(std::shared_ptr<const VoxelGrid> voxel_grid, std::shared_ptr<const MatrixThreeTensor> densities);
       // Returns a new Phantom object that has the same data as the original, just on
       // a coarser scale (e.g. {2,2,2} means each voxel has 2x2x2 block of voxels within)
       Phantom(const Phantom& original_phantom, std::tuple<int,int,int> voxelation_scale);
