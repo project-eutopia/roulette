@@ -1,8 +1,6 @@
 #pragma once
 
-#include <functional>
-
-#include "roulette/three_vector.h"
+#include "roulette/i_voxel_grid.h"
 
 #include "rapidjson/document.h"
 
@@ -10,7 +8,7 @@ namespace roulette {
   class Particle;
   class Phantom;
 
-  class VoxelGrid {
+  class VoxelGrid : public IVoxelGrid {
     public:
       // voxel_iterator is a function that is used to iterate over voxels
       // along a given ray.
