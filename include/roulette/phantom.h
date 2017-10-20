@@ -26,17 +26,6 @@ namespace roulette {
       double m_delta_z;
 
     public:
-      // VoxelRayTraceIterator is a function that is used to iterate over voxels
-      // along a given ray.
-      //
-      // The return value is the distance processed within this voxel.
-      // If the distance is less than the voxel distance, then it terminates.
-      //
-      // const Phantom& is this grid
-      // distance is the distance traversed in this voxel
-      // zi, yi, xi are the indexes of this voxel
-      typedef std::function<double(const Phantom& phantom, double distance, int xi, int yi, int zi)> voxel_iterator;
-
       Phantom();
       Phantom(const rapidjson::Value& data);
       Phantom(std::string filename);
@@ -68,7 +57,7 @@ namespace roulette {
       bool transport_photon_unitless_depth(Photon& photon, double depth) const;
 
       // Returns final position
-      ThreeVector ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, voxel_iterator it) const;
+      ThreeVector ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, VoxelGrid::voxel_iterator it) const;
 
       std::ofstream& write(std::ofstream& os) const;
       std::ifstream& read(std::ifstream& is);

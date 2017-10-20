@@ -7,11 +7,12 @@ namespace roulette {
   void Electron::deposit_energy(SourceDose& source_dose) {
     double kinetic_energy = this->kinetic_energy();
 
-    source_dose.phantom().ray_trace_voxels(
+    const Phantom& phantom = source_dose.phantom();
+    phantom.ray_trace_voxels(
       this->position(), this->momentum().three_momentum(),
-      Phantom::voxel_iterator(
-        [&,this](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
-          double csda_range_cm = cur_phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / cur_phantom(xi, yi, zi);
+      VoxelGrid::voxel_iterator(
+        [&,this](double distance, int xi, int yi, int zi) -> double {
+          double csda_range_cm = phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / phantom(xi, yi, zi);
 
           double energy_drop = (distance <= csda_range_cm) ? kinetic_energy*(distance / csda_range_cm) : kinetic_energy;
           (*source_dose.dose())(xi, yi, zi) += this->weight() * energy_drop;
@@ -39,9 +40,9 @@ namespace roulette {
 
     ThreeVector final_position = phantom.ray_trace_voxels(
       this->position(), this->momentum().three_momentum(),
-      Phantom::voxel_iterator(
-        [&,this](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
-          double csda_range_cm = cur_phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / cur_phantom(xi, yi, zi);
+      VoxelGrid::voxel_iterator(
+        [&,this](double distance, int xi, int yi, int zi) -> double {
+          double csda_range_cm = phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / phantom(xi, yi, zi);
 
           double energy_drop = (distance <= csda_range_cm) ? kinetic_energy*(distance / csda_range_cm) : kinetic_energy;
           kinetic_energy -= energy_drop;

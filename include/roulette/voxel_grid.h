@@ -1,13 +1,28 @@
 #pragma once
 
+#include <functional>
+
 #include "roulette/three_vector.h"
 
 #include "rapidjson/document.h"
 
 namespace roulette {
   class Particle;
+  class Phantom;
 
   class VoxelGrid {
+    public:
+      // voxel_iterator is a function that is used to iterate over voxels
+      // along a given ray.
+      //
+      // The function argument distance is the maximum distance to be traveled in this voxel.
+      // The return value of this functionshould be the distance processed within this voxel,
+      // and if this is less than the maximum distance, then voxel iteration terminates.
+      //
+      // distance is the maximum distance to traverse in this voxel
+      // zi, yi, xi are the indexes of this voxel
+      typedef std::function<double(double distance, int xi, int yi, int zi)> voxel_iterator;
+
     private:
       int m_nx;
       int m_ny;
@@ -38,6 +53,8 @@ namespace roulette {
       double delta_y() const;
       double delta_z() const;
 
+      std::tuple<double,double,double> normal_coordinates(const ThreeVector& position) const;
+
       bool inside(const ThreeVector& point) const;
       bool strictly_inside(const ThreeVector& point) const;
       bool outside(const ThreeVector& point) const;
@@ -53,5 +70,9 @@ namespace roulette {
       std::ofstream& write(std::ofstream& os) const;
       std::ifstream& read(std::ifstream& is);
       rapidjson::Value to_json(rapidjson::Document::AllocatorType& allocator) const;
+
+      // For processing voxels in a ray, where the processing is done by the voxel_iterator.
+      // Returns final position
+      ThreeVector ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, voxel_iterator it) const;
   };
 };

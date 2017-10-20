@@ -22,7 +22,7 @@ class PhantomRayTraceTest : public ::testing::Test {
       VoxelGrid voxel_grid(
         ThreeVector(-5, -5, -5),
         ThreeVector( 5,  5,  5),
-        1,1,1
+        4,4,2
       );
 
       const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
@@ -51,8 +51,8 @@ TEST_F(PhantomRayTraceTest, ray_trace_voxels_test_x_dir) {
 
   ThreeVector final_position = phantom->ray_trace_voxels(
     position, velocity,
-    Phantom::voxel_iterator(
-      [&](const Phantom& phantom, double distance, int xi, int yi, int zi) -> double {
+    VoxelGrid::voxel_iterator(
+      [&](double distance, int xi, int yi, int zi) -> double {
         EXPECT_EQ(xi, expected_voxels[i][0]);
         EXPECT_EQ(yi, expected_voxels[i][1]);
         EXPECT_EQ(zi, expected_voxels[i][2]);
@@ -84,8 +84,8 @@ TEST_F(PhantomRayTraceTest, ray_trace_voxels_test_y_dir) {
 
   ThreeVector final_position = phantom->ray_trace_voxels(
     position, velocity,
-    Phantom::voxel_iterator(
-      [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
+    VoxelGrid::voxel_iterator(
+      [&](double distance, int xi, int yi, int zi) -> double {
         EXPECT_EQ(xi, expected_voxels[i][0]);
         EXPECT_EQ(yi, expected_voxels[i][1]);
         EXPECT_EQ(zi, expected_voxels[i][2]);
@@ -115,8 +115,8 @@ TEST_F(PhantomRayTraceTest, ray_trace_voxels_test_z_dir) {
 
   ThreeVector final_position = phantom->ray_trace_voxels(
     position, velocity,
-    Phantom::voxel_iterator(
-      [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
+    VoxelGrid::voxel_iterator(
+      [&](double distance, int xi, int yi, int zi) -> double {
         EXPECT_EQ(xi, expected_voxels[i][0]);
         EXPECT_EQ(yi, expected_voxels[i][1]);
         EXPECT_EQ(zi, expected_voxels[i][2]);
@@ -148,8 +148,8 @@ TEST_F(PhantomRayTraceTest, ray_trace_voxels_test_going_through_edge) {
 
   ThreeVector final_position = phantom->ray_trace_voxels(
     position, velocity,
-    Phantom::voxel_iterator(
-      [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
+    VoxelGrid::voxel_iterator(
+      [&](double distance, int xi, int yi, int zi) -> double {
         EXPECT_EQ(xi, expected_voxels[i][0]);
         EXPECT_EQ(yi, expected_voxels[i][1]);
         EXPECT_EQ(zi, expected_voxels[i][2]);
@@ -184,8 +184,8 @@ TEST_F(PhantomRayTraceTest, ray_trace_voxels_test_going_through_corner) {
 
   ThreeVector final_position = phantom->ray_trace_voxels(
     position, velocity,
-    Phantom::voxel_iterator(
-      [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
+    VoxelGrid::voxel_iterator(
+      [&](double distance, int xi, int yi, int zi) -> double {
         EXPECT_EQ(xi, expected_voxels[i][0]);
         EXPECT_EQ(yi, expected_voxels[i][1]);
         EXPECT_EQ(zi, expected_voxels[i][2]);
@@ -212,7 +212,7 @@ TEST(PhantomTest, ray_trace_voxels_going_through_random_directions) {
   VoxelGrid voxel_grid(
     ThreeVector(0, -10, -10),
     ThreeVector(10, 10, 10),
-    1,1,1
+    256,1,1
   );
 
   const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
@@ -234,8 +234,8 @@ TEST(PhantomTest, ray_trace_voxels_going_through_random_directions) {
     int count = 0;
     ThreeVector final_position = phantom.ray_trace_voxels(
       start_position, velocity,
-      Phantom::voxel_iterator(
-        [&](const Phantom& cur_phantom, double distance, int xi, int yi, int zi) -> double {
+      VoxelGrid::voxel_iterator(
+        [&](double distance, int xi, int yi, int zi) -> double {
           EXPECT_EQ(xi, count);
           ++count;
 
@@ -252,7 +252,7 @@ TEST(PhantomTest, ray_trace_voxels_going_through_random_directions) {
 TEST(PhantomTest, transport_photon_unitless_depth_test) {
   const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
-  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100), 1, 1, 1);
+  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(200, 100, 100), 256, 1, 1);
 
   Phantom phantom(
     grid,
@@ -272,7 +272,7 @@ TEST(PhantomTest, transport_photon_unitless_depth_test) {
 TEST(PhantomTest, transport_photon_unitless_depth_inhomogeneous_test) {
   const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
-  VoxelGrid grid(ThreeVector(0, -25, -25), ThreeVector(50, 25, 25), 1, 1, 1);
+  VoxelGrid grid(ThreeVector(0, -25, -25), ThreeVector(50, 25, 25), 100, 1, 1);
 
   std::shared_ptr<MatrixThreeTensor> densities = std::make_shared<MatrixThreeTensor>(100, 1, 1, 1.0);
   for (int i = 20; i < 40; ++i) {
