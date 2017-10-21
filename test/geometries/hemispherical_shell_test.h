@@ -12,9 +12,9 @@ TEST(GeometryHemisphericalShellTest, hemispherical_shell_test) {
   RandomGenerator generator;
   geometries::HemisphericalShell shell(center, apex);
 
-  for (int i = 0; i < 20; ++i) {
+  for (int i = 0; i < 100; ++i) {
     auto three_vector = shell.sample(generator);
-    EXPECT_NEAR((three_vector - center).magnitude(), 2, 0.0001);
+    EXPECT_NEAR((three_vector - center).magnitude(), 2, 0.0005);
     EXPECT_GT((three_vector - center).dot(apex-center), 0);
   }
 }

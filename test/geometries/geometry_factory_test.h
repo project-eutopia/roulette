@@ -109,7 +109,7 @@ TEST(GeometryFactoryTest, geometry_factory_spherical_shell_test) {
   )));
 
   auto v = shell->sample(generator);
-  EXPECT_NEAR((v - ThreeVector(2, 1, -1)).magnitude(), 1.5, 0.00001);
+  EXPECT_NEAR((v - ThreeVector(2, 1, -1)).magnitude(), 1.5, 0.0005);
 
   EXPECT_THROW(
     auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
@@ -133,7 +133,7 @@ TEST(GeometryFactoryTest, geometry_factory_hemispherical_shell_test) {
   )));
 
   auto v = shell->sample(generator);
-  EXPECT_NEAR((v - ThreeVector(1,1,1)).magnitude(), 3, 0.00002);
+  EXPECT_NEAR((v - ThreeVector(1,1,1)).magnitude(), 3, 0.0005);
   EXPECT_GT((v - ThreeVector(1,1,1))(0), 0);
 
   EXPECT_THROW(
