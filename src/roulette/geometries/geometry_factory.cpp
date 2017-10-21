@@ -3,6 +3,7 @@
 #include "roulette/geometries/point.h"
 #include "roulette/geometries/rectangle.h"
 #include "roulette/geometries/ellipse.h"
+#include "roulette/geometries/spherical_shell.h"
 
 namespace roulette {
   namespace geometries {
@@ -17,6 +18,9 @@ namespace roulette {
       }
       else if (data["type"].GetString() == std::string("Ellipse")) {
         return Ellipse::from_json(data);
+      }
+      else if (data["type"].GetString() == std::string("SphericalShell")) {
+        return SphericalShell::from_json(data);
       }
       else {
         // Unhandled source type

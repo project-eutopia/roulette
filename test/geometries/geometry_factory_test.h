@@ -92,3 +92,27 @@ TEST(GeometryFactoryTest, geometry_factory_ellipse_test) {
     geometries::InvalidGeometry
   );
 }
+
+TEST(GeometryFactoryTest, geometry_factory_spherical_shell_test) {
+  RandomGenerator generator;
+  auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+    "{\"type\":\"SphericalShell\",\"center\":[2,1,-1],\"radius\":1.5}"
+  )));
+
+  auto v = shell->sample(generator);
+  EXPECT_NEAR((v - ThreeVector(2, 1, -1)).magnitude(), 1.5, 0.00001);
+
+  EXPECT_THROW(
+    auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+      "{\"type\":\"SphericalShell\",\"radius\":1.5}"
+    ))),
+    geometries::InvalidGeometry
+  );
+
+  EXPECT_THROW(
+    auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+      "{\"type\":\"SphericalShell\",\"center\":[1,2,3]}"
+    ))),
+    geometries::InvalidGeometry
+  );
+}
