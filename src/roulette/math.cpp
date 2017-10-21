@@ -31,7 +31,7 @@ namespace roulette {
         [](double x) { return std::sin(x) - x*std::cos(x); },
         0,
         2*M_PI,
-        90
+        450
       );
 
       while (theta < 0) theta += 2*M_PI;
@@ -46,7 +46,7 @@ namespace roulette {
         [](double x) { return std::cos(x) + x*std::sin(x); },
         0,
         2*M_PI,
-        90
+        450
       );
 
       while (theta < 0) theta += 2*M_PI;

@@ -1,4 +1,5 @@
 #include <vector>
+#include <cmath>
 
 #include "roulette/two_tensor.h"
 
@@ -48,61 +49,37 @@ namespace roulette {
 
     // Invert tridiagonal matrix M
     // See: https://en.wikipedia.org/wiki/Tridiagonal_matrix#Inversion
+    //
+    // Since our matrix has the same element on the diagonal, and the same
+    // element on the off-diagonal, it is possible to find an analytical
+    // form for the inverse matrix by solving a second-order recursive relation
     int n = N-1;
-    std::vector<double> theta(n+2);
-    std::vector<double> phi(n+2);
+    double r1 = 2 + std::sqrt(3);
+    double r2 = 2 - std::sqrt(3);
+    double d = -m_delta_x*m_delta_x/6;
+    std::vector<double> a(n+2);
 
-    theta[0] = 1;
-    theta[1] = M(0,0);
-    for (int i = 2; i <= n; ++i) {
-      theta[i] = M(i-1,i-1) * theta[i-1] - M(i-2,i-1) * M(i-1,i-2) * theta[i-2];
+    a[0] = 1;
+    for (int i = 1; i < n+2; ++i) {
+      a[i] = (std::pow(r1, i+1) - std::pow(r2, i+1)) / 2 / std::sqrt(3);
     }
 
-    phi[n+1] = 1;
-    phi[n] = M(N-2,N-2);
-    for (int i = n-1; i >= 1; --i) {
-      phi[i] = M(i-1,i-1) * phi[i+1] - M(i-1,i) * M(i,i-1) * phi[i+2];
-    }
+    TwoTensor Minv(n,n);
 
-    TwoTensor Minv(N-1,N-1);
-
-    double value;
     for (int i = 1; i <= n; ++i) {
-      // i > j
-      for (int j = 1; j < i; ++j) {
-        value = 1 - 2*((i+j) % 2);
-        value *= theta[j-1] * phi[i+1] / theta[n];
-        for (int k = j; k <= i-1; ++k) value *= M(k,k-1);
-
-        Minv(i-1,j-1) = value;
-      }
-
-      // i == j
-      Minv(i-1,i-1) = theta[i-1] * phi[i+1] / theta[n];
-
-      // i < j
-      for (int j = i+1; j <= n; ++j) {
-        value = 1 - 2*((i+j) % 2);
-        value *= theta[i-1] * phi[j+1] / theta[n];
-        for (int k = i; k <= j-1; ++k) value *= M(k-1,k);
-
-        Minv(i-1,j-1) = value;
+      for (int j = 1; j <= n; ++j) {
+        Minv(i-1,j-1) = (((i+j) & 1) ? -1 : 1) / d * a[std::min(i,j)-1] * a[n-std::max(i,j)] / a[n];
       }
     }
 
     // y = Minv * C
-    std::vector<double> y(N-1);
-    for (int i = 0; i < N-1; ++i) {
-      y[i] = 0;
-
-      for (int j = 0; j < N-1; ++j) {
-        y[i] += Minv(i,j) * C[j];
-      }
-    }
-
     m_ys[0] = y0;
     for (int i = 0; i < N-1; ++i) {
-      m_ys[i+1] = y[i];
+      m_ys[i+1] = 0;
+
+      for (int j = 0; j < N-1; ++j) {
+        m_ys[i+1] += Minv(i,j) * C[j];
+      }
     }
     m_ys[N] = yN;
   }
