@@ -19,7 +19,7 @@ TEST(GeometryEllipseTest, ellipse_test) {
   ThreeVector u1 = ThreeVector(1,2,0).direction_unit_vector();
   ThreeVector u2 = ThreeVector(0,0,1).direction_unit_vector();
 
-  for (int i = 0; i < 20; ++i) {
+  for (int i = 0; i < 100; ++i) {
     auto three_vector = ellipse.sample(generator);
 
     EXPECT_EQ(2*three_vector(0), three_vector(1));

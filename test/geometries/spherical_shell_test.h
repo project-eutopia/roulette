@@ -12,9 +12,9 @@ TEST(GeometrySphericalShellTest, spherical_shell_test) {
   RandomGenerator generator;
   geometries::SphericalShell shell(center, radius);
 
-  for (int i = 0; i < 20; ++i) {
+  for (int i = 0; i < 100; ++i) {
     auto three_vector = shell.sample(generator);
-    EXPECT_NEAR((three_vector - center).magnitude(), radius, 0.0001);
+    EXPECT_NEAR((three_vector - center).magnitude(), radius, 0.0005);
   }
 }
 
