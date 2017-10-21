@@ -8,8 +8,6 @@ namespace roulette {
         m_center(center),
         m_radius(radius)
     {
-      // Check non-degenerate
-      // NOTE: We allow rhombus shapes, so u1 and u2 are allowed to not be perpendicular
       if (m_radius <= 0) {
         throw InvalidGeometry("SphericalShell must have positive radius");
       }

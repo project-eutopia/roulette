@@ -18,18 +18,3 @@ TEST(GeometryHemisphericalShellTest, hemispherical_shell_test) {
     EXPECT_GT((three_vector - center).dot(apex-center), 0);
   }
 }
-
-/* TEST(GeometrySphericalShellTest, spherical_shell_error_test) { */
-/*   // Verify exceptions thrown */
-/*   try { */
-/*     geometries::SphericalShell shell( */
-/*       {0, 0, 0}, */
-/*       0 */
-/*     ); */
-/*     FAIL(); */
-/*   } */
-/*   catch( const geometries::InvalidGeometry& err ) { */
-/*     // check exception */
-/*     ASSERT_STREQ("SphericalShell must have positive radius", err.what()); */
-/*   } */
-/* } */
