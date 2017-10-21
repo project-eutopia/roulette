@@ -4,6 +4,7 @@
 #include "roulette/geometries/rectangle.h"
 #include "roulette/geometries/ellipse.h"
 #include "roulette/geometries/spherical_shell.h"
+#include "roulette/geometries/hemispherical_shell.h"
 
 namespace roulette {
   namespace geometries {
@@ -22,10 +23,12 @@ namespace roulette {
       else if (data["type"].GetString() == std::string("SphericalShell")) {
         return SphericalShell::from_json(data);
       }
+      else if (data["type"].GetString() == std::string("HemisphericalShell")) {
+        return HemisphericalShell::from_json(data);
+      }
       else {
         // Unhandled source type
-        assert(data["type"].GetString());
-        return std::shared_ptr<Geometry>();
+        throw InvalidGeometry("Unknown geometry type");
       }
     }
   };

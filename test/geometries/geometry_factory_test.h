@@ -7,6 +7,15 @@
 
 using namespace roulette;
 
+TEST(GeometryFactoryTest, geometry_factory_unknown_test) {
+  EXPECT_THROW(
+    auto point = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+      "{\"type\":\"DoesNotExist\"}"
+    ))),
+    geometries::InvalidGeometry
+  );
+}
+
 TEST(GeometryFactoryTest, geometry_factory_point_test) {
   RandomGenerator generator;
   auto point = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
@@ -112,6 +121,31 @@ TEST(GeometryFactoryTest, geometry_factory_spherical_shell_test) {
   EXPECT_THROW(
     auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
       "{\"type\":\"SphericalShell\",\"center\":[1,2,3]}"
+    ))),
+    geometries::InvalidGeometry
+  );
+}
+
+TEST(GeometryFactoryTest, geometry_factory_hemispherical_shell_test) {
+  RandomGenerator generator;
+  auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+    "{\"type\":\"HemisphericalShell\",\"center\":[1,1,1],\"apex\":[4,1,1]}"
+  )));
+
+  auto v = shell->sample(generator);
+  EXPECT_NEAR((v - ThreeVector(1,1,1)).magnitude(), 3, 0.00002);
+  EXPECT_GT((v - ThreeVector(1,1,1))(0), 0);
+
+  EXPECT_THROW(
+    auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+      "{\"type\":\"HemiphericalShell\",\"center\":[1,2,3]}"
+    ))),
+    geometries::InvalidGeometry
+  );
+
+  EXPECT_THROW(
+    auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+      "{\"type\":\"HemiphericalShell\",\"apex\":[1,2,3]}"
     ))),
     geometries::InvalidGeometry
   );
