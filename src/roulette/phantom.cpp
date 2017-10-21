@@ -3,6 +3,7 @@
 #include "roulette/photon.h"
 #include "roulette/compound_table.h"
 
+#include "roulette/voxel_grid_factory.h"
 #include "roulette/voxel_grid.h"
 
 #include <random>
@@ -17,7 +18,7 @@ namespace roulette {
   }
 
   Phantom::Phantom(const rapidjson::Value& data) :
-    m_voxel_grid(std::make_shared<const VoxelGrid>(data["voxel_grid"])),
+    m_voxel_grid(VoxelGridFactory::from_json(data["voxel_grid"])),
     m_densities(std::make_shared<MatrixThreeTensor>(m_voxel_grid->nx(), m_voxel_grid->ny(), m_voxel_grid->nz(), data["density"].GetDouble()))
   {
   }
@@ -114,6 +115,16 @@ namespace roulette {
 
     m_densities = std::const_pointer_cast<const MatrixThreeTensor>(temp_densities);
   }
+
+  std::shared_ptr<Phantom> Phantom::from_json(const rapidjson::Value& data) {
+    if (data.IsString()) {
+      return std::make_shared<Phantom>(data.GetString());
+    }
+    else {
+      return std::make_shared<Phantom>(data);
+    }
+  }
+
 
   void Phantom::set_compound_map(const DensityCompoundMap& map) {
     if (!m_compounds.empty()) throw std::runtime_error("Cannot set compound map on phantom that has already had it set");

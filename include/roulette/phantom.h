@@ -26,6 +26,9 @@ namespace roulette {
       Phantom(const rapidjson::Value& data);
       Phantom(std::string filename);
       Phantom(std::shared_ptr<const IVoxelGrid> voxel_grid, std::shared_ptr<const MatrixThreeTensor> densities);
+
+      static std::shared_ptr<Phantom> from_json(const rapidjson::Value& data);
+
       // Returns a new Phantom object that has the same data as the original, just on
       // a coarser scale (e.g. {2,2,2} means each voxel has 2x2x2 block of voxels within)
       // NOTE:  Only works with regular voxel grids
