@@ -11,7 +11,7 @@ namespace roulette {
     phantom.ray_trace_voxels(
       this->position(), this->momentum().three_momentum(),
       IVoxelGrid::voxel_iterator(
-        [&,this](double distance, int xi, int yi, int zi) -> double {
+        [&,this](double distance, size_t xi, size_t yi, size_t zi) -> double {
           double csda_range_cm = phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / phantom(xi, yi, zi);
 
           double energy_drop = (distance <= csda_range_cm) ? kinetic_energy*(distance / csda_range_cm) : kinetic_energy;
@@ -41,7 +41,7 @@ namespace roulette {
     ThreeVector final_position = phantom.ray_trace_voxels(
       this->position(), this->momentum().three_momentum(),
       IVoxelGrid::voxel_iterator(
-        [&,this](double distance, int xi, int yi, int zi) -> double {
+        [&,this](double distance, size_t xi, size_t yi, size_t zi) -> double {
           double csda_range_cm = phantom.compound(xi, yi, zi).electron_csda_range(kinetic_energy) / phantom(xi, yi, zi);
 
           double energy_drop = (distance <= csda_range_cm) ? kinetic_energy*(distance / csda_range_cm) : kinetic_energy;

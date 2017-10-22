@@ -165,7 +165,7 @@ namespace roulette {
     ThreeVector final_position = this->ray_trace_voxels(
       photon.position(), photon.momentum().three_momentum(),
       IVoxelGrid::voxel_iterator(
-        [&,this](double distance, int xi, int yi, int zi) -> double {
+        [&,this](double distance, size_t xi, size_t yi, size_t zi) -> double {
           double delta_depth = (*this)(xi, yi, zi) * this->compound(xi, yi, zi).photon_total_cross_section(energy) * distance;
           current_depth += delta_depth;
           if (current_depth < depth) return distance;

@@ -24,26 +24,29 @@ namespace roulette {
       //
       // distance is the maximum distance to traverse in this voxel
       // zi, yi, xi are the indexes of this voxel
-      typedef std::function<double(double distance, int xi, int yi, int zi)> voxel_iterator;
+      typedef std::function<double(double distance, size_t xi, size_t yi, size_t zi)> voxel_iterator;
 
     public:
-      virtual int nx() const = 0;
-      virtual int ny() const = 0;
-      virtual int nz() const = 0;
+      virtual size_t nx() const = 0;
+      virtual size_t ny() const = 0;
+      virtual size_t nz() const = 0;
 
-      virtual std::tuple<int,int,int> index_at(const ThreeVector& position) const = 0;
+      virtual const ThreeVector& v0() const = 0;
+      virtual const ThreeVector& vn() const = 0;
 
-      virtual bool inside(const ThreeVector& point) const = 0;
-      virtual bool strictly_inside(const ThreeVector& point) const = 0;
-      virtual bool outside(const ThreeVector& point) const = 0;
+      virtual std::tuple<size_t,size_t,size_t> index_at(const ThreeVector& position) const = 0;
+
+      bool inside(const ThreeVector& point) const;
+      bool strictly_inside(const ThreeVector& point) const;
+      bool outside(const ThreeVector& point) const;
 
       // Returns true intersects surface,
       // and therefore was successfully moved up to surface
-      virtual bool transport_particle_to_surface(Particle* particle) const = 0;
-      virtual bool transport_position_to_surface(ThreeVector& position, const ThreeVector& direction) const = 0;
+      bool transport_particle_to_surface(Particle* particle) const;
+      bool transport_position_to_surface(ThreeVector& position, const ThreeVector& direction) const;
 
       // Must be inside and aiming inside to begin with
-      virtual double exit_time(const ThreeVector& position, const ThreeVector& velocity) const = 0;
+      double exit_time(const ThreeVector& position, const ThreeVector& velocity) const;
 
       virtual std::ofstream& write(std::ofstream& os) const = 0;
       virtual std::ifstream& read(std::ifstream& is) = 0;
