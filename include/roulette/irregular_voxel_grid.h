@@ -46,5 +46,8 @@ namespace roulette {
       // For processing voxels in a ray, where the processing is done by the voxel_iterator.
       // Returns final position
       ThreeVector ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, IVoxelGrid::voxel_iterator it) const;
+
+    private:
+      void validate_planes() const;
   };
 };
