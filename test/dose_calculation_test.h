@@ -15,6 +15,7 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose) {
   \"compound_table\": \"../data/compounds.json\", \
   \"phantom\": { \
     \"voxel_grid\": { \
+      \"type\": \"RegularVoxelGrid\", \
       \"nx\": 1, \
       \"ny\": 1, \
       \"nz\": 1, \
@@ -55,6 +56,7 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose_with_pointwise_storage)
   \"compound_table\": \"../data/compounds.json\", \
   \"phantom\": { \
     \"voxel_grid\": { \
+      \"type\": \"RegularVoxelGrid\", \
       \"nx\": 1, \
       \"ny\": 1, \
       \"nz\": 1, \

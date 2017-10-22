@@ -8,6 +8,11 @@ namespace roulette {
   class Particle;
   class Phantom;
 
+  class InvalidVoxelGrid : public std::runtime_error {
+    public:
+      InvalidVoxelGrid(const std::string& s) : std::runtime_error(s) {}
+  };
+
   class IVoxelGrid {
     public:
       // voxel_iterator is a function that is used to iterate over voxels
