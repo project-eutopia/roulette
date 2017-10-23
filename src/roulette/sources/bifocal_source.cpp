@@ -23,27 +23,27 @@ namespace roulette {
       if (!data["origin_generator"].HasMember("geometry")) throw std::runtime_error("BifocalSource requires \"origin_generator => geometry\"");
       m_origin = geometries::GeometryFactory::geometry(data["origin_generator"]["geometry"]);
 
-      if (!data.HasMember("direction_generator")) throw std::runtime_error("BifocalSource requires \"direction_generator\"");
-
-      // Direction geometry
-      if (!data["direction_generator"].HasMember("geometry")) throw std::runtime_error("BifocalSource requires \"direction_generator => geometry\"");
-      m_direction = geometries::GeometryFactory::geometry(data["direction_generator"]["geometry"]);
-
+      if (data.HasMember("aperture_generator")) {
+        if (!data["aperture_generator"].HasMember("geometry")) throw std::runtime_error("BifocalSource[\"aperture_generator\"] requires \"geometry\"");
+        m_secondary = geometries::GeometryFactory::geometry(data["aperture_generator"]["geometry"]);
+        m_secondary_is_aperture_generator = true;
+      }
+      else if (data.HasMember("direction_generator")) {
+        if (!data["direction_generator"].HasMember("geometry")) throw std::runtime_error("BifocalSource[\"direction_generator\"] requires \"geometry\"");
+        m_secondary = geometries::GeometryFactory::geometry(data["direction_generator"]["geometry"]);
+        m_secondary_is_aperture_generator = false;
+      }
+      else {
+        throw std::runtime_error("BifocalSource requires either \"aperture_generator\" or \"direction_generator\"");
+      }
     }
-
-    BifocalSource::BifocalSource(const std::shared_ptr<const geometries::Geometry> origin, const std::shared_ptr<const geometries::Geometry> direction, const distributions::Spectrum& energy_spectrum)
-      :
-        m_origin(origin),
-        m_direction(direction),
-        m_energy_spectrum(energy_spectrum)
-    {}
 
     std::shared_ptr<Particle> BifocalSource::particle(RandomGenerator& generator) {
       double energy = m_energy_spectrum(generator);
       const ThreeVector origin = m_origin->sample(generator);
-      const ThreeVector direction = m_direction->sample(generator);
+      const ThreeVector secondary = m_secondary->sample(generator);
 
-      const ThreeVector u = (direction - origin).direction_unit_vector();
+      const ThreeVector u = m_secondary_is_aperture_generator ? (secondary - origin).direction_unit_vector() : secondary.direction_unit_vector();
 
       return std::make_shared<Photon>(
         FourMomentum(

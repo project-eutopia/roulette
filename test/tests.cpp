@@ -26,6 +26,7 @@
 #include "geometries/spherical_shell_test.h"
 #include "geometries/hemispherical_shell_test.h"
 #include "geometries/geometry_factory_test.h"
+#include "sources/bifocal_source_test.h"
 
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
