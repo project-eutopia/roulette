@@ -25,7 +25,17 @@
         "weight": 1
       }
     ],
-    "phantom": "/opt/roulette/examples/water_tank.phantom",
+    "phantom": {
+      "voxel_grid": {
+        "type": "RegularVoxelGrid",
+        "nx": 128,
+        "ny": 128,
+        "nz": 128,
+        "bottom_left": [-20, -20, -20],
+        "top_right": [20, 20, 20]
+      },
+      "densities": 1.06
+    },
     "density_compound_map": [
       {
         "low": 0,

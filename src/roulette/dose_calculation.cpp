@@ -21,12 +21,7 @@ namespace roulette {
     m_density_compound_map = std::make_shared<const DensityCompoundMap>(data["density_compound_map"], *m_compound_table);
 
     if (!data.HasMember("phantom")) throw std::runtime_error("DoseCalculation needs \"phantom\"");
-    if (data["phantom"].IsString()) {
-      m_phantom = std::make_shared<Phantom>(data["phantom"].GetString());
-    }
-    else {
-      m_phantom = std::make_shared<Phantom>(data["phantom"]);
-    }
+    m_phantom = std::make_shared<Phantom>(data["phantom"]);
     m_phantom->set_compound_map(*m_density_compound_map);
 
     m_original_phantom = m_phantom;

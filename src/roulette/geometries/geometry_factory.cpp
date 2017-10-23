@@ -27,7 +27,6 @@ namespace roulette {
         return HemisphericalShell::from_json(data);
       }
       else {
-        // Unhandled source type
         throw InvalidGeometry("Unknown geometry type");
       }
     }

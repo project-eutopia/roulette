@@ -15,14 +15,14 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose) {
   \"compound_table\": \"../data/compounds.json\", \
   \"phantom\": { \
     \"voxel_grid\": { \
+      \"type\": \"RegularVoxelGrid\", \
       \"nx\": 1, \
       \"ny\": 1, \
       \"nz\": 1, \
       \"bottom_left\": [0, -25, -25], \
       \"top_right\": [50, 25, 25] \
     }, \
-    \"density\": 1.06, \
-    \"compound\": \"Water, Liquid\" \
+    \"densities\": 1.06 \
   }, \
   \"seed\": 1234, \
   \"density_compound_map\": \"Water, Liquid\", \
@@ -55,14 +55,14 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose_with_pointwise_storage)
   \"compound_table\": \"../data/compounds.json\", \
   \"phantom\": { \
     \"voxel_grid\": { \
+      \"type\": \"RegularVoxelGrid\", \
       \"nx\": 1, \
       \"ny\": 1, \
       \"nz\": 1, \
       \"bottom_left\": [0, -25, -25], \
       \"top_right\": [50, 25, 25] \
     }, \
-    \"density\": 1.06, \
-    \"compound\": \"Water, Liquid\" \
+    \"densities\": 1.06 \
   }, \
   \"seed\": 1234, \
   \"density_compound_map\": \"Water, Liquid\", \

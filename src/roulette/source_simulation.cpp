@@ -41,7 +41,7 @@ namespace roulette {
     auto& allocator = d.GetAllocator();
 
     d.AddMember("simulation", m_simulation.to_json(allocator), allocator);
-    d.AddMember("voxel_grid", m_phantom->voxel_grid().to_json(allocator), allocator);
+    d.AddMember("voxel_grid", m_phantom->voxel_grid()->to_json(allocator), allocator);
 
     rapidjson::OStreamWrapper osw(ofs);
     rapidjson::Writer<rapidjson::OStreamWrapper> writer(osw);
