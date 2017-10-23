@@ -1,4 +1,4 @@
-#include "roulette/voxel_grid.h"
+#include "roulette/regular_voxel_grid.h"
 
 #include "roulette/phantom.h"
 
@@ -6,7 +6,7 @@
 #include <cmath>
 
 namespace roulette {
-  VoxelGrid::VoxelGrid() :
+  RegularVoxelGrid::RegularVoxelGrid() :
     m_nx(0),
     m_ny(0),
     m_nz(0),
@@ -18,7 +18,7 @@ namespace roulette {
   {
   }
 
-  VoxelGrid::VoxelGrid(const rapidjson::Value& data) :
+  RegularVoxelGrid::RegularVoxelGrid(const rapidjson::Value& data) :
     m_nx(data["nx"].GetInt()),
     m_ny(data["ny"].GetInt()),
     m_nz(data["nz"].GetInt()),
@@ -30,7 +30,7 @@ namespace roulette {
   {
   }
 
-  VoxelGrid::VoxelGrid(const ThreeVector& v0, const ThreeVector& vn, int nx, int ny, int nz) :
+  RegularVoxelGrid::RegularVoxelGrid(const ThreeVector& v0, const ThreeVector& vn, int nx, int ny, int nz) :
     m_nx(nx),
     m_ny(ny),
     m_nz(nz),
@@ -42,23 +42,23 @@ namespace roulette {
   {
   }
 
-  const ThreeVector& VoxelGrid::v0() const { return m_v0; }
-  const ThreeVector& VoxelGrid::vn() const { return m_vn; }
+  const ThreeVector& RegularVoxelGrid::v0() const { return m_v0; }
+  const ThreeVector& RegularVoxelGrid::vn() const { return m_vn; }
 
-  size_t VoxelGrid::nx() const { return m_nx; }
-  size_t VoxelGrid::ny() const { return m_ny; }
-  size_t VoxelGrid::nz() const { return m_nz; }
+  size_t RegularVoxelGrid::nx() const { return m_nx; }
+  size_t RegularVoxelGrid::ny() const { return m_ny; }
+  size_t RegularVoxelGrid::nz() const { return m_nz; }
 
-  double VoxelGrid::delta_x() const { return m_delta_x; }
-  double VoxelGrid::delta_y() const { return m_delta_y; }
-  double VoxelGrid::delta_z() const { return m_delta_z; }
+  double RegularVoxelGrid::delta_x() const { return m_delta_x; }
+  double RegularVoxelGrid::delta_y() const { return m_delta_y; }
+  double RegularVoxelGrid::delta_z() const { return m_delta_z; }
 
-  std::tuple<size_t,size_t,size_t> VoxelGrid::index_at(const ThreeVector& position) const {
+  std::tuple<size_t,size_t,size_t> RegularVoxelGrid::index_at(const ThreeVector& position) const {
     auto normal = this->normal_coordinates(position);
     return std::make_tuple((size_t)std::get<0>(normal), (size_t)std::get<1>(normal), (size_t)std::get<2>(normal));
   }
 
-  std::tuple<double,double,double> VoxelGrid::normal_coordinates(const ThreeVector& position) const {
+  std::tuple<double,double,double> RegularVoxelGrid::normal_coordinates(const ThreeVector& position) const {
     return std::make_tuple(
       (position(0) - m_v0(0)) / m_delta_x,
       (position(1) - m_v0(1)) / m_delta_y,
@@ -66,41 +66,7 @@ namespace roulette {
     );
   }
 
-  std::ofstream& VoxelGrid::write(std::ofstream& os) const {
-    int32_t n;
-
-    n = m_nx;
-    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
-    n = m_ny;
-    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
-    n = m_nz;
-    os.write(reinterpret_cast<const char*>(&n), sizeof(n));
-
-    m_v0.write(os);
-    m_vn.write(os);
-    return os;
-  }
-
-  std::ifstream& VoxelGrid::read(std::ifstream& is) {
-    int32_t n;
-
-    is.read(reinterpret_cast<char*>(&n), sizeof(n));
-    n = m_nx;
-    is.read(reinterpret_cast<char*>(&n), sizeof(n));
-    n = m_ny;
-    is.read(reinterpret_cast<char*>(&n), sizeof(n));
-    n = m_nz;
-
-    m_v0.read(is);
-    m_vn.read(is);
-
-    m_delta_x = (m_vn(0) - m_v0(0)) / m_nx;
-    m_delta_y = (m_vn(1) - m_v0(1)) / m_ny;
-    m_delta_z = (m_vn(2) - m_v0(2)) / m_nz;
-    return is;
-  }
-
-  rapidjson::Value VoxelGrid::to_json(rapidjson::Document::AllocatorType& allocator) const {
+  rapidjson::Value RegularVoxelGrid::to_json(rapidjson::Document::AllocatorType& allocator) const {
     rapidjson::Value v;
     v.SetObject();
 
@@ -110,13 +76,13 @@ namespace roulette {
     v.AddMember("ny", rapidjson::Value().SetInt(m_ny), allocator);
     v.AddMember("nz", rapidjson::Value().SetInt(m_nz), allocator);
 
-    v.AddMember("v0", m_v0.to_json(allocator), allocator);
-    v.AddMember("vn", m_vn.to_json(allocator), allocator);
+    v.AddMember("bottom_left", m_v0.to_json(allocator), allocator);
+    v.AddMember("top_right", m_vn.to_json(allocator), allocator);
 
     return v;
   }
 
-  ThreeVector VoxelGrid::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, IVoxelGrid::voxel_iterator it) const {
+  ThreeVector RegularVoxelGrid::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, IVoxelGrid::voxel_iterator it) const {
     double mag = direction.magnitude();
     assert(mag > 0);
     ThreeVector u = direction / mag;

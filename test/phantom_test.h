@@ -15,7 +15,7 @@ using namespace roulette;
 TEST(PhantomTest, transport_photon_unitless_depth_inhomogeneous_test) {
   const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
 
-  std::shared_ptr<const VoxelGrid> grid = std::make_shared<const VoxelGrid>(
+  std::shared_ptr<const RegularVoxelGrid> grid = std::make_shared<const RegularVoxelGrid>(
     ThreeVector(0, -25, -25), ThreeVector(50, 25, 25), 100, 1, 1
   );
 

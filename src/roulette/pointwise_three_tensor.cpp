@@ -1,6 +1,6 @@
 #include "roulette/pointwise_three_tensor.h"
 #include "roulette/math.h"
-#include "roulette/voxel_grid.h"
+#include "roulette/regular_voxel_grid.h"
 
 #include <set>
 #include <fstream>
@@ -96,7 +96,9 @@ namespace roulette {
   }
 
   double PointwiseThreeTensor::value_at(const ThreeVector& position) const {
-    auto voxel_grid = std::dynamic_pointer_cast<const VoxelGrid>(m_phantom->voxel_grid());
+    auto voxel_grid = std::dynamic_pointer_cast<const RegularVoxelGrid>(m_phantom->voxel_grid());
+    if (!voxel_grid) throw std::runtime_error("Could not cast voxel grid to RegularVoxelGrid");
+
     auto normal_coordinates = voxel_grid->normal_coordinates(position);
     return this->trilinearly_interpolated_value(std::get<0>(normal_coordinates), std::get<1>(normal_coordinates), std::get<2>(normal_coordinates));
   }

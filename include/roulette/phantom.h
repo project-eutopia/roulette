@@ -24,10 +24,7 @@ namespace roulette {
     public:
       Phantom();
       Phantom(const rapidjson::Value& data);
-      Phantom(std::string filename);
       Phantom(std::shared_ptr<const IVoxelGrid> voxel_grid, std::shared_ptr<const MatrixThreeTensor> densities);
-
-      static std::shared_ptr<Phantom> from_json(const rapidjson::Value& data);
 
       // Returns a new Phantom object that has the same data as the original, just on
       // a coarser scale (e.g. {2,2,2} means each voxel has 2x2x2 block of voxels within)
@@ -53,8 +50,5 @@ namespace roulette {
 
       // Returns final position
       ThreeVector ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, IVoxelGrid::voxel_iterator it) const;
-
-      std::ofstream& write(std::ofstream& os) const;
-      std::ifstream& read(std::ifstream& is);
   };
 };

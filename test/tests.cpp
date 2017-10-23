@@ -5,7 +5,7 @@
 #include "four_momentum_test.h"
 #include "photon_test.h"
 #include "electron_test.h"
-#include "voxel_grid_test.h"
+#include "regular_voxel_grid_test.h"
 #include "irregular_voxel_grid_test.h"
 #include "phantom_test.h"
 #include "dose_calculation_test.h"

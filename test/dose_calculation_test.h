@@ -22,8 +22,7 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose) {
       \"bottom_left\": [0, -25, -25], \
       \"top_right\": [50, 25, 25] \
     }, \
-    \"density\": 1.06, \
-    \"compound\": \"Water, Liquid\" \
+    \"densities\": 1.06 \
   }, \
   \"seed\": 1234, \
   \"density_compound_map\": \"Water, Liquid\", \
@@ -63,8 +62,7 @@ TEST(DoseCalculationTest, dose_calculation_produces_dose_with_pointwise_storage)
       \"bottom_left\": [0, -25, -25], \
       \"top_right\": [50, 25, 25] \
     }, \
-    \"density\": 1.06, \
-    \"compound\": \"Water, Liquid\" \
+    \"densities\": 1.06 \
   }, \
   \"seed\": 1234, \
   \"density_compound_map\": \"Water, Liquid\", \

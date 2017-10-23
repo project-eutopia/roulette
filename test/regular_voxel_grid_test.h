@@ -3,15 +3,15 @@
 #include "test_helper.h"
 
 #include "roulette/random_generator.h"
-#include "roulette/voxel_grid.h"
+#include "roulette/regular_voxel_grid.h"
 #include "roulette/photon.h"
 #include "roulette/distributions/dirac_delta.h"
 #include "roulette/beamlet_particle_generator.h"
 
 using namespace roulette;
 
-TEST(VoxelGridTest, intersection_for_start_inside) {
-  VoxelGrid grid(
+TEST(RegularVoxelGridTest, intersection_for_start_inside) {
+  RegularVoxelGrid grid(
     ThreeVector(0, 0, 0),
     ThreeVector(10, 10, 20),
     1,1,1
@@ -60,8 +60,8 @@ TEST(VoxelGridTest, intersection_for_start_inside) {
   }
 }
 
-TEST(VoxelGridTest, intersection_for_start_on_plane) {
-  VoxelGrid grid(
+TEST(RegularVoxelGridTest, intersection_for_start_on_plane) {
+  RegularVoxelGrid grid(
     ThreeVector(0, 0, 0),
     ThreeVector(10, 10, 20),
     1,1,1
@@ -110,8 +110,8 @@ TEST(VoxelGridTest, intersection_for_start_on_plane) {
   }
 }
 
-TEST(VoxelGridTest, intersection_for_outside_grid) {
-  VoxelGrid grid(
+TEST(RegularVoxelGridTest, intersection_for_outside_grid) {
+  RegularVoxelGrid grid(
     ThreeVector(0, 0, 0),
     ThreeVector(10, 10, 20),
     1,1,1
@@ -176,8 +176,8 @@ TEST(VoxelGridTest, intersection_for_outside_grid) {
   }
 }
 
-TEST(VoxelGridTest, transport_particle_to_surface_works) {
-  VoxelGrid grid(
+TEST(RegularVoxelGridTest, transport_particle_to_surface_works) {
+  RegularVoxelGrid grid(
     ThreeVector(0, 0, 0),
     ThreeVector(10, 10, 20),
     1,1,1
@@ -194,9 +194,9 @@ TEST(VoxelGridTest, transport_particle_to_surface_works) {
   ASSERT_EQ(photon.position()(0), 0);
 }
 
-TEST(VoxelGridTest, transport_beamlet_particle_to_surface) {
+TEST(RegularVoxelGridTest, transport_beamlet_particle_to_surface) {
   RandomGenerator generator;
-  VoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(20, 10, 10), 1, 1, 1);
+  RegularVoxelGrid grid(ThreeVector(0, -10, -10), ThreeVector(20, 10, 10), 1, 1, 1);
   Beamlet beamlet(ThreeVector(-10, 0, 0), ThreeVector(0, -1, -1), ThreeVector(0, 1, -1), ThreeVector(0, 1, 1));
   double energy = 1000000;
   BeamletParticleGenerator<Photon,distributions::DiracDelta> photon_generator(
@@ -210,11 +210,11 @@ TEST(VoxelGridTest, transport_beamlet_particle_to_surface) {
   ASSERT_TRUE(res);
 }
 
-TEST(VoxelGridTest, ray_trace_voxels_test_x_dir) {
+TEST(RegularVoxelGridTest, ray_trace_voxels_test_x_dir) {
   ThreeVector position(-10, 0, 0);
   ThreeVector velocity(1, 0, 0);
 
-  std::shared_ptr<const VoxelGrid> voxel_grid = std::make_shared<const VoxelGrid>(
+  std::shared_ptr<const RegularVoxelGrid> voxel_grid = std::make_shared<const RegularVoxelGrid>(
     ThreeVector(-5, -5, -5),
     ThreeVector( 5,  5,  5),
     4,4,2
@@ -249,11 +249,11 @@ TEST(VoxelGridTest, ray_trace_voxels_test_x_dir) {
   EXPECT_EQ(final_position(2), 0);
 }
 
-TEST(VoxelGridTest, ray_trace_voxels_test_y_dir) {
+TEST(RegularVoxelGridTest, ray_trace_voxels_test_y_dir) {
   ThreeVector position(0, -10, 0);
   ThreeVector velocity(0, 1, 0);
 
-  std::shared_ptr<const VoxelGrid> voxel_grid = std::make_shared<const VoxelGrid>(
+  std::shared_ptr<const RegularVoxelGrid> voxel_grid = std::make_shared<const RegularVoxelGrid>(
     ThreeVector(-5, -5, -5),
     ThreeVector( 5,  5,  5),
     4,4,2
@@ -288,11 +288,11 @@ TEST(VoxelGridTest, ray_trace_voxels_test_y_dir) {
   EXPECT_EQ(final_position(2), 0);
 }
 
-TEST(VoxelGridTest, ray_trace_voxels_test_z_dir) {
+TEST(RegularVoxelGridTest, ray_trace_voxels_test_z_dir) {
   ThreeVector position(0, 0, 10);
   ThreeVector velocity(0, 0, -1);
 
-  std::shared_ptr<const VoxelGrid> voxel_grid = std::make_shared<const VoxelGrid>(
+  std::shared_ptr<const RegularVoxelGrid> voxel_grid = std::make_shared<const RegularVoxelGrid>(
     ThreeVector(-5, -5, -5),
     ThreeVector( 5,  5,  5),
     4,4,2
@@ -325,11 +325,11 @@ TEST(VoxelGridTest, ray_trace_voxels_test_z_dir) {
   EXPECT_EQ(final_position(2),-5);
 }
 
-TEST(VoxelGridTest, ray_trace_voxels_test_going_through_edge) {
+TEST(RegularVoxelGridTest, ray_trace_voxels_test_going_through_edge) {
   ThreeVector position(10, -5, 0);
   ThreeVector velocity(-2, 1, 0);
 
-  std::shared_ptr<const VoxelGrid> voxel_grid = std::make_shared<const VoxelGrid>(
+  std::shared_ptr<const RegularVoxelGrid> voxel_grid = std::make_shared<const RegularVoxelGrid>(
     ThreeVector(-5, -5, -5),
     ThreeVector( 5,  5,  5),
     4,4,2
@@ -364,11 +364,11 @@ TEST(VoxelGridTest, ray_trace_voxels_test_going_through_edge) {
   EXPECT_EQ(final_position(2),   0);
 }
 
-TEST(VoxelGridTest, ray_trace_voxels_test_going_through_corner) {
+TEST(RegularVoxelGridTest, ray_trace_voxels_test_going_through_corner) {
   ThreeVector position(-3, 3, -3);
   ThreeVector velocity(1, -1, 1);
 
-  std::shared_ptr<const VoxelGrid> voxel_grid = std::make_shared<const VoxelGrid>(
+  std::shared_ptr<const RegularVoxelGrid> voxel_grid = std::make_shared<const RegularVoxelGrid>(
     ThreeVector(-5, -5, -5),
     ThreeVector( 5,  5,  5),
     4,4,2
@@ -411,8 +411,8 @@ TEST(VoxelGridTest, ray_trace_voxels_test_going_through_corner) {
   EXPECT_EQ(final_position(2),  5);
 }
 
-TEST(VoxelGridTest, ray_trace_voxels_going_through_random_directions) {
-  std::shared_ptr<const VoxelGrid> voxel_grid = std::make_shared<const VoxelGrid>(
+TEST(RegularVoxelGridTest, ray_trace_voxels_going_through_random_directions) {
+  std::shared_ptr<const RegularVoxelGrid> voxel_grid = std::make_shared<const RegularVoxelGrid>(
     ThreeVector(0, -10, -10),
     ThreeVector(10, 10, 10),
     256,1,1

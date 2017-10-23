@@ -4,7 +4,7 @@
 #include "roulette/compound_table.h"
 
 #include "roulette/voxel_grid_factory.h"
-#include "roulette/voxel_grid.h"
+#include "roulette/regular_voxel_grid.h"
 
 #include <random>
 #include <numeric>
@@ -17,23 +17,32 @@ namespace roulette {
   {
   }
 
-  Phantom::Phantom(const rapidjson::Value& data) :
-    m_voxel_grid(VoxelGridFactory::from_json(data["voxel_grid"])),
-    m_densities(std::make_shared<MatrixThreeTensor>(m_voxel_grid->nx(), m_voxel_grid->ny(), m_voxel_grid->nz(), data["density"].GetDouble()))
+  Phantom::Phantom(const rapidjson::Value& data)
   {
+    if (!data.HasMember("voxel_grid")) {
+      throw std::runtime_error("Phantom requires \"voxel_grid\"");
+    }
+    m_voxel_grid = VoxelGridFactory::from_json(data["voxel_grid"]);
+
+    if (!data.HasMember("densities")) {
+      throw std::runtime_error("Phantom requires \"densities\"");
+    }
+
+    if (data["densities"].IsString()) {
+      m_densities = std::make_shared<MatrixThreeTensor>(data["densities"].GetString());
+    }
+    else if (data["densities"].IsNumber()) {
+      m_densities = std::make_shared<MatrixThreeTensor>(m_voxel_grid->nx(), m_voxel_grid->ny(), m_voxel_grid->nz(), data["densities"].GetDouble());
+    }
+    else {
+      throw std::runtime_error("Phantom \"densities\" must be filename or density value ");
+    }
   }
 
-  Phantom::Phantom(std::string filename) :
-    m_densities(std::make_shared<MatrixThreeTensor>())
-  {
-    std::ifstream data_file;
-    data_file.open(filename, std::ios::in | std::ios::binary);
-    this->read(data_file);
-    data_file.close();
-  }
-
-  Phantom::Phantom(std::shared_ptr<const IVoxelGrid> voxel_grid, std::shared_ptr<const MatrixThreeTensor> densities) : m_voxel_grid(voxel_grid),
-    m_densities(densities)
+  Phantom::Phantom(std::shared_ptr<const IVoxelGrid> voxel_grid, std::shared_ptr<const MatrixThreeTensor> densities)
+    :
+      m_voxel_grid(voxel_grid),
+      m_densities(densities)
   {
   }
 
@@ -49,7 +58,8 @@ namespace roulette {
     int nz = (original_phantom.nz() + sz - 1) / sz;
 
     // Assume regular grid!
-    auto voxel_grid = std::dynamic_pointer_cast<const VoxelGrid>(this->voxel_grid());
+    auto voxel_grid = std::dynamic_pointer_cast<const RegularVoxelGrid>(this->voxel_grid());
+    if (!voxel_grid) throw std::runtime_error("Cannot cast voxel grid to RegularVoxelGrid");
 
     double delta_x = voxel_grid->delta_x() * sx;
     double delta_y = voxel_grid->delta_y() * sy;
@@ -61,7 +71,7 @@ namespace roulette {
       voxel_grid->v0()(2) + nz*delta_z
     );
 
-    m_voxel_grid = std::make_shared<VoxelGrid>(voxel_grid->v0(), vn, nx, ny, nz);
+    m_voxel_grid = std::make_shared<RegularVoxelGrid>(voxel_grid->v0(), vn, nx, ny, nz);
     auto temp_densities = std::make_shared<MatrixThreeTensor>(nx, ny, nz);
 
     m_compounds = std::vector<std::shared_ptr<const Compound>>();
@@ -115,16 +125,6 @@ namespace roulette {
 
     m_densities = std::const_pointer_cast<const MatrixThreeTensor>(temp_densities);
   }
-
-  std::shared_ptr<Phantom> Phantom::from_json(const rapidjson::Value& data) {
-    if (data.IsString()) {
-      return std::make_shared<Phantom>(data.GetString());
-    }
-    else {
-      return std::make_shared<Phantom>(data);
-    }
-  }
-
 
   void Phantom::set_compound_map(const DensityCompoundMap& map) {
     if (!m_compounds.empty()) throw std::runtime_error("Cannot set compound map on phantom that has already had it set");
@@ -182,26 +182,5 @@ namespace roulette {
 
   ThreeVector Phantom::ray_trace_voxels(const ThreeVector& initial_position, const ThreeVector& direction, IVoxelGrid::voxel_iterator it) const {
     return m_voxel_grid->ray_trace_voxels(initial_position, direction, it);
-  }
-
-  std::ofstream& Phantom::write(std::ofstream& os) const {
-    m_voxel_grid->write(os);
-    m_densities->write(os);
-    return os;
-  }
-
-  std::ifstream& Phantom::read(std::ifstream& is) {
-    {
-      // Read into temporary voxel grid, then cast to const for local storage
-      std::shared_ptr<IVoxelGrid> new_grid = std::make_shared<VoxelGrid>();
-      new_grid->read(is);
-      m_voxel_grid = std::const_pointer_cast<const IVoxelGrid>(new_grid);
-    }
-    {
-      std::shared_ptr<MatrixThreeTensor> new_matrix = std::make_shared<MatrixThreeTensor>();
-      new_matrix->read(is);
-      m_densities = std::const_pointer_cast<const MatrixThreeTensor>(new_matrix);
-    }
-    return is;
   }
 };

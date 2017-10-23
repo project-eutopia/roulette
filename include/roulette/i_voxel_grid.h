@@ -48,8 +48,6 @@ namespace roulette {
       // Must be inside and aiming inside to begin with
       double exit_time(const ThreeVector& position, const ThreeVector& velocity) const;
 
-      virtual std::ofstream& write(std::ofstream& os) const = 0;
-      virtual std::ifstream& read(std::ifstream& is) = 0;
       virtual rapidjson::Value to_json(rapidjson::Document::AllocatorType& allocator) const = 0;
 
       // For processing voxels in a ray, where the processing is done by the voxel_iterator.
