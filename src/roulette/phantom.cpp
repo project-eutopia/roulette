@@ -30,6 +30,15 @@ namespace roulette {
 
     if (data["densities"].IsString()) {
       m_densities = std::make_shared<MatrixThreeTensor>(data["densities"].GetString());
+
+      if (
+        m_densities->nx() != m_voxel_grid->nx() ||
+        m_densities->ny() != m_voxel_grid->ny() ||
+        m_densities->nz() != m_voxel_grid->nz()
+      )
+      {
+        throw std::runtime_error("Phantom voxel grid and density matrix must have same dimensions");
+      }
     }
     else if (data["densities"].IsNumber()) {
       m_densities = std::make_shared<MatrixThreeTensor>(m_voxel_grid->nx(), m_voxel_grid->ny(), m_voxel_grid->nz(), data["densities"].GetDouble());
