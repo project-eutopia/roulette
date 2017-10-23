@@ -59,24 +59,29 @@ where `DOSE_CALCULATION_SETTINGS` stores the settings specific to `DoseCalculati
   ```js
   {"low": 0.005, "high": 0.350, "compound": "Lung Tissue (ICRU-44)"}
   ```
-- `phantom`: Defines the 3D density matrix that calculations are done in.  This is either an object which defines a uniform density matrix:
-   ```js
-    "voxel_grid": {
-      "nx": 1,
-      "ny": 1,
-      "nz": 1,
-      "bottom_left": [0, -25, -25],
-      "top_right": [50, 25, 25]
-    },
-    "density": 1.06,
-    "compound": "Water, Liquid"
-   ```
-   or is a binary file with data stored as follows:
-   - Three 32 bit integers: `nx`, `ny`, `nz`
-   - Three 32 bit floating point numbers:  [x, y, z] coordinates of bottom left corner of 3D volume
-   - Three 32 bit floating point numbers:  [x, y, z] coordinates of top right corner of 3D volume
-   - Three 32 bit integers: `nx`, `ny`, `nz`
-   - `nx*ny*nz` 32 bit floating point numbers for each density voxel, stored such that if the x, y, z indexes are given by `i`, `j`, `k`, then the position of density at `(i,j,k)` is `i + nx*j + nx*ny*k` (x increases first, then y, the finally z).
+- `phantom`: Defines the 3D density matrix that calculations are done in.  This has two properties:
+   - `densities`:  Either a single number for uniform density, or a filename of a density matrix.  The binary format of this density matrix is:
+       - Three 32 bit integers: `nx`, `ny`, `nz`
+       - `nx*ny*nz` 32 bit floating point numbers for each density voxel, stored such that if the x, y, z indexes are given by `i`, `j`, `k`, then the position of density at `(i,j,k)` is `i + nx*j + nx*ny*k` (x increases first, then y, the finally z).
+   - `voxel_grid`: An object that defines either a regular (`"type"` is `"RegularVoxelGrid"`) or an irregular voxel grid (`"type"` is `"IrregularVoxelGrid"`).  These have the following formats:
+       - `RegularVoxelGrid` has `nx`, `ny`, `nz` integers, and two vectors `bottom_left` and `top_right` which are the [x, y, z] coordinates of the bottom left corner and top right corner of the 3D volume.
+       ```js
+       {
+         "type": "RegularVoxelGrid",
+         "nx": 128, "ny": 128, "nz": 128,
+         "bottom_left": [-20, -20, -20],
+         "top_right": [20, 20, 20]
+       }
+       ```
+       - `IrregularVoxelGrid` has `xplanes`, `yplanes`, and `zplanes`.  These are arrays of x, y, z coordinates of the planes that divide the voxel grid up into irregularly sized voxels.  There are `nx+1`, `ny+1` and `nz+1` entries for each of the 3 coordinates.
+       ```js
+       {
+         "type": "IrregularVoxelGrid",
+         "xplanes": [0, 1, 2, 3, 4, 5],
+         "yplanes": [-2, 0, 2],
+         "zplanes": [-2, 2]
+       }
+       ```
 - `dose_storage`:  Specifies how the output dose is saved to file.
     - When `matrix`:  dose is stored as 3D grid:
         - Three 32 bit integers: `nx`, `ny`, `nz`
