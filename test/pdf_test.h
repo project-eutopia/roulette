@@ -100,13 +100,6 @@ TEST(PdfTest, has_expected_distribution_when_increasing_linear_test) {
       observed.add_point(pdf(generator));
     }
 
-    for (int i = 0; i < 10; ++i) {
-      std::cout << expected.count_at(i) << " vs " << observed.count_at(i) << std::endl;
-    }
-    for (int i = 0; i < 10; ++i) {
-      std::cout << pdf(generator) << std::endl;
-    }
-
     ChiSquareGoodnessOfFit chi(observed, expected);
 
     return chi.probability_of_bad_fit() < 0.95;
@@ -144,13 +137,6 @@ TEST(PdfTest, has_expected_distribution_when_decreasing_linear_test) {
 
     for (int i = 0; i < num_samples; ++i) {
       observed.add_point(pdf(generator));
-    }
-
-    for (int i = 0; i < 10; ++i) {
-      std::cout << expected.count_at(i) << " vs " << observed.count_at(i) << std::endl;
-    }
-    for (int i = 0; i < 10; ++i) {
-      std::cout << pdf(generator) << std::endl;
     }
 
     ChiSquareGoodnessOfFit chi(observed, expected);
