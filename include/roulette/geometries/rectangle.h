@@ -2,8 +2,7 @@
 
 #include <memory>
 #include "roulette/geometries/geometry.h"
-
-#include "rapidjson/document.h"
+#include "roulette/pdf.h"
 
 namespace roulette {
   namespace geometries {
@@ -12,6 +11,9 @@ namespace roulette {
         const ThreeVector m_p0;
         const ThreeVector m_u1;
         const ThreeVector m_u2;
+
+        std::shared_ptr<const Pdf> m_u_pdf;
+        std::shared_ptr<const Pdf> m_v_pdf;
 
       public:
         static std::shared_ptr<Rectangle> from_json(const rapidjson::Value& data);

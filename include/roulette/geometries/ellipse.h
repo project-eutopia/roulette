@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "roulette/three_vector.h"
 #include "roulette/geometries/geometry.h"
+#include "roulette/pdf.h"
 
 namespace roulette {
   namespace geometries {
@@ -16,6 +16,8 @@ namespace roulette {
 
         const double m_a;
         const double m_b;
+
+        std::shared_ptr<const Pdf> m_radius_pdf;
 
       public:
         static std::shared_ptr<Ellipse> from_json(const rapidjson::Value& data);
