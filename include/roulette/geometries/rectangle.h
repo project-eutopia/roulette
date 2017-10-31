@@ -4,8 +4,6 @@
 #include "roulette/geometries/geometry.h"
 #include "roulette/pdf.h"
 
-#include "rapidjson/document.h"
-
 namespace roulette {
   namespace geometries {
     class Rectangle : public Geometry {

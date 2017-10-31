@@ -9,7 +9,8 @@ namespace roulette {
         m_u1((vertex - center).direction_unit_vector()),
         m_u2((covertex - center).direction_unit_vector()),
         m_a((vertex - center).magnitude()),
-        m_b((covertex - center).magnitude())
+        m_b((covertex - center).magnitude()),
+        m_radius_pdf(std::make_shared<const Pdf>(0, 1))
     {
       // Check non-degenerate
       if (m_u1.cross(m_u2).magnitude() == 0) {
@@ -27,16 +28,27 @@ namespace roulette {
       if (!data.HasMember("vertex")) throw InvalidGeometry("Ellipse requires \"vertex\"");
       if (!data.HasMember("covertex")) throw InvalidGeometry("Ellipse requires \"covertex\"");
 
-      return std::make_shared<Ellipse>(
+      auto ellipse = std::make_shared<Ellipse>(
         ThreeVector(data["center"]),
         ThreeVector(data["vertex"]),
         ThreeVector(data["covertex"])
       );
+
+      if (data.HasMember("radius_pdf")) {
+        ellipse->m_radius_pdf = std::make_shared<const Pdf>(data["radius_pdf"]);
+        if (ellipse->m_radius_pdf->min() != 0) { throw std::runtime_error("PDF must start at 0"); }
+        if (ellipse->m_radius_pdf->max() != 1) { throw std::runtime_error("PDF must end at 1"); }
+      }
+      else {
+        ellipse->m_radius_pdf = std::make_shared<const Pdf>(0, 1);
+      }
+
+      return ellipse;
     }
 
     ThreeVector Ellipse::sample(RandomGenerator& generator) const {
       double theta = this->random_theta(generator);
-      double radius = this->radius(theta) * std::sqrt(generator.uniform());
+      double radius = this->radius(theta) * std::sqrt((*m_radius_pdf)(generator));
       return m_center + radius*math::cos(theta)*m_u1 + radius*math::sin(theta)*m_u2;
     }
 

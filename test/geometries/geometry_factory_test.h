@@ -133,6 +133,32 @@ TEST(GeometryFactoryTest, geometry_factory_ellipse_test) {
   );
 }
 
+TEST(GeometryFactoryTest, geometry_factory_ellipse_pdf_test) {
+  RandomGenerator generator;
+  auto ellipse = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+    "{ \
+      \"type\": \"Ellipse\", \
+      \"center\": [1, 2, 3], \
+      \"vertex\": [2, 2, 3], \
+      \"covertex\": [1, 3, 3], \
+      \"radius_pdf\": { \
+        \"x\": [0, 0.9, 0.9, 1], \
+        \"y\": [0, 0, 1, 1] \
+      } \
+    }"
+  )));
+
+  ThreeVector center(1, 2, 3);
+
+  for (int i = 0; i < 10; ++i) {
+    auto v = ellipse->sample(generator);
+    auto r = (v - center).magnitude();
+
+    EXPECT_GE(r, 0.9);
+    EXPECT_LT(r, 1);
+  }
+}
+
 TEST(GeometryFactoryTest, geometry_factory_spherical_shell_test) {
   RandomGenerator generator;
   auto shell = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
