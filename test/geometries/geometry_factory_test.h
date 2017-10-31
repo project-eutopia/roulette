@@ -35,6 +35,37 @@ TEST(GeometryFactoryTest, geometry_factory_point_test) {
   );
 }
 
+TEST(GeometryFactoryTest, geometry_factory_rectangle_pdf_test) {
+  RandomGenerator generator;
+  auto rectangle = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+    "{ \
+      \"type\": \"Rectangle\", \
+      \"bottom_left\": [0, 10, 20], \
+      \"bottom_right\": [5, 10, 20], \
+      \"top_right\": [5, 15, 20], \
+      \"u_pdf\": { \
+        \"x\": [0, 0.5, 0.5, 1], \
+        \"y\": [0, 0, 1, 1] \
+      }, \
+      \"v_pdf\": { \
+        \"x\": [0, 0.5, 0.5, 1], \
+        \"y\": [1, 1, 0, 0] \
+      } \
+    }"
+  )));
+
+  for (int i = 0; i < 10; ++i) {
+    auto v = rectangle->sample(generator);
+    EXPECT_GE(v(0), 2.5);
+    EXPECT_LT(v(0), 5);
+
+    EXPECT_GE(v(1), 10);
+    EXPECT_LT(v(1), 12.5);
+
+    EXPECT_EQ(v(2), 20);
+  }
+}
+
 TEST(GeometryFactoryTest, geometry_factory_rectangle_test) {
   RandomGenerator generator;
   auto rectangle = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
