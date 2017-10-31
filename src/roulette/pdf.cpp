@@ -58,9 +58,20 @@ namespace roulette {
   double Pdf::min() const { return m_x.front(); }
   double Pdf::max() const { return m_x.back(); }
 
+  // See: https://stats.stackexchange.com/a/281543
   double Pdf::operator()(RandomGenerator& generator) const {
     size_t i = m_index_sampling(generator);
-    return m_x[i] + generator.uniform() * (m_x[i+1] - m_x[i]);
+
+    double u;
+    if (m_y[i] == m_y[i+1]) {
+      u = generator.uniform();
+    }
+    else {
+      double h = 2*m_y[i] / (m_y[i] + m_y[i+1]);
+      u = (std::sqrt(h*h + 4*(1-h)*generator.uniform()) - h) / (2 * (1-h));
+    }
+
+    return m_x[i] + u * (m_x[i+1] - m_x[i]);
   }
 
   void Pdf::set_index_sampling() {
