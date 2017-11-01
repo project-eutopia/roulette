@@ -66,6 +66,41 @@ TEST(GeometryFactoryTest, geometry_factory_rectangle_pdf_test) {
   }
 }
 
+TEST(GeometryFactoryTest, geometry_factory_rectangle_fluence_test) {
+  RandomGenerator generator;
+  auto rectangle = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
+    "{ \
+      \"type\": \"Rectangle\", \
+      \"bottom_left\": [0, 0, 0], \
+      \"bottom_right\": [2, 0, 0], \
+      \"top_right\": [2, 2, 0], \
+      \"fluence\": [[1,0],[0,1]] \
+    }"
+  )));
+
+  // Fluence gives only along diagonal, so in range [0,1)x[0,1) or [1,2)x[1,2)
+  for (int i = 0; i < 10; ++i) {
+    auto v = rectangle->sample(generator);
+
+    if (v(0) >= 1) {
+      EXPECT_GE(v(0), 1);
+      EXPECT_LT(v(0), 2);
+
+      EXPECT_GE(v(1), 1);
+      EXPECT_LT(v(1), 2);
+    }
+    else {
+      EXPECT_GE(v(0), 0);
+      EXPECT_LT(v(0), 1);
+
+      EXPECT_GE(v(1), 0);
+      EXPECT_LT(v(1), 1);
+    }
+
+    EXPECT_EQ(v(2), 0);
+  }
+}
+
 TEST(GeometryFactoryTest, geometry_factory_rectangle_test) {
   RandomGenerator generator;
   auto rectangle = geometries::GeometryFactory::geometry(Json::json_document_from_file_or_string(std::string(
