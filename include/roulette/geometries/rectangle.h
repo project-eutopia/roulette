@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "roulette/geometries/geometry.h"
+#include "roulette/distributions/fluence_distribution.h"
 #include "roulette/pdf.h"
 
 namespace roulette {
@@ -11,6 +12,8 @@ namespace roulette {
         const ThreeVector m_p0;
         const ThreeVector m_u1;
         const ThreeVector m_u2;
+
+        std::shared_ptr<const distributions::FluenceDistribution> m_fluence;
 
         std::shared_ptr<const Pdf> m_u_pdf;
         std::shared_ptr<const Pdf> m_v_pdf;
