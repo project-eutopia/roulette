@@ -67,7 +67,7 @@ namespace roulette {
     int nz = (original_phantom.nz() + sz - 1) / sz;
 
     // Assume regular grid!
-    auto voxel_grid = std::dynamic_pointer_cast<const RegularVoxelGrid>(this->voxel_grid());
+    auto voxel_grid = std::dynamic_pointer_cast<const RegularVoxelGrid>(original_phantom.voxel_grid());
     if (!voxel_grid) throw std::runtime_error("Cannot cast voxel grid to RegularVoxelGrid");
 
     double delta_x = voxel_grid->delta_x() * sx;
