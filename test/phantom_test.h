@@ -50,3 +50,41 @@ TEST(PhantomTest, transport_photon_unitless_depth_inhomogeneous_test) {
   phantom.transport_photon_unitless_depth(initial_photon, 4.9 * cross_section);
   EXPECT_NEAR(25.0, initial_photon.position()(0), 0.0001);
 }
+
+TEST(PhantomTest, test_voxelation) {
+  const DensityCompoundMap map(compound_table.compound("Tissue, Soft (ICRU-44)"));
+
+  std::shared_ptr<const RegularVoxelGrid> grid = std::make_shared<const RegularVoxelGrid>(
+    ThreeVector(0, 0, 0), ThreeVector(1, 1, 1), 4, 4, 1
+  );
+
+  // Originally:
+  // [[4, 4, 4, 4],
+  //  [4, 4, 4, 4],
+  //  [4, 2, 2, 2],
+  //  [4, 2, 2, 2]]
+  std::shared_ptr<MatrixThreeTensor> densities = std::make_shared<MatrixThreeTensor>(4, 4, 1, 4);
+  for (size_t xi = 1; xi < 4; ++xi) {
+    for (size_t yi = 2; yi < 4; ++yi) {
+      for (size_t zi = 0; zi < 1; ++zi) {
+        (*densities)(xi, yi, zi) = 2;
+      }
+    }
+  }
+
+  Phantom phantom(
+    grid,
+    densities
+  );
+  phantom.set_compound_map(map);
+
+  // Voxelated:
+  // [[4, 4],
+  //  [3, 2]]
+  Phantom voxelated_phantom(phantom, std::make_tuple(2, 2, 1));
+
+  EXPECT_EQ(voxelated_phantom(0, 0, 0), 4);
+  EXPECT_EQ(voxelated_phantom(1, 0, 0), 4);
+  EXPECT_EQ(voxelated_phantom(0, 1, 0), 3);
+  EXPECT_EQ(voxelated_phantom(1, 1, 0), 2);
+}
