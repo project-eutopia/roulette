@@ -14,7 +14,8 @@ namespace roulette {
       virtual int nz() const = 0;
 
       virtual double operator()(int xi, int yi, int zi) const = 0;
-      virtual double& operator()(int xi, int yi, int zi) = 0;
+      virtual void set(int xi, int yi, int zi, double value) = 0;
+      virtual void increment(int xi, int yi, int zi, double delta) = 0;
 
       virtual std::ofstream& write(std::ofstream& os) const = 0;
       virtual std::ifstream& read(std::ifstream& is) = 0;

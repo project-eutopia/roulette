@@ -7,6 +7,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <mutex>
 
 namespace roulette {
   class PointwiseThreeTensor : public ThreeTensor {
@@ -22,6 +23,7 @@ namespace roulette {
       std::vector<ThreeVector> m_points;
 
       std::map<int,double> m_data;
+      std::mutex m_data_mutex;
 
     public:
       PointwiseThreeTensor();
@@ -33,7 +35,8 @@ namespace roulette {
       int size() const;
 
       double operator()(int xi, int yi, int zi) const;
-      double& operator()(int xi, int yi, int zi);
+      void set(int xi, int yi, int zi, double value);
+      void increment(int xi, int yi, int zi, double delta);
 
       double value_at(const ThreeVector& position) const;
 
@@ -43,6 +46,7 @@ namespace roulette {
       void rescale(double weight, std::shared_ptr<const ThreeTensor> densities);
 
     private:
+      double& operator()(int xi, int yi, int zi);
       int internal_index(int xi, int yi, int zi) const;
   };
 };

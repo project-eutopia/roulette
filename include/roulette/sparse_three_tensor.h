@@ -4,6 +4,7 @@
 
 #include <map>
 #include <string>
+#include <mutex>
 
 namespace roulette {
   class SparseThreeTensor : public ThreeTensor {
@@ -13,6 +14,7 @@ namespace roulette {
       int m_nz;
       double m_default;
       std::map<int,double> m_data;
+      std::mutex m_data_mutex;
 
     public:
       SparseThreeTensor();
@@ -24,7 +26,8 @@ namespace roulette {
       int nz() const;
 
       double operator()(int xi, int yi, int zi) const;
-      double& operator()(int xi, int yi, int zi);
+      void set(int xi, int yi, int zi, double value);
+      void increment(int xi, int yi, int zi, double delta);
 
       std::ofstream& write(std::ofstream& os) const;
       std::ifstream& read(std::ifstream& is);
@@ -32,6 +35,7 @@ namespace roulette {
       void rescale(double weight, std::shared_ptr<const ThreeTensor> densities);
 
     private:
+      double& operator()(int xi, int yi, int zi);
       int internal_index(int xi, int yi, int zi) const;
   };
 };

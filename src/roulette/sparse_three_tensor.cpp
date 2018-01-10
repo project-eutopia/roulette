@@ -57,6 +57,16 @@ namespace roulette {
     }
   }
 
+  void SparseThreeTensor::set(int xi, int yi, int zi, double value) {
+    std::lock_guard<std::mutex> guard(m_data_mutex);
+    (*this)(xi, yi, zi) = value;
+  }
+
+  void SparseThreeTensor::increment(int xi, int yi, int zi, double delta) {
+    std::lock_guard<std::mutex> guard(m_data_mutex);
+    (*this)(xi, yi, zi) += delta;
+  }
+
   std::ofstream& SparseThreeTensor::write(std::ofstream& os) const {
     int32_t n;
 

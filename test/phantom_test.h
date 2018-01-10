@@ -21,7 +21,7 @@ TEST(PhantomTest, transport_photon_unitless_depth_inhomogeneous_test) {
 
   std::shared_ptr<MatrixThreeTensor> densities = std::make_shared<MatrixThreeTensor>(100, 1, 1, 1.0);
   for (int i = 20; i < 40; ++i) {
-    (*densities)(i, 0, 0) = 0.5;
+    densities->set(i, 0, 0, 0.5);
   }
 
   Phantom phantom(
@@ -67,7 +67,7 @@ TEST(PhantomTest, test_voxelation) {
   for (size_t xi = 1; xi < 4; ++xi) {
     for (size_t yi = 2; yi < 4; ++yi) {
       for (size_t zi = 0; zi < 1; ++zi) {
-        (*densities)(xi, yi, zi) = 2;
+        densities->set(xi, yi, zi, 2);
       }
     }
   }

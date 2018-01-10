@@ -34,6 +34,16 @@ namespace roulette {
   double MatrixThreeTensor::operator()(int xi, int yi, int zi) const { return m_data[xi + m_nx*yi + (m_nx*m_ny)*zi]; }
   double& MatrixThreeTensor::operator()(int xi, int yi, int zi) { return m_data[xi + m_nx*yi + (m_nx*m_ny)*zi]; }
 
+  void MatrixThreeTensor::set(int xi, int yi, int zi, double value) {
+    std::lock_guard<std::mutex> guard(m_data_mutex);
+    (*this)(xi, yi, zi) = value;
+  }
+
+  void MatrixThreeTensor::increment(int xi, int yi, int zi, double delta) {
+    std::lock_guard<std::mutex> guard(m_data_mutex);
+    (*this)(xi, yi, zi) += delta;
+  }
+
   std::ofstream& MatrixThreeTensor::write(std::ofstream& os) const {
     int32_t n;
 
