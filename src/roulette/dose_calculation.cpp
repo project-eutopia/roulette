@@ -124,7 +124,8 @@ namespace roulette {
       int index = i;
       queue.add_job([this, index]() {
         std::shared_ptr<SourceDose> source_dose = this->m_source_doses[index]();
-        source_dose->run();
+        // Run multi-threaded if only source dose
+        source_dose->run(this->m_source_doses.size() == 1);
 
         std::string filename = m_output_folder + "/" + std::string("dose_") + std::to_string(index) + std::string(".dose");
         std::ofstream ofs;

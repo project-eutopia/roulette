@@ -19,6 +19,8 @@ namespace roulette {
 
       JobQueue();
 
+      static unsigned int max_threads();
+
       void add_job(std::function<void()> job);
       std::function<void()> get_job();
       void run();

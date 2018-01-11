@@ -124,7 +124,7 @@ namespace roulette {
             }
           }
 
-          (*temp_densities)(x, y, z) = std::accumulate(densities.begin(), densities.end(), 0.0) / densities.size();
+          temp_densities->set(x, y, z, std::accumulate(densities.begin(), densities.end(), 0.0) / densities.size());
           // Select random compound within the existing compounds
           std::uniform_int_distribution<int> dist(0, compounds.size()-1);
           m_compounds.push_back(compounds[dist(gen)]);
