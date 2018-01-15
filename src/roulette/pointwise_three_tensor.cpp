@@ -95,6 +95,16 @@ namespace roulette {
     }
   }
 
+  void PointwiseThreeTensor::set(int xi, int yi, int zi, double value) {
+    std::lock_guard<std::mutex> guard(m_data_mutex);
+    (*this)(xi, yi, zi) = value;
+  }
+
+  void PointwiseThreeTensor::increment(int xi, int yi, int zi, double delta) {
+    std::lock_guard<std::mutex> guard(m_data_mutex);
+    (*this)(xi, yi, zi) += delta;
+  }
+
   double PointwiseThreeTensor::value_at(const ThreeVector& position) const {
     auto voxel_grid = std::dynamic_pointer_cast<const RegularVoxelGrid>(m_phantom->voxel_grid());
     if (!voxel_grid) throw std::runtime_error("Could not cast voxel grid to RegularVoxelGrid");

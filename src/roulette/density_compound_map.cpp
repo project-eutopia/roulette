@@ -64,7 +64,7 @@ namespace roulette {
   }
 
   std::shared_ptr<Compound> DensityCompoundMap::compound_for_density(double density) const {
-    for (int i = 0; i < m_density_ranges.size(); ++i) {
+    for (size_t i = 0; i < m_density_ranges.size(); ++i) {
       if (density >= m_density_ranges[i].first && density < m_density_ranges[i].second) {
         return m_compounds[i];
       }

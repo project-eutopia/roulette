@@ -10,6 +10,10 @@ namespace roulette {
   JobQueue::JobQueue()
   {}
 
+  unsigned int JobQueue::max_threads() {
+    return std::thread::hardware_concurrency();
+  }
+
   void JobQueue::add_job(std::function<void()> job) {
     m_jobs.push_back(job);
   }
@@ -33,7 +37,7 @@ namespace roulette {
   void JobQueue::run() {
     std::vector<std::thread> worker_threads;
 
-    for (int i = 0; i < std::thread::hardware_concurrency(); ++i) {
+    for (size_t i = 0; i < max_threads(); ++i) {
       worker_threads.emplace_back(
         [this]() {
           try {

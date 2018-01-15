@@ -1,5 +1,6 @@
 #include "roulette/source_dose.h"
 #include "roulette/particle.h"
+#include "roulette/job_queue.h"
 
 #include "roulette/sources/source_factory.h"
 
@@ -34,17 +35,54 @@ namespace roulette {
     return os;
   }
 
-  void SourceDose::run() {
+  std::shared_ptr<Particle> SourceDose::generate_particle() {
+    std::shared_ptr<Particle> particle;
+    {
+      std::lock_guard<std::mutex> guard(m_mutex);
+      particle = m_source->particle(m_generator);
+    }
+    return particle;
+  }
+
+  void SourceDose::run(bool multi_threaded) {
     if (m_finished) {
       throw std::runtime_error("Cannot re-run dose calculation");
     }
     m_finished = true;
 
-    for (int i = 0; i < m_number_of_particles; ++i) {
-      std::shared_ptr<Particle> particle = m_source->particle(m_generator);
+    if (multi_threaded) {
+      this->run_multi_threaded();
+    }
+    else {
+      this->run_single_threaded();
+    }
+  }
+
+  void SourceDose::run_single_threaded() {
+    for (size_t i = 0; i < m_number_of_particles; ++i) {
+      std::shared_ptr<Particle> particle = this->generate_particle();
       particle->deposit_energy(*this);
     }
 
-    m_dose->rescale(m_weight, m_phantom->densities());
+    m_dose->rescale(m_weight / m_number_of_particles, m_phantom->densities());
+  }
+
+  void SourceDose::run_multi_threaded() {
+    JobQueue queue;
+    for (int i = 0; i < JobQueue::max_threads(); ++i) {
+      size_t thread_particle_count = m_number_of_particles / JobQueue::max_threads();
+      // Refine if first one so total sum adds up correctly
+      thread_particle_count = m_number_of_particles - (JobQueue::max_threads()-1)*thread_particle_count;
+
+      queue.add_job([this, thread_particle_count]() {
+        for (size_t cur_particle = 0; cur_particle < thread_particle_count; ++cur_particle) {
+          std::shared_ptr<Particle> particle = this->generate_particle();
+          particle->deposit_energy(*this);
+        }
+      });
+    }
+    queue.run();
+
+    m_dose->rescale(m_weight / m_number_of_particles, m_phantom->densities());
   }
 };
